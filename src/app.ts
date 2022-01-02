@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import express, { Application } from 'express';
+import express, { Application, json } from 'express';
 import Controller from './classes/controller.class';
 import ExceptionFilter from './filters/exception.filter';
 
@@ -19,11 +19,16 @@ class App extends EventEmitter {
   }
 
   public async load(controllers: Controller[]): Promise<void> {
+    this.loadPipes();
     this.loadControllers(controllers);
     this.loadFilters();
 
     this.ready = true;
     this.emit('load');
+  }
+
+  private loadPipes(): void {
+    this.application.use(json());
   }
 
   private loadControllers(controllers: Controller[]): void {
