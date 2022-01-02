@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import express, { Application } from 'express';
 import Controller from './classes/controller.class';
+import ExceptionFilter from './filters/exception.filter';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -19,6 +20,7 @@ class App extends EventEmitter {
 
   public async load(controllers: Controller[]): Promise<void> {
     this.loadControllers(controllers);
+    this.loadFilters();
 
     this.ready = true;
     this.emit('load');
@@ -26,6 +28,10 @@ class App extends EventEmitter {
 
   private loadControllers(controllers: Controller[]): void {
     controllers.forEach(controller => this.application.use(controller.path, controller.router));
+  }
+
+  private loadFilters(): void {
+    ExceptionFilter.use(this.application);
   }
 
   public async start(): Promise<void> {
