@@ -1,10 +1,12 @@
 import EventEmitter from 'events';
 import express, { Application, json } from 'express';
+import mongoose from 'mongoose';
 import Controller from './classes/controller.class';
 import ExceptionFilter from './filters/exception.filter';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
+  on(event: 'connect', listener: () => void): this;
   on(event: 'start', listener: (port: number) => void): this;
 }
 
@@ -19,12 +21,18 @@ class App extends EventEmitter {
   }
 
   public async load(controllers: Controller[]): Promise<void> {
+    await this.loadDatabase();
     this.loadPipes();
     this.loadControllers(controllers);
     this.loadFilters();
 
     this.ready = true;
     this.emit('load');
+  }
+
+  private async loadDatabase(): Promise<void> {
+    await mongoose.connect(process.env.DB_PATH!);
+    this.emit('connect');
   }
 
   private loadPipes(): void {

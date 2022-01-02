@@ -34,7 +34,7 @@ abstract class Controller {
   public readonly router: Router = Router();
   protected readonly mounter: ControllerMounter = new ControllerMounter(this.router);
 
-  protected constructor() {
+  constructor() {
     this.mount();
   }
 
