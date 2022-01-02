@@ -3,6 +3,7 @@ import express, { Application, json } from 'express';
 import mongoose from 'mongoose';
 import Controller from './classes/controller.class';
 import ExceptionFilter from './filters/exception.filter';
+import CorsPipe from './pipes/cors.pipe';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -37,6 +38,7 @@ class App extends EventEmitter {
 
   private loadPipes(): void {
     this.application.use(json());
+    CorsPipe.use(this.application);
   }
 
   private loadControllers(controllers: Controller[]): void {
