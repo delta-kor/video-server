@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import express, { Application } from 'express';
+import Controller from './classes/controller.class';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -16,9 +17,15 @@ class App extends EventEmitter {
     this.port = port;
   }
 
-  public async load(): Promise<void> {
+  public async load(controllers: Controller[]): Promise<void> {
+    this.loadControllers(controllers);
+
     this.ready = true;
     this.emit('load');
+  }
+
+  private loadControllers(controllers: Controller[]): void {
+    controllers.forEach(controller => this.application.use(controller.path, controller.router));
   }
 
   public async start(): Promise<void> {
