@@ -9,7 +9,7 @@ class VideoController extends Controller {
   public readonly path: string = '/video';
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
 
-  protected mount() {
+  protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
   }
 

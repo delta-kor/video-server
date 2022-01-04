@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { NextFunction } from 'express';
-import UnprocessableEntityException from '../exceptions/uprocessable-entity.exception';
+import UnprocessableEntityException from '../exceptions/unprocessable-entity.exception';
 
 type ValidationType = 'body' | 'query' | 'param';
 
