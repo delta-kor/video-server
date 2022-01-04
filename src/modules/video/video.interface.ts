@@ -4,9 +4,9 @@ interface Video extends Document {
   id: string;
   cdnId: string;
   title: string;
+  description: string;
   date: Date;
-  category: string;
-  details: string;
+  category: [string, string, string];
 }
 
 export default Video;

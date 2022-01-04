@@ -1,0 +1,1 @@
+function upload(url, data) {}

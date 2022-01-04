@@ -6,7 +6,7 @@ import UnprocessableEntityException from '../exceptions/uprocessable-entity.exce
 type ValidationType = 'body' | 'query' | 'param';
 
 function ValidateGuard(type: any, query: ValidationType = 'body', skipMissingProperties = false): Route {
-  return async function (req: TypedRequest, res: TypedResponse, next: NextFunction): Promise<any> {
+  return async function (req: TypedRequest, res: TypedResponse, next: NextFunction): Promise<void> {
     const plain = query === 'body' ? req.body : query === 'query' ? req.query : req.params;
     validate(plainToClass(type, plain), { skipMissingProperties }).then(err => {
       if (err.length > 0) {
