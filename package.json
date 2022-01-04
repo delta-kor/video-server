@@ -17,6 +17,7 @@
     "tsc-watch": "^4.6.0"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "dotenv": "^10.0.0",
