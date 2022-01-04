@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import App from './app';
 import Controller from './classes/controller.class';
+import CdnService from './modules/cdn/cdn.service';
+import EnvService from './modules/env/env.service';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
 import Service from './services/base.service';
@@ -10,7 +12,7 @@ dotenv.config();
 
 const port = parseInt(process.env.PORT!) || 3000;
 
-const services: typeof Service[] = [VideoService];
+const services: typeof Service[] = [EnvService, CdnService, VideoService];
 ServiceProvider.load(services);
 
 const controllers: Controller[] = [new VideoController()];
