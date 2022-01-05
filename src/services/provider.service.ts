@@ -3,9 +3,12 @@ import Service from './base.service';
 class ServiceProviderClass {
   private readonly instances: Map<typeof Service, Service> = new Map();
 
-  public load(services: typeof Service[]): void {
+  public async load(services: typeof Service[]): Promise<void> {
     for (const service of services) {
-      this.instances.set(service, new service());
+      const instance = new service();
+      await instance.load();
+      this.instances.set(service, instance);
+      console.log(`Loaded ${service.name}`);
     }
   }
 

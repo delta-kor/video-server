@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import App from './app';
 import Controller from './classes/controller.class';
+import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
@@ -13,15 +14,18 @@ dotenv.config();
 
 const port = parseInt(process.env.PORT!) || 3000;
 
-const services: typeof Service[] = [EnvService, DeliverService, VideoService];
-ServiceProvider.load(services);
-
-const controllers: Controller[] = [new EnvController(), new VideoController()];
-
 const app = new App(port);
+const services: typeof Service[] = [EnvService, DeliverService, VideoService, CategoryService];
 
 app.on('load', () => console.log('Loaded application'));
 app.on('connect', () => console.log('Connected to database'));
 app.on('start', port => console.log(`Server started in port ${port}`));
 
-app.load(controllers).then(() => app.start());
+app
+  .connect()
+  .then(() => ServiceProvider.load(services))
+  .then(() => {
+    const controllers: Controller[] = [new EnvController(), new VideoController()];
+    return app.load(controllers);
+  })
+  .then(() => app.start());

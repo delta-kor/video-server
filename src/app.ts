@@ -22,7 +22,6 @@ class App extends EventEmitter {
   }
 
   public async load(controllers: Controller[]): Promise<void> {
-    await this.loadDatabase();
     this.loadPipes();
     this.loadControllers(controllers);
     this.loadFilters();
@@ -31,7 +30,7 @@ class App extends EventEmitter {
     this.emit('load');
   }
 
-  private async loadDatabase(): Promise<void> {
+  public async connect(): Promise<void> {
     await mongoose.connect(process.env.DB_PATH!);
     this.emit('connect');
   }
