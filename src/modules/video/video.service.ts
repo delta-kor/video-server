@@ -1,13 +1,13 @@
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
-import CdnService from '../cdn/cdn.service';
+import DeliverService from '../deliver/deliver.service';
 import UploadDto from './dto/upload.dto';
 import Video from './video.interface';
 import VideoModel from './video.model';
 
 class VideoService extends Service {
-  private readonly cdnService: CdnService = ServiceProvider.get(CdnService);
+  private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
 
   public async upload(data: UploadDto): Promise<Video> {
     const video: Video = new VideoModel({
@@ -27,7 +27,7 @@ class VideoService extends Service {
     if (!video) throw new NotFoundException();
 
     const cdnId = video.cdnId;
-    return this.cdnService.getCdnUrl(cdnId, quality);
+    return this.deliverService.getCdnUrl(cdnId, quality);
   }
 }
 

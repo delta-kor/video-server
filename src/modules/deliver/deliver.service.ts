@@ -2,9 +2,9 @@ import axios from 'axios';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import EnvService from '../env/env.service';
-import { CdnApiResponse } from './cdn.interface';
+import { CdnApiResponse } from './deliver.interface';
 
-class CdnService extends Service {
+class DeliverService extends Service {
   private usedToken: string | null = null;
   private readonly apiCache: Map<string, CdnApiResponse> = new Map();
   private readonly urlCache: Map<string, string> = new Map();
@@ -59,4 +59,4 @@ class CdnService extends Service {
   }
 }
 
-export default CdnService;
+export default DeliverService;
