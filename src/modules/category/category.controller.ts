@@ -34,21 +34,38 @@ class CategoryController extends Controller {
         res.json({
           ok: true,
           type: 'parent',
-          folders: (<ParentCategory[]>data).map(folder => ({
-            title: folder.name,
-            path: folder.hash,
-            count: folder.children.size,
-          })),
+          folders: (<ParentCategory[]>data)
+            .map(folder => ({
+              title: folder.name,
+              path: folder.hash,
+              count:
+                'children' in Array.from(folder.children.values())[0]
+                  ? (<ParentCategory[]>Array.from(folder.children.values())).reduce<number>(
+                      (acc, current) =>
+                        (<ChildCategory[]>Array.from(current.children.values())).reduce<number>(
+                          (acc, current) => current.videos.length + acc,
+                          0
+                        ) + acc,
+                      0
+                    )
+                  : (<ChildCategory[]>Array.from(folder.children.values())).reduce<number>(
+                      (acc, current) => current.videos.length + acc,
+                      0
+                    ),
+            }))
+            .sort((a, b) => b.count - a.count),
         });
       else
         res.json({
           ok: true,
           type: 'parent',
-          folders: (<ChildCategory[]>data).map(folder => ({
-            title: folder.name,
-            path: folder.hash,
-            count: folder.videos.length,
-          })),
+          folders: (<ChildCategory[]>data)
+            .map(folder => ({
+              title: folder.name,
+              path: folder.hash,
+              count: folder.videos.length,
+            }))
+            .sort((a, b) => b.count - a.count),
         });
       return true;
     }
