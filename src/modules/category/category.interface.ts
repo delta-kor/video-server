@@ -1,3 +1,5 @@
+import Video from '../video/video.interface';
+
 interface ParentCategory {
   name: string;
   hash: string;
@@ -7,7 +9,7 @@ interface ParentCategory {
 interface ChildCategory {
   name: string;
   hash: string;
-  videos: string[];
+  videos: Video[];
 }
 
 export { ParentCategory, ChildCategory };

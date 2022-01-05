@@ -43,7 +43,7 @@ class CategoryService extends Service {
           const childCategory: ChildCategory = {
             name: bottomName,
             hash: CategoryService.hashPath(topName, middleName, bottomName),
-            videos: bottomVideos.map(v => v.title),
+            videos: bottomVideos,
           };
           middleParentCategory.children.set(bottomName, childCategory);
         }
