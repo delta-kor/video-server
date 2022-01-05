@@ -2,7 +2,7 @@ import axios from 'axios';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import EnvService from '../env/env.service';
-import { CdnApiResponse } from './deliver.interface';
+import { CdnApiResponse, VideoData } from './deliver.interface';
 
 class DeliverService extends Service {
   private usedToken: string | null = null;
@@ -29,11 +29,16 @@ class DeliverService extends Service {
       if (!data.files) throw new Error('Cdn file error');
     }
 
-    const qualityFilteredData = data.files.filter(video => video.quality !== 'hls' && video.height <= quality);
-    const sortedData = qualityFilteredData.sort((a, b) => b.size - a.size);
-    const selectedVideo = sortedData[0];
+    const qualityFilteredData = data.files.filter(video => video.quality !== 'hls' && video.height >= quality);
+    const sortedData = qualityFilteredData.sort((a, b) => a.size - b.size);
+    let selectedVideo: VideoData = sortedData[0];
 
-    if (!selectedVideo) throw new Error('Cdn file not selected');
+    if (!selectedVideo) {
+      if (data.files.length === 0) throw new Error('Cdn file not selected');
+      const qualityFilteredData = data.files.filter(video => video.quality !== 'hls');
+      const sortedData = qualityFilteredData.sort((a, b) => b.size - a.size);
+      selectedVideo = sortedData[0];
+    }
 
     const link = selectedVideo.link;
 

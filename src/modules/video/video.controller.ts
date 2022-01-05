@@ -11,7 +11,7 @@ class VideoController extends Controller {
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
-    this.mounter.get('/:id', this.getStreamingUrl.bind(this));
+    this.mounter.get('/:id', this.stream.bind(this));
   }
 
   private async upload(req: TypedRequest<UploadDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
@@ -19,11 +19,11 @@ class VideoController extends Controller {
     res.json({ ok: true, id: video.id });
   }
 
-  private async getStreamingUrl(req: TypedRequest, res: TypedResponse<VideoResponse.GetStreamingUrl>): Promise<void> {
+  private async stream(req: TypedRequest, res: TypedResponse): Promise<void> {
     const id = req.params.id;
     const quality = req.query.quality ? parseInt(req.query.quality) : 1080;
     const url = await this.videoService.getStreamingUrl(id, quality);
-    res.json({ ok: true, url });
+    res.redirect(url);
   }
 }
 
