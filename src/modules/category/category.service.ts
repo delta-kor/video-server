@@ -7,6 +7,12 @@ import { ChildCategory, ParentCategory } from './category.interface';
 class CategoryService extends Service {
   private category!: Map<string, ParentCategory>;
 
+  private static hashPath(...path: string[]): string {
+    const hasher = crypto.createHash('md5');
+    for (const item of path) hasher.update(item);
+    return hasher.digest('base64url');
+  }
+
   public async load(): Promise<void> {
     const videos: Video[] = await VideoModel.find();
 
@@ -55,10 +61,19 @@ class CategoryService extends Service {
     this.category = categories;
   }
 
-  private static hashPath(...path: string[]): string {
-    const hasher = crypto.createHash('md5');
-    for (const item of path) hasher.update(item);
-    return hasher.digest('base64url');
+  public view(hash?: string): (ParentCategory | ChildCategory | Video)[] | null {
+    if (!hash) return Array.from(this.category.values());
+    for (const topCategory of this.category.values()) {
+      if (topCategory.hash === hash) return <ParentCategory[]>Array.from(topCategory.children.values());
+      for (const middleCategory of topCategory.children.values()) {
+        if (middleCategory.hash === hash)
+          return <ParentCategory[]>Array.from((<ParentCategory>middleCategory).children.values());
+        for (const bottomCategory of (<ParentCategory>middleCategory).children.values()) {
+          if (bottomCategory.hash === hash) return Array.from((<ChildCategory>bottomCategory).videos.values());
+        }
+      }
+    }
+    return null;
   }
 }
 
