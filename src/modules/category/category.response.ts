@@ -1,6 +1,6 @@
 interface Folder {
   title: string;
-  hash: string;
+  path: string;
   count: number;
 }
 

@@ -36,7 +36,7 @@ class CategoryController extends Controller {
           type: 'parent',
           folders: (<ParentCategory[]>data).map(folder => ({
             title: folder.name,
-            hash: folder.hash,
+            path: folder.hash,
             count: folder.children.size,
           })),
         });
@@ -46,7 +46,7 @@ class CategoryController extends Controller {
           type: 'parent',
           folders: (<ChildCategory[]>data).map(folder => ({
             title: folder.name,
-            hash: folder.hash,
+            path: folder.hash,
             count: folder.videos.length,
           })),
         });
