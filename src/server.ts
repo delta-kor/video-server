@@ -6,6 +6,7 @@ import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
+import MusicService from './modules/music/music.service';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
 import Service from './services/base.service';
@@ -16,7 +17,7 @@ dotenv.config();
 const port = parseInt(process.env.PORT!) || 3000;
 
 const app = new App(port);
-const services: typeof Service[] = [EnvService, DeliverService, VideoService, CategoryService];
+const services: typeof Service[] = [EnvService, DeliverService, VideoService, CategoryService, MusicService];
 
 app.on('load', () => console.log('Loaded application'));
 app.on('connect', () => console.log('Connected to database'));
