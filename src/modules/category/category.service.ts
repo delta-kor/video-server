@@ -10,7 +10,7 @@ class CategoryService extends Service {
   private static hashPath(...path: string[]): string {
     const hasher = crypto.createHash('md5');
     for (const item of path) hasher.update(item);
-    return hasher.digest('base64url');
+    return hasher.digest('hex').slice(0, 16);
   }
 
   public async load(): Promise<void> {

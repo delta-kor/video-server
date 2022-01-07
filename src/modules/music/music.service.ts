@@ -18,12 +18,11 @@ class MusicService extends Service {
 
     for (const video of videos) {
       const title = video.title;
-      if (!this.music.has(title)) this.music.set(title, { title, hash: MusicService.hashTitle(title), videos: [] });
+      const hash = MusicService.hashTitle(title);
 
-      this.music.get(title)!.videos.push(video);
+      if (!this.music.has(hash)) this.music.set(hash, { title, hash, videos: [] });
+      this.music.get(hash)!.videos.push(video);
     }
-
-    console.log(this.music);
   }
 }
 
