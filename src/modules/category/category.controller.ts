@@ -13,15 +13,18 @@ class CategoryController extends Controller {
 
   protected mount(): void {
     this.mounter.get('/', this.view.bind(this));
+    this.mounter.get('/:path', this.view.bind(this));
   }
 
   public async view(
     req: TypedRequest,
     res: TypedResponse<CategoryResponse.Parent | CategoryResponse.Children>
   ): Promise<any> {
-    const hash = req.query.path;
+    const hash = req.params.path;
+
     const data = this.categoryService.view(hash);
     if (!data) throw new NotFoundException();
+
     if (data[0] instanceof Document) {
       res.json({
         ok: true,
