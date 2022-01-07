@@ -1,6 +1,7 @@
 import Controller from '../../classes/controller.class';
+import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
-import MusicResponse, { MusicItem } from './music.response';
+import MusicResponse, { MusicItem, VideoItem } from './music.response';
 import MusicService from './music.service';
 
 class MusicController extends Controller {
@@ -9,9 +10,10 @@ class MusicController extends Controller {
 
   protected mount(): void {
     this.mounter.get('/', this.viewAll.bind(this));
+    this.mounter.get('/:id', this.viewOne.bind(this));
   }
 
-  private async viewAll(req: TypedRequest, res: TypedResponse<MusicResponse.ViewAll>): Promise<void> {
+  private async viewAll(_req: TypedRequest, res: TypedResponse<MusicResponse.ViewAll>): Promise<void> {
     const musics = this.musicService.viewAll();
     const result: MusicItem[] = [];
 
@@ -19,7 +21,24 @@ class MusicController extends Controller {
       result.push({ id: music.hash, title: music.title, count: music.videos.length });
     }
 
-    res.json({ ok: true, musics: result });
+    const sortedResult = result.sort((a, b) => b.count - a.count);
+
+    res.json({ ok: true, musics: sortedResult });
+  }
+
+  private async viewOne(req: TypedRequest, res: TypedResponse<MusicResponse.ViewOne>): Promise<void> {
+    const id = req.params.id;
+
+    const music = this.musicService.viewOne(id);
+    if (!music) throw new NotFoundException();
+
+    const result = music.videos.map<VideoItem>(video => ({
+      id: video.id,
+      description: video.description,
+      date: video.date.getTime(),
+    }));
+
+    res.json({ ok: true, videos: result });
   }
 }
 

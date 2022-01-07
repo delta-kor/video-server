@@ -4,11 +4,21 @@ interface MusicItem {
   count: number;
 }
 
+interface VideoItem {
+  id: string;
+  description: string;
+  date: number;
+}
+
 namespace MusicResponse {
   export interface ViewAll extends ApiResponse {
     musics: MusicItem[];
   }
+
+  export interface ViewOne extends ApiResponse {
+    videos: VideoItem[];
+  }
 }
 
-export { MusicItem };
+export { MusicItem, VideoItem };
 export default MusicResponse;

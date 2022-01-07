@@ -28,6 +28,10 @@ class MusicService extends Service {
   public viewAll(): Music[] {
     return Array.from(this.music.values());
   }
+
+  public viewOne(hash: string): Music | null {
+    return this.music.get(hash) || null;
+  }
 }
 
 export default MusicService;
