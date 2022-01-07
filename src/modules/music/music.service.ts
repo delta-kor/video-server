@@ -24,6 +24,10 @@ class MusicService extends Service {
       this.music.get(hash)!.videos.push(video);
     }
   }
+
+  public viewAll(): Music[] {
+    return Array.from(this.music.values());
+  }
 }
 
 export default MusicService;

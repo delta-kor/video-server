@@ -6,6 +6,7 @@ import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
+import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
@@ -27,7 +28,12 @@ app
   .connect()
   .then(() => ServiceProvider.load(services))
   .then(() => {
-    const controllers: Controller[] = [new EnvController(), new VideoController(), new CategoryController()];
+    const controllers: Controller[] = [
+      new EnvController(),
+      new VideoController(),
+      new CategoryController(),
+      new MusicController(),
+    ];
     return app.load(controllers);
   })
   .then(() => app.start());
