@@ -1,10 +1,11 @@
 import crypto from 'crypto';
 import Service from '../../services/base.service';
-import Video from '../video/video.interface';
-import VideoModel from '../video/video.model';
+import ServiceProvider from '../../services/provider.service';
+import VideoService from '../video/video.service';
 import Music from './music.interface';
 
 class MusicService extends Service {
+  private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly music: Map<string, Music> = new Map();
 
   private static hashTitle(title: string): string {
@@ -14,7 +15,7 @@ class MusicService extends Service {
   }
 
   public async load(): Promise<void> {
-    const videos: Video[] = await VideoModel.find();
+    const videos = this.videoService.videos;
 
     for (const video of videos) {
       const title = video.title;

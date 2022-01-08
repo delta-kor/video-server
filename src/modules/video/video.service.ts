@@ -8,6 +8,12 @@ import VideoModel from './video.model';
 
 class VideoService extends Service {
   private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
+  public readonly videos: Video[] = [];
+
+  public async load(): Promise<void> {
+    const videos = await VideoModel.find();
+    this.videos.push(...videos);
+  }
 
   public async upload(data: UploadDto): Promise<Video> {
     const video: Video = new VideoModel({

@@ -1,10 +1,12 @@
 import crypto from 'crypto';
 import Service from '../../services/base.service';
+import ServiceProvider from '../../services/provider.service';
 import Video from '../video/video.interface';
-import VideoModel from '../video/video.model';
+import VideoService from '../video/video.service';
 import { ChildCategory, ParentCategory } from './category.interface';
 
 class CategoryService extends Service {
+  private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private category!: Map<string, ParentCategory>;
 
   private static hashPath(...path: string[]): string {
@@ -14,7 +16,7 @@ class CategoryService extends Service {
   }
 
   public async load(): Promise<void> {
-    const videos: Video[] = await VideoModel.find();
+    const videos = this.videoService.videos;
 
     const categoriesMap: Map<string, Map<string, Map<string, Video[]>>> = new Map();
     for (const video of videos) {
