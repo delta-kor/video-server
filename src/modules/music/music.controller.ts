@@ -1,12 +1,14 @@
 import Controller from '../../classes/controller.class';
 import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
+import BuilderService from '../builder/builder.service';
 import MusicResponse, { MusicItem, VideoItem } from './music.response';
 import MusicService from './music.service';
 
 class MusicController extends Controller {
   public readonly path: string = '/music';
   private readonly musicService: MusicService = ServiceProvider.get(MusicService);
+  private readonly builderService: BuilderService = ServiceProvider.get(BuilderService);
 
   protected mount(): void {
     this.mounter.get('/', this.viewAll.bind(this));
@@ -36,6 +38,7 @@ class MusicController extends Controller {
       id: video.id,
       description: video.description,
       date: video.date.getTime(),
+      duration: this.builderService.getDuration(video.id),
     }));
 
     res.json({ ok: true, videos: result });

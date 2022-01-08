@@ -8,6 +8,7 @@ interface VideoItem {
   id: string;
   description: string;
   date: number;
+  duration: number;
 }
 
 namespace MusicResponse {

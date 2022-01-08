@@ -2,6 +2,7 @@ import { Document } from 'mongoose';
 import Controller from '../../classes/controller.class';
 import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
+import BuilderService from '../builder/builder.service';
 import Video from '../video/video.interface';
 import { ChildCategory, ParentCategory } from './category.interface';
 import CategoryResponse from './category.response';
@@ -10,6 +11,7 @@ import CategoryService from './category.service';
 class CategoryController extends Controller {
   public readonly path: string = '/category';
   private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
+  private readonly builderService: BuilderService = ServiceProvider.get(BuilderService);
 
   protected mount(): void {
     this.mounter.get('/', this.view.bind(this));
@@ -29,7 +31,12 @@ class CategoryController extends Controller {
       res.json({
         ok: true,
         type: 'children',
-        files: (<Video[]>data).map(video => ({ id: video.id, title: video.title, date: video.date.getTime() })),
+        files: (<Video[]>data).map(video => ({
+          id: video.id,
+          title: video.title,
+          date: video.date.getTime(),
+          duration: this.builderService.getDuration(video.id),
+        })),
       });
       return true;
     } else {

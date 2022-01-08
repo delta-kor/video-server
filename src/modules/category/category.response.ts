@@ -8,6 +8,7 @@ interface File {
   id: string;
   title: string;
   date: number;
+  duration: number;
 }
 
 namespace CategoryResponse {
