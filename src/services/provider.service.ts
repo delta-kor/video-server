@@ -13,7 +13,9 @@ class ServiceProviderClass {
   }
 
   public get(service: typeof Service): any {
-    return this.instances.get(service)!;
+    const instance = this.instances.get(service);
+    if (!instance) throw new Error(`Service ${service.name} is not loaded`);
+    return instance;
   }
 }
 
