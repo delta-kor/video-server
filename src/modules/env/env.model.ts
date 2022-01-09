@@ -6,6 +6,6 @@ const EnvSchema = new Schema<Env>({
   value: { type: Schema.Types.Mixed, required: true },
 });
 
-const EnvModel = model('env', EnvSchema);
+const EnvModel = model<Env>('env', EnvSchema);
 
 export default EnvModel;

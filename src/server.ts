@@ -7,6 +7,8 @@ import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
+import FeedController from './modules/feed/feed.controller';
+import FeedService from './modules/feed/feed.service';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import ThumbnailController from './modules/thumbnail/thumbnail.controller';
@@ -27,6 +29,7 @@ const services: typeof Service[] = [
   VideoService,
   CategoryService,
   MusicService,
+  FeedService,
 ];
 
 app.on('load', () => console.log('Loaded application'));
@@ -43,6 +46,7 @@ app
       new VideoController(),
       new CategoryController(),
       new MusicController(),
+      new FeedController(),
     ];
     return app.load(controllers);
   })

@@ -25,11 +25,21 @@ class VideoService extends Service {
     });
     await video.save();
 
+    this.videos.push(video);
+
     return video;
   }
 
+  public get(id: string): Video | null {
+    for (const video of this.videos) {
+      if (video.id === id) return video;
+    }
+
+    return null;
+  }
+
   public async getStreamingUrl(id: string, quality: number): Promise<string> {
-    const video: Video | null = await VideoModel.findOne({ id });
+    const video = this.get(id);
     if (!video) throw new NotFoundException();
 
     const cdnId = video.cdnId;
