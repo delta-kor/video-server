@@ -1,4 +1,5 @@
 import Controller from '../../classes/controller.class';
+import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
 import UploadPlaylistDto from './dto/upload-playlist.dto';
@@ -13,7 +14,7 @@ class FeedController extends Controller {
     this.mounter.get('/playlist', this.getAllPlaylists.bind(this));
     this.mounter.post('/playlist', ValidateGuard(UploadPlaylistDto), this.uploadPlaylist.bind(this));
     this.mounter.get('/playlist/:id', this.getOnePlaylist.bind(this));
-    this.mounter.delete('/playlist/:id', this.deletePlaylist.bind(this));
+    this.mounter.delete('/playlist/:id', ManageGuard, this.deletePlaylist.bind(this));
   }
 
   private async uploadPlaylist(
