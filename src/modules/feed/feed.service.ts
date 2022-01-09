@@ -78,10 +78,10 @@ class FeedService extends Service {
     for (let i = 0; i < count; i++) {
       if (i % 2 === 0) {
         const item = pickItem(equalTitleVideos) || pickItem(equalCategoryVideos);
-        result.push(item);
+        item && result.push(item);
       } else {
         const item = pickItem(equalCategoryVideos) || pickItem(equalTitleVideos);
-        result.push(item);
+        item && result.push(item);
       }
     }
 

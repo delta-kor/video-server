@@ -1,4 +1,5 @@
 import Controller from '../../classes/controller.class';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -60,7 +61,11 @@ class FeedController extends Controller {
 
   private async getRecommends(req: TypedRequest, res: TypedResponse<FeedResponse.GetRecommends>): Promise<void> {
     const id = req.params.id;
-    const videos = this.feedService.getRecommends(id, 12);
+    const count = parseInt(req.query.count) || 12;
+
+    if (count > 20) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
+
+    const videos = this.feedService.getRecommends(id, count);
     res.json({
       ok: true,
       videos: videos.map(video => ({
