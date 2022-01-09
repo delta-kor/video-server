@@ -7,6 +7,8 @@ interface Video extends Document {
   description: string;
   date: Date;
   category: [string, string, string];
+
+  duration: number;
 }
 
 export default Video;

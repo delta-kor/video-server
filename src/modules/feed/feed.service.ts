@@ -2,6 +2,8 @@ import NotFoundException from '../../exceptions/not-found.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import pickItem from '../../utils/pick.util';
+import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
 import UploadPlaylistDto from './dto/upload-playlist.dto';
 import Playlist from './interface/playlist.interface';
@@ -45,6 +47,45 @@ class FeedService extends Service {
 
     await playlist.deleteOne();
     this.playlists.delete(id);
+  }
+
+  public getRecommends(id: string, count: number): Video[] {
+    const video = this.videoService.get(id);
+    if (!video) throw new NotFoundException();
+
+    const title = video.title;
+    const category = video.category;
+
+    const equalTitleVideos = new Set(this.videoService.getByTitle(title));
+    const equalCategoryVideos = new Set(this.videoService.getByCategory(category));
+
+    equalTitleVideos.delete(video);
+    equalCategoryVideos.delete(video);
+
+    if (equalCategoryVideos.size < count / 2) {
+      const secondaryCategoryVideos = this.videoService.getByCategory(category.slice(0, 2));
+      secondaryCategoryVideos.forEach(equalCategoryVideos.add, equalCategoryVideos);
+      equalCategoryVideos.delete(video);
+
+      if (equalCategoryVideos.size < count / 2) {
+        const tertiaryCategoryVideos = this.videoService.getByCategory(category.slice(0, 1));
+        tertiaryCategoryVideos.forEach(equalCategoryVideos.add, equalCategoryVideos);
+        equalCategoryVideos.delete(video);
+      }
+    }
+
+    const result: Video[] = [];
+    for (let i = 0; i < count; i++) {
+      if (i % 2 === 0) {
+        const item = pickItem(equalTitleVideos) || pickItem(equalCategoryVideos);
+        result.push(item);
+      } else {
+        const item = pickItem(equalCategoryVideos) || pickItem(equalTitleVideos);
+        result.push(item);
+      }
+    }
+
+    return result;
   }
 }
 

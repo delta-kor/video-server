@@ -34,8 +34,25 @@ class VideoService extends Service {
     for (const video of this.videos) {
       if (video.id === id) return video;
     }
-
     return null;
+  }
+
+  public getByCategory(category: string[]): Video[] {
+    const result: Video[] = [];
+    for (const video of this.videos) {
+      if (category.every((value, index) => video.category[index] === value)) {
+        result.push(video);
+      }
+    }
+    return result;
+  }
+
+  public getByTitle(title: string): Video[] {
+    const result: Video[] = [];
+    for (const video of this.videos) {
+      if (video.title === title) result.push(video);
+    }
+    return result;
   }
 
   public async getStreamingUrl(id: string, quality: number): Promise<string> {

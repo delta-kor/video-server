@@ -15,6 +15,7 @@ class FeedController extends Controller {
     this.mounter.post('/playlist', ValidateGuard(UploadPlaylistDto), this.uploadPlaylist.bind(this));
     this.mounter.get('/playlist/:id', this.getOnePlaylist.bind(this));
     this.mounter.delete('/playlist/:id', ManageGuard, this.deletePlaylist.bind(this));
+    this.mounter.get('/recommends/:id', this.getRecommends.bind(this));
   }
 
   private async uploadPlaylist(
@@ -55,6 +56,20 @@ class FeedController extends Controller {
     const id = req.params.id;
     await this.feedService.deletePlaylist(id);
     res.json({ ok: true });
+  }
+
+  private async getRecommends(req: TypedRequest, res: TypedResponse<FeedResponse.GetRecommends>): Promise<void> {
+    const id = req.params.id;
+    const videos = this.feedService.getRecommends(id, 12);
+    res.json({
+      ok: true,
+      videos: videos.map(video => ({
+        id: video.id,
+        title: video.title,
+        description: video.description,
+        duration: video.duration,
+      })),
+    });
   }
 }
 
