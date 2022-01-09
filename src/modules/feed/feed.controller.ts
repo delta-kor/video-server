@@ -30,14 +30,25 @@ class FeedController extends Controller {
     const playlists = this.feedService.getAllPlaylists();
     res.json({
       ok: true,
-      playlists: playlists.map(playlist => ({ id: playlist.id, title: playlist.title, videos: playlist.video })),
+      playlists: playlists.map(playlist => ({
+        id: playlist.id,
+        title: playlist.title,
+        videos: playlist.video,
+        featured: playlist.featured,
+      })),
     });
   }
 
   private async getOnePlaylist(req: TypedRequest, res: TypedResponse<FeedResponse.GetOnePlaylist>): Promise<void> {
     const id = req.params.id;
     const playlists = this.feedService.getOnePlaylist(id);
-    res.json({ ok: true, id: playlists.id, title: playlists.title, videos: playlists.video });
+    res.json({
+      ok: true,
+      id: playlists.id,
+      title: playlists.title,
+      videos: playlists.video,
+      featured: playlists.featured,
+    });
   }
 
   private async deletePlaylist(req: TypedRequest, res: TypedResponse): Promise<void> {

@@ -21,7 +21,7 @@ class FeedService extends Service {
       if (!this.videoService.get(video)) throw new UnprocessableEntityException('올바르지 않은 영상 ID이에요');
     }
 
-    const playlist = new PlaylistModel({ title: data.title, video: data.video });
+    const playlist = new PlaylistModel({ title: data.title, video: data.video, featured: data.featured });
     await playlist.save();
 
     this.playlists.set(playlist.id, playlist);

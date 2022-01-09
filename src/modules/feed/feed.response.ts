@@ -2,6 +2,7 @@ interface PlaylistItem {
   id: string;
   title: string;
   videos: string[];
+  featured: boolean;
 }
 
 namespace FeedResponse {
