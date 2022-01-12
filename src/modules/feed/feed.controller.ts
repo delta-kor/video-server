@@ -3,6 +3,7 @@ import UnprocessableEntityException from '../../exceptions/unprocessable-entity.
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
+import VideoService from '../video/video.service';
 import UploadPlaylistDto from './dto/upload-playlist.dto';
 import FeedResponse from './feed.response';
 import FeedService from './feed.service';
@@ -10,6 +11,7 @@ import FeedService from './feed.service';
 class FeedController extends Controller {
   public readonly path: string = '/feed';
   private readonly feedService: FeedService = ServiceProvider.get(FeedService);
+  private readonly videoService: VideoService = ServiceProvider.get(VideoService);
 
   protected mount(): void {
     this.mounter.get('/playlist', this.getAllPlaylists.bind(this));
@@ -35,7 +37,10 @@ class FeedController extends Controller {
       playlists: playlists.map(playlist => ({
         id: playlist.id,
         title: playlist.title,
-        videos: playlist.video,
+        videos: playlist.video.map(id => {
+          const video = this.videoService.get(id)!;
+          return { id: video.id, title: video.title, description: video.description, duration: video.duration };
+        }),
         featured: playlist.featured,
       })),
     });
@@ -43,13 +48,16 @@ class FeedController extends Controller {
 
   private async getOnePlaylist(req: TypedRequest, res: TypedResponse<FeedResponse.GetOnePlaylist>): Promise<void> {
     const id = req.params.id;
-    const playlists = this.feedService.getOnePlaylist(id);
+    const playlist = this.feedService.getOnePlaylist(id);
     res.json({
       ok: true,
-      id: playlists.id,
-      title: playlists.title,
-      videos: playlists.video,
-      featured: playlists.featured,
+      id: playlist.id,
+      title: playlist.title,
+      videos: playlist.video.map(id => {
+        const video = this.videoService.get(id)!;
+        return { id: video.id, title: video.title, description: video.description, duration: video.duration };
+      }),
+      featured: playlist.featured,
     });
   }
 

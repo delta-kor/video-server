@@ -1,7 +1,7 @@
 interface PlaylistItem {
   id: string;
   title: string;
-  videos: string[];
+  videos: VideoItem[];
   featured: boolean;
 }
 
