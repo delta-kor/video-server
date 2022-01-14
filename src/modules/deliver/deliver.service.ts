@@ -1,13 +1,16 @@
 import axios from 'axios';
+import NodeCache from 'node-cache';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import EnvService from '../env/env.service';
 import { CdnApiResponse, VideoData } from './deliver.interface';
 
+const ttl = 60 * 60;
+
 class DeliverService extends Service {
   private usedToken: string | null = null;
-  private readonly apiCache: Map<string, CdnApiResponse> = new Map();
-  private readonly urlCache: Map<string, string> = new Map();
+  private readonly apiCache: NodeCache = new NodeCache();
+  private readonly urlCache: NodeCache = new NodeCache();
   private readonly envService: EnvService = ServiceProvider.get(EnvService);
 
   public async getCdnUrl(cdnId: string, quality: number): Promise<string> {
@@ -51,16 +54,16 @@ class DeliverService extends Service {
       result = location.split('?filename')[0];
     }
 
-    this.apiCache.set(url, data);
-    this.urlCache.set(link, result);
+    !this.apiCache.has(url) && this.apiCache.set(url, data, ttl);
+    !this.urlCache.has(link) && this.urlCache.set(link, result, ttl);
     this.usedToken = freshToken;
 
     return result;
   }
 
   private clearCache(): void {
-    this.apiCache.clear();
-    this.urlCache.clear();
+    this.apiCache.flushAll();
+    this.urlCache.flushAll();
   }
 }
 
