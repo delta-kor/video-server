@@ -14,11 +14,13 @@ interface File {
 namespace CategoryResponse {
   export interface Parent extends ApiResponse {
     type: 'parent';
+    path: string[];
     folders: Folder[];
   }
 
   export interface Children extends ApiResponse {
     type: 'children';
+    path: string[];
     files: File[];
   }
 }

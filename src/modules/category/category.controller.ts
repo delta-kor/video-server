@@ -22,13 +22,17 @@ class CategoryController extends Controller {
   ): Promise<any> {
     const hash = req.params.path;
 
-    const data = this.categoryService.view(hash);
-    if (!data) throw new NotFoundException();
+    const result = this.categoryService.view(hash);
+    if (!result) throw new NotFoundException();
+
+    const data = result.data;
+    const path = result.path;
 
     if (data[0] instanceof Document) {
       res.json({
         ok: true,
         type: 'children',
+        path,
         files: (<Video[]>data).map(video => ({
           id: video.id,
           title: video.title,
@@ -42,6 +46,7 @@ class CategoryController extends Controller {
         res.json({
           ok: true,
           type: 'parent',
+          path,
           folders: (<ParentCategory[]>data).map(folder => ({
             title: folder.name,
             path: folder.hash,
@@ -65,6 +70,7 @@ class CategoryController extends Controller {
         res.json({
           ok: true,
           type: 'parent',
+          path,
           folders: (<ChildCategory[]>data).map(folder => ({
             title: folder.name,
             path: folder.hash,

@@ -63,15 +63,23 @@ class CategoryService extends Service {
     this.category = categories;
   }
 
-  public view(hash?: string): (ParentCategory | ChildCategory | Video)[] | null {
-    if (!hash) return Array.from(this.category.values());
+  public view(hash?: string): { path: string[]; data: (ParentCategory | ChildCategory | Video)[] } | null {
+    if (!hash) return { path: [], data: Array.from(this.category.values()) };
     for (const topCategory of this.category.values()) {
-      if (topCategory.hash === hash) return <ParentCategory[]>Array.from(topCategory.children.values());
+      if (topCategory.hash === hash)
+        return { path: [], data: <ParentCategory[]>Array.from(topCategory.children.values()) };
       for (const middleCategory of topCategory.children.values()) {
         if (middleCategory.hash === hash)
-          return <ParentCategory[]>Array.from((<ParentCategory>middleCategory).children.values());
+          return {
+            path: [topCategory.hash],
+            data: <ParentCategory[]>Array.from((<ParentCategory>middleCategory).children.values()),
+          };
         for (const bottomCategory of (<ParentCategory>middleCategory).children.values()) {
-          if (bottomCategory.hash === hash) return Array.from((<ChildCategory>bottomCategory).videos.values());
+          if (bottomCategory.hash === hash)
+            return {
+              path: [topCategory.hash, middleCategory.hash],
+              data: Array.from((<ChildCategory>bottomCategory).videos.values()),
+            };
         }
       }
     }
