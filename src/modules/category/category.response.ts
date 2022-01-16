@@ -11,18 +11,24 @@ interface File {
   duration: number;
 }
 
+interface Path {
+  name: string;
+  path: string;
+}
+
 namespace CategoryResponse {
   export interface Parent extends ApiResponse {
     type: 'parent';
-    path: string[];
+    path: Path[];
     folders: Folder[];
   }
 
   export interface Children extends ApiResponse {
     type: 'children';
-    path: string[];
+    path: Path[];
     files: File[];
   }
 }
 
 export default CategoryResponse;
+export { Path };
