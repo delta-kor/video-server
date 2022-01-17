@@ -10,7 +10,7 @@ class CategoryService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private category!: Map<string, ParentCategory>;
 
-  private static hashPath(...path: string[]): string {
+  public static hashPath(...path: string[]): string {
     const hasher = crypto.createHash('md5');
     for (const item of path) hasher.update(item);
     return hasher.digest('hex').slice(0, 16);

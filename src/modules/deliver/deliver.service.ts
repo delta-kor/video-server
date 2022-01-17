@@ -3,7 +3,7 @@ import NodeCache from 'node-cache';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import EnvService from '../env/env.service';
-import { CdnApiResponse, VideoData } from './deliver.interface';
+import { CdnApiResponse, StreamingInfo, VideoData } from './deliver.interface';
 
 const ttl = 60 * 60;
 
@@ -13,7 +13,7 @@ class DeliverService extends Service {
   private readonly urlCache: NodeCache = new NodeCache();
   private readonly envService: EnvService = ServiceProvider.get(EnvService);
 
-  public async getCdnUrl(cdnId: string, quality: number): Promise<string> {
+  public async getCdnInfo(cdnId: string, quality: number): Promise<StreamingInfo> {
     const freshToken = await this.envService.get<string>('token');
     if (this.usedToken !== freshToken) this.clearCache();
 
@@ -35,6 +35,10 @@ class DeliverService extends Service {
     const qualityFilteredData = data.files.filter(video => video.quality !== 'hls' && video.height >= quality);
     const sortedData = qualityFilteredData.sort((a, b) => a.size - b.size);
     let selectedVideo: VideoData = sortedData[0];
+
+    const qualities = [
+      ...new Set(data.files.filter(video => video.quality !== 'hls').map(video => video.height)),
+    ].sort();
 
     if (!selectedVideo) {
       if (data.files.length === 0) throw new Error('Cdn file not selected');
@@ -58,7 +62,7 @@ class DeliverService extends Service {
     !this.urlCache.has(link) && this.urlCache.set(link, result, ttl);
     this.usedToken = freshToken;
 
-    return result;
+    return { url: result, qualities };
   }
 
   private clearCache(): void {

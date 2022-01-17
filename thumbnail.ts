@@ -26,7 +26,7 @@ mongoose.connect(databaseUrl).then(async () => {
   const videos: Video[] = await VideoModel.find();
   for (const video of videos) {
     const id = video.id;
-    const cdnUrl = await deliverService.getCdnUrl(video.cdnId, 720);
+    const cdnUrl = await deliverService.getCdnInfo(video.cdnId, 720);
 
     await new Promise<void>(resolve => {
       ffmpeg.ffprobe(cdnUrl, (err, metadata) => {

@@ -10,4 +10,9 @@ interface VideoData {
   size: number;
 }
 
-export { CdnApiResponse, VideoData };
+interface StreamingInfo {
+  url: string;
+  qualities: number[];
+}
+
+export { CdnApiResponse, VideoData, StreamingInfo };

@@ -1,6 +1,7 @@
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
 import UploadDto from './dto/upload.dto';
 import Video from './video.interface';
@@ -55,12 +56,12 @@ class VideoService extends Service {
     return result;
   }
 
-  public async getStreamingUrl(id: string, quality: number): Promise<string> {
+  public async getStreamingInfo(id: string, quality: number): Promise<StreamingInfo> {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
     const cdnId = video.cdnId;
-    return this.deliverService.getCdnUrl(cdnId, quality);
+    return this.deliverService.getCdnInfo(cdnId, quality);
   }
 }
 
