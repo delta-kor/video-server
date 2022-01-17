@@ -64,6 +64,7 @@ class CategoryController extends Controller {
                     (acc, current) => current.videos.length + acc,
                     0
                   ),
+            children: folder.children.size,
           })),
         });
       else
@@ -75,6 +76,7 @@ class CategoryController extends Controller {
             title: folder.name,
             path: folder.hash,
             count: folder.videos.length,
+            children: folder.videos.length,
           })),
         });
       return true;

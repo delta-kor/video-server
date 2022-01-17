@@ -2,6 +2,7 @@ interface Folder {
   title: string;
   path: string;
   count: number;
+  children: number;
 }
 
 interface File {
