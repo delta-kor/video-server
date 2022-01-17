@@ -36,9 +36,9 @@ class DeliverService extends Service {
     const sortedData = qualityFilteredData.sort((a, b) => a.size - b.size);
     let selectedVideo: VideoData = sortedData[0];
 
-    const qualities = [
-      ...new Set(data.files.filter(video => video.quality !== 'hls').map(video => video.height)),
-    ].sort();
+    const qualities = [...new Set(data.files.filter(video => video.quality !== 'hls').map(video => video.height))].sort(
+      (a, b) => b - a
+    );
 
     if (!selectedVideo) {
       if (data.files.length === 0) throw new Error('Cdn file not selected');
