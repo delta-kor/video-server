@@ -62,25 +62,37 @@ class FeedService extends Service {
     equalTitleVideos.delete(video);
     equalCategoryVideos.delete(video);
 
-    if (equalCategoryVideos.size < count / 2) {
-      const secondaryCategoryVideos = this.videoService.getByCategory(category.slice(0, 2));
-      secondaryCategoryVideos.forEach(equalCategoryVideos.add, equalCategoryVideos);
-      equalCategoryVideos.delete(video);
+    let secondaryCategoryVideos = new Set(),
+      tertiaryCategoryVideos = new Set();
 
-      if (equalCategoryVideos.size < count / 2) {
-        const tertiaryCategoryVideos = this.videoService.getByCategory(category.slice(0, 1));
-        tertiaryCategoryVideos.forEach(equalCategoryVideos.add, equalCategoryVideos);
-        equalCategoryVideos.delete(video);
+    if (equalCategoryVideos.size < count / 2) {
+      secondaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 2)));
+      secondaryCategoryVideos.delete(video);
+      equalCategoryVideos.forEach(secondaryCategoryVideos.delete, secondaryCategoryVideos);
+
+      if (equalCategoryVideos.size + secondaryCategoryVideos.size < count / 2) {
+        tertiaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 1)));
+        tertiaryCategoryVideos.delete(video);
+        equalCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
+        secondaryCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
       }
     }
 
     const result: Video[] = [];
     for (let i = 0; i < count; i++) {
       if (i % 2 === 0) {
-        const item = pickItem(equalTitleVideos) || pickItem(equalCategoryVideos);
+        const item =
+          pickItem(equalTitleVideos) ||
+          pickItem(equalCategoryVideos) ||
+          pickItem(secondaryCategoryVideos) ||
+          pickItem(tertiaryCategoryVideos);
         item && result.push(item);
       } else {
-        const item = pickItem(equalCategoryVideos) || pickItem(equalTitleVideos);
+        const item =
+          pickItem(equalCategoryVideos) ||
+          pickItem(secondaryCategoryVideos) ||
+          pickItem(tertiaryCategoryVideos) ||
+          pickItem(equalTitleVideos);
         item && result.push(item);
       }
     }

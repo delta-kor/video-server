@@ -1,7 +1,7 @@
-function pickItem<T>(set: Set<T>): T {
-  const items = Array.from(set);
+function pickItem<T>(data: Set<T>): T {
+  const items = Array.from(data);
   const picked = items[Math.floor(Math.random() * items.length)];
-  set.delete(picked);
+  data.delete(picked);
   return picked;
 }
 
