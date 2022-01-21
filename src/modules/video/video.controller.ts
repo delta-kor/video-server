@@ -31,7 +31,7 @@ class VideoController extends Controller {
     const quality = req.query.quality ? parseInt(req.query.quality) : 1080;
     const info = await this.videoService.getStreamingInfo(id, quality);
     const duration = this.builderService.getDuration(id);
-    res.json({ ok: true, url: info.url, qualities: info.qualities, duration });
+    res.json({ ok: true, url: info.url, quality: info.quality, qualities: info.qualities, duration });
   }
 
   private async info(req: TypedRequest, res: TypedResponse<VideoResponse.Info>): Promise<void> {

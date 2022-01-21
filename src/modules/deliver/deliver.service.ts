@@ -47,6 +47,7 @@ class DeliverService extends Service {
       selectedVideo = sortedData[0];
     }
 
+    const selectedQuality = selectedVideo.height;
     const link = selectedVideo.link;
 
     let result: string;
@@ -62,7 +63,7 @@ class DeliverService extends Service {
     !this.urlCache.has(link) && this.urlCache.set(link, result, ttl);
     this.usedToken = freshToken;
 
-    return { url: result, qualities };
+    return { url: result, quality: selectedQuality, qualities };
   }
 
   private clearCache(): void {

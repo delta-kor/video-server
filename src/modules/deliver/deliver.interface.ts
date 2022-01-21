@@ -12,6 +12,7 @@ interface VideoData {
 
 interface StreamingInfo {
   url: string;
+  quality: number;
   qualities: number[];
 }
 

@@ -8,6 +8,7 @@ namespace VideoResponse {
   export interface Stream extends ApiResponse {
     url: string;
     duration: number;
+    quality: number;
     qualities: number[];
   }
 
