@@ -15,6 +15,7 @@ interface File {
 interface Path {
   name: string;
   path: string;
+  count: number;
 }
 
 namespace CategoryResponse {

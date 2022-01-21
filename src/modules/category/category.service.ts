@@ -69,15 +69,19 @@ class CategoryService extends Service {
     for (const topCategory of this.category.values()) {
       if (topCategory.hash === hash)
         return {
-          path: [{ name: topCategory.name, path: topCategory.hash }],
+          path: [{ name: topCategory.name, path: topCategory.hash, count: topCategory.children.size }],
           data: <ParentCategory[]>Array.from(topCategory.children.values()),
         };
       for (const middleCategory of topCategory.children.values()) {
         if (middleCategory.hash === hash)
           return {
             path: [
-              { name: topCategory.name, path: topCategory.hash },
-              { name: middleCategory.name, path: middleCategory.hash },
+              { name: topCategory.name, path: topCategory.hash, count: topCategory.children.size },
+              {
+                name: middleCategory.name,
+                path: middleCategory.hash,
+                count: (<ParentCategory>middleCategory).children.size,
+              },
             ],
             data: <ParentCategory[]>Array.from((<ParentCategory>middleCategory).children.values()),
           };
@@ -85,9 +89,17 @@ class CategoryService extends Service {
           if (bottomCategory.hash === hash)
             return {
               path: [
-                { name: topCategory.name, path: topCategory.hash },
-                { name: middleCategory.name, path: middleCategory.hash },
-                { name: bottomCategory.name, path: bottomCategory.hash },
+                { name: topCategory.name, path: topCategory.hash, count: topCategory.children.size },
+                {
+                  name: middleCategory.name,
+                  path: middleCategory.hash,
+                  count: (<ParentCategory>middleCategory).children.size,
+                },
+                {
+                  name: bottomCategory.name,
+                  path: bottomCategory.hash,
+                  count: (<ChildCategory>bottomCategory).videos.length,
+                },
               ],
               data: Array.from((<ChildCategory>bottomCategory).videos.values()),
             };

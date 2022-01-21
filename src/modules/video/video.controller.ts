@@ -14,6 +14,7 @@ class VideoController extends Controller {
   public readonly path: string = '/video';
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly builderService: BuilderService = ServiceProvider.get(BuilderService);
+  private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
@@ -44,7 +45,8 @@ class VideoController extends Controller {
     for (const category of video.category) {
       currentCategory.push(category);
       const hash = CategoryService.hashPath(...currentCategory);
-      path.push({ name: category, path: hash });
+      const categoryData = this.categoryService.view(hash)!;
+      path.push({ name: category, path: hash, count: categoryData.data.length });
     }
 
     res.json({
