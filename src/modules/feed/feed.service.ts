@@ -14,7 +14,7 @@ class FeedService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
 
   public async load(): Promise<void> {
-    const playlists: Playlist[] = await PlaylistModel.find();
+    const playlists: Playlist[] = await PlaylistModel.find().sort({ order: 1 });
     for (const playlist of playlists) this.playlists.set(playlist.id, playlist);
   }
 
@@ -23,7 +23,12 @@ class FeedService extends Service {
       if (!this.videoService.get(video)) throw new UnprocessableEntityException('올바르지 않은 영상 ID이에요');
     }
 
-    const playlist = new PlaylistModel({ title: data.title, video: data.video, featured: data.featured });
+    const playlist = new PlaylistModel({
+      title: data.title,
+      video: data.video,
+      featured: data.featured,
+      order: data.order,
+    });
     await playlist.save();
 
     this.playlists.set(playlist.id, playlist);

@@ -5,6 +5,7 @@ interface Playlist extends Document {
   title: string;
   video: string[];
   featured: boolean;
+  order: number;
 }
 
 export default Playlist;

@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 
 class UploadPlaylistDto {
   @IsString({ message: '제목을 입력해주세요' })
@@ -9,6 +9,9 @@ class UploadPlaylistDto {
 
   @IsBoolean({ message: 'Featured 여부를 선택해주세요' })
   public featured!: boolean;
+
+  @IsNumber({}, { message: '순서를 입력해주세요' })
+  public order!: number;
 }
 
 export default UploadPlaylistDto;

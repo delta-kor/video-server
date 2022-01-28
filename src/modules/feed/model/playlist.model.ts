@@ -7,6 +7,7 @@ const PlaylistSchema = new Schema<Playlist>({
   title: { type: String, required: true },
   video: { type: [String], required: true },
   featured: { type: Boolean, required: true },
+  order: { type: Number, required: true },
 });
 
 const PlaylistModel = model<Playlist>('playlist', PlaylistSchema);
