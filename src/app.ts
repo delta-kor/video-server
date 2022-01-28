@@ -36,6 +36,7 @@ class App extends EventEmitter {
   }
 
   private loadPipes(): void {
+    this.application.disable('x-powered-by');
     this.application.use(json());
     CorsPipe.use(this.application);
   }
