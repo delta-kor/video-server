@@ -71,7 +71,7 @@ class FeedController extends Controller {
     const id = req.params.id;
     const count = parseInt(req.query.count) || 12;
 
-    if (count > 20) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
+    if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
     const videos = this.feedService.getRecommends(id, count);
     res.json({
