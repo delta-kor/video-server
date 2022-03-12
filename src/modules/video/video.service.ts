@@ -60,7 +60,7 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.cdnId;
+    const cdnId = video.is_4k ? video.cdnId_4k : video.cdnId;
     return this.deliverService.getCdnInfo(cdnId, quality);
   }
 }

@@ -39,7 +39,13 @@ class FeedController extends Controller {
         title: playlist.title,
         videos: playlist.video.map(id => {
           const video = this.videoService.get(id)!;
-          return { id: video.id, title: video.title, description: video.description, duration: video.duration };
+          return {
+            id: video.id,
+            title: video.title,
+            description: video.description,
+            duration: video.duration,
+            is_4k: video.is_4k,
+          };
         }),
         featured: playlist.featured,
       })),
@@ -55,7 +61,13 @@ class FeedController extends Controller {
       title: playlist.title,
       videos: playlist.video.map(id => {
         const video = this.videoService.get(id)!;
-        return { id: video.id, title: video.title, description: video.description, duration: video.duration };
+        return {
+          id: video.id,
+          title: video.title,
+          description: video.description,
+          duration: video.duration,
+          is_4k: video.is_4k,
+        };
       }),
       featured: playlist.featured,
     });
@@ -81,6 +93,7 @@ class FeedController extends Controller {
         title: video.title,
         description: video.description,
         duration: video.duration,
+        is_4k: video.is_4k,
       })),
     });
   }

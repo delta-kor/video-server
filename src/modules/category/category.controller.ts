@@ -38,6 +38,7 @@ class CategoryController extends Controller {
           title: video.title,
           date: video.date.getTime(),
           duration: video.duration,
+          is_4k: video.is_4k,
         })),
       });
       return true;

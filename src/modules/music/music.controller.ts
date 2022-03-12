@@ -37,6 +37,7 @@ class MusicController extends Controller {
       description: video.description,
       date: video.date.getTime(),
       duration: video.duration,
+      is_4k: video.is_4k,
     }));
 
     res.json({ ok: true, videos: result });

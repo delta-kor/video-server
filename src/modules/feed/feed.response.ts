@@ -10,6 +10,7 @@ interface VideoItem {
   title: string;
   description: string;
   duration: number;
+  is_4k: boolean;
 }
 
 namespace FeedResponse {

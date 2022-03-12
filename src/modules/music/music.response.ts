@@ -9,6 +9,7 @@ interface VideoItem {
   description: string;
   date: number;
   duration: number;
+  is_4k: boolean;
 }
 
 namespace MusicResponse {

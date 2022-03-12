@@ -10,6 +10,7 @@ interface File {
   title: string;
   date: number;
   duration: number;
+  is_4k: boolean;
 }
 
 interface Path {
