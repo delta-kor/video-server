@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { FileItem } from './src/modules/builder/builder.interface';
+import { FileItem } from '../src/modules/builder/builder.interface';
 
 const buildFile = path.join(__dirname, 'build', 'data.json');
 const thumbnailPath = path.join(__dirname, 'build', 'thumb');

@@ -2,12 +2,12 @@ import 'dotenv/config';
 import ffmpeg from 'fluent-ffmpeg';
 import mongoose from 'mongoose';
 import path from 'path';
-import DeliverService from './src/modules/deliver/deliver.service';
-import EnvService from './src/modules/env/env.service';
-import Video from './src/modules/video/video.interface';
-import VideoModel from './src/modules/video/video.model';
-import Service from './src/services/base.service';
-import ServiceProvider from './src/services/provider.service';
+import DeliverService from '../src/modules/deliver/deliver.service';
+import EnvService from '../src/modules/env/env.service';
+import Video from '../src/modules/video/video.interface';
+import VideoModel from '../src/modules/video/video.model';
+import Service from '../src/services/base.service';
+import ServiceProvider from '../src/services/provider.service';
 
 console.log('Starting process');
 
@@ -29,10 +29,12 @@ mongoose.connect(databaseUrl).then(async () => {
     const cdnUrl = await deliverService.getCdnInfo(video.cdnId, 720);
 
     await new Promise<void>(resolve => {
+      // @ts-ignore
       ffmpeg.ffprobe(cdnUrl, (err, metadata) => {
         const duration = metadata.format.duration!;
         const roundedDuration = Math.round(duration);
 
+        // @ts-ignore
         ffmpeg(cdnUrl)
           .thumbnail({
             timestamps: [duration * 0.3, duration * 0.4],

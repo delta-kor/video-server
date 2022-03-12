@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node .\"",
     "build": "tsc",
-    "video:build": "ts-node build.ts",
-    "video:thumbnail": "ts-node thumbnail.ts",
+    "video:build": "ts-node run/build.ts",
+    "video:thumbnail": "ts-node run/thumbnail.ts",
+    "export": "ts-node run/export.ts",
     "deploy": "node .",
     "start": "yarn build && yarn deploy"
   },
