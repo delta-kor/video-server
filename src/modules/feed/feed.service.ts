@@ -66,6 +66,7 @@ class FeedService extends Service {
 
     equalTitleVideos.delete(video);
     equalCategoryVideos.delete(video);
+    equalTitleVideos.forEach(equalCategoryVideos.delete, equalCategoryVideos);
 
     let secondaryCategoryVideos = new Set(),
       tertiaryCategoryVideos = new Set();
@@ -74,12 +75,14 @@ class FeedService extends Service {
       secondaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 2)));
       secondaryCategoryVideos.delete(video);
       equalCategoryVideos.forEach(secondaryCategoryVideos.delete, secondaryCategoryVideos);
+      equalTitleVideos.forEach(secondaryCategoryVideos.delete, secondaryCategoryVideos);
 
       if (equalCategoryVideos.size + secondaryCategoryVideos.size < count / 2) {
         tertiaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 1)));
         tertiaryCategoryVideos.delete(video);
         equalCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
         secondaryCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
+        equalTitleVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
       }
     }
 
