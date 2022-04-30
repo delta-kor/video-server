@@ -31,7 +31,7 @@ class VideoController extends Controller {
     const id = req.params.id;
     const quality = req.query.quality ? parseInt(req.query.quality) : 1080;
     const info = await this.videoService.getStreamingInfo(id, quality);
-    const duration = this.builderService.getDuration(id);
+    const duration = this.builderService.getVideoDuration(id);
     res.json({ ok: true, url: info.url, quality: info.quality, qualities: info.qualities, duration });
   }
 

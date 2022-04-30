@@ -16,7 +16,7 @@ const VideoSchema = new Schema<Video>({
 
 VideoSchema.virtual('duration').get(function (this: Video): number {
   const builderService: BuilderService = ServiceProvider.get(BuilderService);
-  return builderService.getDuration(this.id);
+  return builderService.getVideoDuration(this.id);
 });
 
 VideoSchema.virtual('is_4k').get(function (this: Video): boolean {

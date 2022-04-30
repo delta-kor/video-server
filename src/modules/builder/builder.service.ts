@@ -2,22 +2,30 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
-import { FileItem } from './builder.interface';
+import { FileItem, RadioFileItem } from './builder.interface';
 
 class BuilderService extends Service {
-  private readonly file: Map<string, FileItem> = new Map();
+  private readonly videoFile: Map<string, FileItem> = new Map();
+  private readonly radioFile: Map<string, RadioFileItem> = new Map();
 
   public async load(): Promise<void> {
     const buildDataFile = await fs.readFile(path.join('build', 'data.json'));
     const buildData: FileItem[] = JSON.parse(buildDataFile.toString());
 
     for (const file of buildData) {
-      this.file.set(file.id, file);
+      this.videoFile.set(file.id, file);
+    }
+
+    const radioBuildDataFile = await fs.readFile(path.join('build', 'radio-data.json'));
+    const radioBuildData: RadioFileItem[] = JSON.parse(radioBuildDataFile.toString());
+
+    for (const file of radioBuildData) {
+      this.radioFile.set(file.id, file);
     }
   }
 
   public getThumbnailData(id: string): string {
-    const file = this.file.get(id);
+    const file = this.videoFile.get(id);
     if (!file) throw new NotFoundException();
 
     const duration = file.duration;
@@ -27,8 +35,15 @@ class BuilderService extends Service {
     return path.join(__dirname, '../../../', 'build', 'thumb', fileName);
   }
 
-  public getDuration(id: string): number {
-    const file = this.file.get(id);
+  public getVideoDuration(id: string): number {
+    const file = this.videoFile.get(id);
+    if (!file) throw new NotFoundException();
+
+    return file.duration;
+  }
+
+  public getRadioDuration(id: string): number {
+    const file = this.radioFile.get(id);
     if (!file) throw new NotFoundException();
 
     return file.duration;

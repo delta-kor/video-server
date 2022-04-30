@@ -40,7 +40,7 @@ fs.readdir(radioPath).then(async files => {
       });
     });
 
-    fileMap.set(id, { id, title, album, duration });
+    fileMap.set(id, { id, fileName: file, title, album, duration });
   }
 
   const result: RadioFileItem[] = Array.from(fileMap.values());

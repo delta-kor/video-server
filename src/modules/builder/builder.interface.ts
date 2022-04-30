@@ -6,6 +6,7 @@ interface FileItem {
 
 interface RadioFileItem {
   id: string;
+  fileName: string;
   title: string;
   album: string;
   duration: number;
