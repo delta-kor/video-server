@@ -2,8 +2,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { FileItem } from '../src/modules/builder/builder.interface';
 
-const buildFile = path.join(__dirname, 'build', 'data.json');
-const thumbnailPath = path.join(__dirname, 'build', 'thumb');
+const buildFile = path.join(__dirname, '../build', 'data.json');
+const thumbnailPath = path.join(__dirname, '../build', 'thumb');
 
 fs.readdir(thumbnailPath).then(files => {
   const fileMap: Map<string, FileItem> = new Map();

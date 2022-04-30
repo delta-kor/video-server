@@ -10,6 +10,7 @@
     "build": "tsc",
     "video:build": "ts-node run/build.ts",
     "video:thumbnail": "ts-node run/thumbnail.ts",
+    "radio:build": "ts-node run/build-radio.ts",
     "export": "ts-node run/export.ts",
     "deploy": "node .",
     "start": "yarn build && yarn deploy"

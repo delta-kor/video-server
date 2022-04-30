@@ -4,4 +4,11 @@ interface FileItem {
   select: number;
 }
 
-export { FileItem };
+interface RadioFileItem {
+  id: string;
+  title: string;
+  album: string;
+  duration: number;
+}
+
+export { FileItem, RadioFileItem };

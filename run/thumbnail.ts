@@ -21,7 +21,7 @@ mongoose.connect(databaseUrl).then(async () => {
 
   const deliverService: DeliverService = ServiceProvider.get(DeliverService);
 
-  const thumbnailPath = path.join(__dirname, 'build', 'thumb');
+  const thumbnailPath = path.join(__dirname, '../build', 'thumb');
 
   const videos: Video[] = await VideoModel.find();
   for (const video of videos) {
