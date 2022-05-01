@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
+import Radio from '../radio/radio.interface';
 import { FileItem, RadioFileItem } from './builder.interface';
 
 class BuilderService extends Service {
@@ -47,6 +48,20 @@ class BuilderService extends Service {
     if (!file) throw new NotFoundException();
 
     return file.duration;
+  }
+
+  public getAllRadioData(): Radio[] {
+    const files = Array.from(this.radioFile.values());
+    const radios: Radio[] = [];
+    for (const file of files)
+      radios.push({
+        id: file.id,
+        title: file.title,
+        album: file.album,
+        duration: file.duration,
+        lyrics: file.lyrics || null,
+      });
+    return radios;
   }
 }
 

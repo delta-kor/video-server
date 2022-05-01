@@ -1,3 +1,5 @@
+import { Lyrics } from '../radio/radio.interface';
+
 interface FileItem {
   id: string;
   duration: number;
@@ -10,6 +12,7 @@ interface RadioFileItem {
   title: string;
   album: string;
   duration: number;
+  lyrics?: Lyrics;
 }
 
 export { FileItem, RadioFileItem };

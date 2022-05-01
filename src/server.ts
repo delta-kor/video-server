@@ -11,6 +11,8 @@ import FeedController from './modules/feed/feed.controller';
 import FeedService from './modules/feed/feed.service';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
+import RadioController from './modules/radio/radio.controller';
+import RadioService from './modules/radio/radio.service';
 import ThumbnailController from './modules/thumbnail/thumbnail.controller';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
@@ -30,6 +32,7 @@ const services: typeof Service[] = [
   CategoryService,
   MusicService,
   FeedService,
+  RadioService,
 ];
 
 app.on('load', () => console.log('Loaded application'));
@@ -47,6 +50,7 @@ app
       new CategoryController(),
       new MusicController(),
       new FeedController(),
+      new RadioController(),
     ];
     return app.load(controllers);
   })
