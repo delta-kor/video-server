@@ -1,7 +1,7 @@
 import { Lyrics } from './radio.interface';
 
 namespace RadioResponse {
-  export interface Stream extends ApiResponse {
+  export interface Info extends ApiResponse {
     title: string;
     album: string;
     duration: number;

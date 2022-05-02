@@ -9,10 +9,10 @@ class RadioController extends Controller {
   private readonly radioService: RadioService = ServiceProvider.get(RadioService);
 
   protected mount(): void {
-    this.mounter.get('/:id', this.stream.bind(this));
+    this.mounter.get('/:id', this.info.bind(this));
   }
 
-  private async stream(req: TypedRequest, res: TypedResponse<RadioResponse.Stream>): Promise<void> {
+  private async info(req: TypedRequest, res: TypedResponse<RadioResponse.Info>): Promise<void> {
     const id = req.params.id;
     const radio = this.radioService.get(id);
     if (!radio) throw new NotFoundException();
