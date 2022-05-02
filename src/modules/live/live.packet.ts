@@ -21,4 +21,8 @@ namespace ServerPacket {
   export interface Hello extends ServerPacketBase<'hello'> {
     server_time: number;
   }
+
+  export interface Error extends ServerPacketBase<'error'> {
+    message: string;
+  }
 }
