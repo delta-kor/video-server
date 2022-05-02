@@ -10,7 +10,11 @@ abstract class Socket {
 
   protected abstract start(): void;
 
-  protected sendJson(data: any): void {
+  protected sendPacket(packet: ServerPacketBase): void {
+    this.sendJson(packet);
+  }
+
+  private sendJson(data: any): void {
     const json = JSON.stringify(data);
     this.socket.send(json);
   }
