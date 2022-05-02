@@ -1,11 +1,11 @@
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
-import GenerateId from '../../utils/id.util';
+import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import Video from './video.interface';
 
 const VideoSchema = new Schema<Video>({
-  id: { type: String, required: true, unique: true, default: () => GenerateId(6) },
+  id: { type: String, required: true, unique: true, default: () => generateId(6) },
   cdnId: { type: String, required: true },
   cdnId_4k: { type: String, required: false },
   title: { type: String, required: true },

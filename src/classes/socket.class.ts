@@ -32,6 +32,7 @@ abstract class Socket {
       const data: ClientPacketBase = JSON.parse(json);
       this.onPacket(data);
     } catch (e) {
+      console.error(e);
       if (e instanceof HttpException) {
         const data: ClientPacketBase = JSON.parse(json);
         this.sendError(e.message, data.packet_id);
