@@ -1,4 +1,5 @@
 import { WebSocket } from 'ws';
+import Constants from '../constants';
 import HttpException from '../exceptions/http.exception';
 
 abstract class Socket {
@@ -34,7 +35,7 @@ abstract class Socket {
       if (e instanceof HttpException) {
         const data: ClientPacketBase = JSON.parse(json);
         this.sendError(e.message, data.packet_id);
-      } else this.sendError('잘못된 요청이에요');
+      } else this.sendError(Constants.WRONG_REQUEST);
     }
   };
 

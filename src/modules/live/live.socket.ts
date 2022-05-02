@@ -1,5 +1,5 @@
 import Socket from '../../classes/socket.class';
-import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
+import SocketException from '../../exceptions/socket.exception';
 
 class LiveSocket extends Socket {
   protected start(): void {}
@@ -12,11 +12,13 @@ class LiveSocket extends Socket {
         this.onHello(packet);
         break;
       default:
-        throw new UnprocessableEntityException('잘못된 요청이에요');
+        throw new SocketException();
     }
   }
 
-  private onHello(packet: ClientPacket.Hello): void {}
+  private onHello(packet: ClientPacket.Hello): void {
+    packet.ticket;
+  }
 }
 
 export default LiveSocket;

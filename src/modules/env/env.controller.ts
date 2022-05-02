@@ -1,4 +1,5 @@
 import Controller from '../../classes/controller.class';
+import Constants from '../../constants';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import ManageGuard from '../../guards/manage.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -15,7 +16,7 @@ class EnvController extends Controller {
   private async update(req: TypedRequest, res: TypedResponse): Promise<void> {
     const key: string = req.params.key;
     const value: string = req.query.value;
-    if (!key || !value) throw new UnprocessableEntityException('잘못된 요청이에요');
+    if (!key || !value) throw new UnprocessableEntityException(Constants.WRONG_REQUEST);
     const result = await this.envService.set(key, value);
     console.log(`Env Set :: ${key} -> ${result}`);
     res.json({ ok: true });
