@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 
 class Gateway {
   protected readonly server: WebSocketServer;
@@ -14,7 +14,7 @@ class Gateway {
   }
 
   protected onListening(): void {}
-  protected onConnection(): void {}
+  protected onConnection(socket: WebSocket): void {}
   protected onError(): void {}
 }
 
