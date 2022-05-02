@@ -9,6 +9,7 @@ import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
 import FeedController from './modules/feed/feed.controller';
 import FeedService from './modules/feed/feed.service';
+import LiveGateway from './modules/live/live.gateway';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import RadioController from './modules/radio/radio.controller';
@@ -35,6 +36,8 @@ const services: typeof Service[] = [
   RadioService,
 ];
 
+const gateway = LiveGateway;
+
 app.on('load', () => console.log('Loaded application'));
 app.on('connect', () => console.log('Connected to database'));
 app.on('start', port => console.log(`Server started in port ${port}`));
@@ -52,6 +55,6 @@ app
       new FeedController(),
       new RadioController(),
     ];
-    return app.load(controllers);
+    return app.load(controllers, gateway);
   })
   .then(() => app.start());
