@@ -1,13 +1,16 @@
+import EventEmitter from 'events';
 import { WebSocket } from 'ws';
 import Constants from '../constants';
 import HttpException from '../exceptions/http.exception';
 
-abstract class Socket {
+abstract class Socket extends EventEmitter {
   protected readonly socket: WebSocket;
 
   constructor(socket: WebSocket) {
+    super();
     this.socket = socket;
-    this.socket.on('message', this.onMessage);
+    this.socket.on('message', this.onMessage.bind(this));
+    this.socket.on('close', () => this.emit('close'));
     this.start();
   }
 
@@ -27,7 +30,7 @@ abstract class Socket {
     this.sendPacket(packet);
   }
 
-  private onMessage = (json: string): void => {
+  private onMessage(json: string): void {
     try {
       const data: ClientPacketBase = JSON.parse(json);
       this.onPacket(data);
@@ -38,7 +41,7 @@ abstract class Socket {
         this.sendError(e.message, data.packet_id);
       } else this.sendError(Constants.WRONG_REQUEST);
     }
-  };
+  }
 
   private sendJson(data: any): void {
     const json = JSON.stringify(data);

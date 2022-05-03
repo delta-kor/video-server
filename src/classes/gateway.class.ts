@@ -8,9 +8,9 @@ class Gateway {
   }
 
   public load() {
-    this.server.on('listening', this.onListening);
-    this.server.on('connection', this.onConnection);
-    this.server.on('error', this.onError);
+    this.server.on('listening', this.onListening.bind(this));
+    this.server.on('connection', this.onConnection.bind(this));
+    this.server.on('error', this.onError.bind(this));
   }
 
   protected onListening(): void {}
