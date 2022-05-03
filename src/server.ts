@@ -12,6 +12,7 @@ import FeedService from './modules/feed/feed.service';
 import LiveGateway from './modules/live/live.gateway';
 import LiveService from './modules/live/service/live.service';
 import SocketService from './modules/live/service/socket.service';
+import UserService from './modules/live/service/user.service';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import RadioController from './modules/radio/radio.controller';
@@ -36,6 +37,7 @@ const services: typeof Service[] = [
   MusicService,
   FeedService,
   RadioService,
+  UserService,
   SocketService,
   LiveService,
 ];
