@@ -11,7 +11,15 @@ interface User extends Document {
   nickname: string;
   role: Role;
   ip: string[];
+
+  addIp(ip: string): Promise<void>;
 }
 
-export { Role };
+interface UserInfo {
+  id: string;
+  nickname: string;
+  role: Role;
+}
+
+export { Role, UserInfo };
 export default User;

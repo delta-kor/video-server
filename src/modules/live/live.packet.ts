@@ -1,3 +1,5 @@
+import { UserInfo } from './interface/user.interface';
+
 interface PacketBase<T extends string = any> {
   type: T;
 }
@@ -20,9 +22,12 @@ namespace ClientPacket {
 namespace ServerPacket {
   export interface Hello extends ServerPacketBase<'hello'> {
     server_time: number;
+    user_info: UserInfo;
   }
 
   export interface Error extends ServerPacketBase<'error'> {
     message: string;
   }
 }
+
+export { ClientPacket, ServerPacket };
