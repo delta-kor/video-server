@@ -17,6 +17,10 @@ class LiveService extends Service {
     this.socketService.removeSocket(socket);
   }
 
+  public onHello(socket: LiveSocket, user: User): void {
+    this.socketService.removeUserExcept(user, socket);
+  }
+
   public async getUser(token: string | null): Promise<User> {
     return await this.userService.getUserByToken(token);
   }

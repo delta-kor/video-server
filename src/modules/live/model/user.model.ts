@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { Model, model, Schema } from 'mongoose';
 import generateId from '../../../utils/id.util';
 import User from '../interface/user.interface';
@@ -18,6 +19,13 @@ UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void
     this.ip.push(ip);
     await this.save();
   }
+};
+
+UserSchema.methods.createToken = function (this: User): string {
+  const id = this.id;
+  const secret = process.env.SECRET_KEY as string;
+  const hash = crypto.createHash('md5').update(id).update(secret).digest('hex');
+  return `${id}.${hash}`;
 };
 
 UserSchema.statics.nicknameExists = async function (this: UserModel, nickname: string): Promise<boolean> {

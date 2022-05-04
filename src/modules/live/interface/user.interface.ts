@@ -13,6 +13,7 @@ interface User extends Document {
   ip: string[];
 
   addIp(ip: string): Promise<void>;
+  createToken(): string;
 }
 
 interface UserInfo {

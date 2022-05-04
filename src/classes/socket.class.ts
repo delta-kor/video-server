@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import { WebSocket } from 'ws';
 import Constants from '../constants';
 import HttpException from '../exceptions/http.exception';
+import { ClientPacketBase, ServerPacket, ServerPacketBase } from '../modules/live/live.packet';
 
 abstract class Socket extends EventEmitter {
   protected readonly socket: WebSocket;
@@ -14,8 +15,12 @@ abstract class Socket extends EventEmitter {
     this.start();
   }
 
+  protected close(): void {
+    this.socket.close();
+  }
+
   protected abstract start(): void;
-  protected abstract onPacket(packet: ClientPacketBase): void;
+  protected abstract onPacket(packet: ClientPacketBase): Promise<void>;
 
   protected sendPacket(packet: ServerPacketBase): void {
     this.sendJson(packet);
@@ -30,16 +35,18 @@ abstract class Socket extends EventEmitter {
     this.sendPacket(packet);
   }
 
-  private onMessage(json: string): void {
+  private async onMessage(json: string): Promise<void> {
     try {
       const data: ClientPacketBase = JSON.parse(json);
-      this.onPacket(data);
+      await this.onPacket(data);
     } catch (e) {
-      console.error(e);
       if (e instanceof HttpException) {
         const data: ClientPacketBase = JSON.parse(json);
         this.sendError(e.message, data.packet_id);
-      } else this.sendError(Constants.WRONG_REQUEST);
+      } else {
+        this.sendError(Constants.WRONG_REQUEST);
+        console.error(e);
+      }
     }
   }
 

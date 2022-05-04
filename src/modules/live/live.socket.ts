@@ -2,7 +2,7 @@ import Socket from '../../classes/socket.class';
 import SocketException from '../../exceptions/socket.exception';
 import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
-import { UserInfo } from './interface/user.interface';
+import User, { UserInfo } from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
 import LiveService from './service/live.service';
 
@@ -16,6 +16,7 @@ class LiveSocket extends Socket {
 
   public state: SocketState = SocketState.LOITERING;
   public ip: string | null = null;
+  public user: User | null = null;
 
   protected start(): void {}
 
@@ -35,21 +36,34 @@ class LiveSocket extends Socket {
     const ticket = packet.ticket;
     const token = packet.token;
 
-    this.ip = parseTicket(ticket);
-    this.state = SocketState.READY;
-
     const user = await this.liveService.getUser(token);
     const info: UserInfo = { id: user.id, nickname: user.nickname, role: user.role };
 
+    this.ip = parseTicket(ticket);
+    this.state = SocketState.READY;
+    this.user = user;
+    this.emit('hello', user);
+
     user.addIp(this.ip);
+    const newToken = user.createToken();
 
     const response: ServerPacket.Hello = {
       type: 'hello',
       packet_id: packet.packet_id,
       server_time: Date.now(),
       user_info: info,
+      token: newToken,
     };
     this.sendPacket(response);
+  }
+
+  public async onMultipleDevice(): Promise<void> {
+    const packet: ServerPacket.MultipleDevice = {
+      type: 'multiple-device',
+      packet_id: null,
+    };
+    this.sendPacket(packet);
+    this.close();
   }
 }
 

@@ -23,11 +23,14 @@ namespace ServerPacket {
   export interface Hello extends ServerPacketBase<'hello'> {
     server_time: number;
     user_info: UserInfo;
+    token: string;
   }
 
   export interface Error extends ServerPacketBase<'error'> {
     message: string;
   }
+
+  export interface MultipleDevice extends ServerPacketBase<'multiple-device'> {}
 }
 
-export { ClientPacket, ServerPacket };
+export { ClientPacketBase, ServerPacketBase, ClientPacket, ServerPacket };

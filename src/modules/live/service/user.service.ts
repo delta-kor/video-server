@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
 import EnvService from '../../env/env.service';
@@ -25,12 +26,27 @@ class UserService extends Service {
     return user;
   }
 
+  public async getUserById(id: string): Promise<User | null> {
+    const user = await UserModel.findOne({ id });
+    return user || null;
+  }
+
   public async getUserByToken(token: string | null): Promise<User> {
-    let user: User;
+    if (!token) return await this.createUser();
+    else {
+      const parts = token.split('.');
+      const id = parts[0];
+      const trueHash = parts[1];
+      const secret = process.env.SECRET_KEY as string;
+      const hash = crypto.createHash('md5').update(id).update(secret).digest('hex');
 
-    if (!token) user = await this.createUser();
+      if (trueHash !== hash) return this.getUserByToken(null);
 
-    return user!;
+      const user = await this.getUserById(id);
+      if (!user) return this.getUserByToken(null);
+
+      return user;
+    }
   }
 }
 
