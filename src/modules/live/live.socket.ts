@@ -20,6 +20,12 @@ class LiveSocket extends Socket {
 
   protected start(): void {}
 
+  private softClose(): void {
+    this.state = SocketState.LOITERING;
+    this.ip = null;
+    this.user = null;
+  }
+
   protected async onPacket(packet: any): Promise<void> {
     const type = packet.type;
 
@@ -41,7 +47,7 @@ class LiveSocket extends Socket {
     this.ip = parseTicket(ticket);
     this.state = SocketState.ACTIVE;
     this.user = user;
-    this.emit('hello', user);
+    this.emit('hello');
 
     user.addIp(this.ip);
     const newToken = user.createToken();
@@ -56,13 +62,13 @@ class LiveSocket extends Socket {
     this.sendPacket(response);
   }
 
-  public async onMultipleDevice(): Promise<void> {
-    const packet: ServerPacket.MultipleDevice = {
-      type: 'multiple-device',
+  public async onMultipleConnect(): Promise<void> {
+    const packet: ServerPacket.MultipleConnect = {
+      type: 'multiple-connect',
       packet_id: null,
     };
     this.sendPacket(packet);
-    this.close();
+    this.softClose();
   }
 }
 

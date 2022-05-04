@@ -16,17 +16,28 @@ class LiveService extends Service {
 
   public onDisconnect(socket: LiveSocket): void {
     this.socketService.removeSocket(socket);
+
+    if (socket.user) {
+      const packet: ServerPacket.UserDisconnect = {
+        type: 'user-disconnect',
+        packet_id: null,
+        id: socket.user.id,
+      };
+      this.socketService.sendToAllActiveSocket(packet, socket);
+    }
   }
 
-  public onHello(socket: LiveSocket, user: User): void {
-    this.socketService.removeUser(user, socket);
+  public onHello(socket: LiveSocket): void {
+    const isMultipleConnected = this.socketService.removeMultipleConnectedSocket(socket.user!, socket);
 
-    const packet: ServerPacket.UserConnect = {
-      type: 'user-connect',
-      packet_id: null,
-      user_info: user.info(),
-    };
-    this.socketService.sendToAllActiveSocket(packet, socket);
+    if (!isMultipleConnected) {
+      const packet: ServerPacket.UserConnect = {
+        type: 'user-connect',
+        packet_id: null,
+        user_info: socket.user!.info(),
+      };
+      this.socketService.sendToAllActiveSocket(packet, socket);
+    }
   }
 
   public async getUser(token: string | null): Promise<User> {

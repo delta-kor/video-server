@@ -30,10 +30,14 @@ namespace ServerPacket {
     message: string;
   }
 
-  export interface MultipleDevice extends ServerPacketBase<'multiple-device'> {}
+  export interface MultipleConnect extends ServerPacketBase<'multiple-connect'> {}
 
   export interface UserConnect extends ServerPacketBase<'user-connect'> {
     user_info: UserInfo;
+  }
+
+  export interface UserDisconnect extends ServerPacketBase<'user-disconnect'> {
+    id: string;
   }
 }
 

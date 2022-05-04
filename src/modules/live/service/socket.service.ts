@@ -14,24 +14,38 @@ class SocketService extends Service {
     this.sockets.delete(socket);
   }
 
-  public removeUser(user: User, except?: LiveSocket): void {
+  public removeMultipleConnectedSocket(user: User, except?: LiveSocket): boolean {
     const id = user.id;
+
+    let result: boolean = false;
 
     for (const socket of this.sockets) {
       if (socket.state !== SocketState.ACTIVE) continue;
       if (except && except === socket) continue;
       if (socket.user!.id === id) {
-        socket.onMultipleDevice();
+        socket.onMultipleConnect();
+        result = true;
       }
     }
+
+    return result;
   }
 
-  public sendToAllActiveSocket(packet: ServerPacketBase, except?: LiveSocket): void {
+  public sendToAllActiveSocket(packet: ServerPacketBase, except?: LiveSocket, exceptUser?: User): void {
     for (const socket of this.sockets) {
       if (socket.state !== SocketState.ACTIVE) continue;
       if (except && except === socket) continue;
+      if (exceptUser && socket.user && socket.user.id === exceptUser.id) continue;
       socket.sendPacket(packet);
     }
+  }
+
+  public userExists(user: User): boolean {
+    for (const socket of this.sockets) {
+      if (socket.user === user) return true;
+    }
+
+    return false;
   }
 }
 
