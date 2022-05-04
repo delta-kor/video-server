@@ -31,6 +31,10 @@ namespace ServerPacket {
   }
 
   export interface MultipleDevice extends ServerPacketBase<'multiple-device'> {}
+
+  export interface UserConnect extends ServerPacketBase<'user-connect'> {
+    user_info: UserInfo;
+  }
 }
 
 export { ClientPacketBase, ServerPacketBase, ClientPacket, ServerPacket };

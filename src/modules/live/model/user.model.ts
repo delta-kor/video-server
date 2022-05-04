@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Model, model, Schema } from 'mongoose';
 import generateId from '../../../utils/id.util';
-import User from '../interface/user.interface';
+import User, { UserInfo } from '../interface/user.interface';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
@@ -27,6 +27,10 @@ UserSchema.methods.createToken = function (this: User): string {
   const secret = process.env.SECRET_KEY as string;
   const hash = crypto.createHash('md5').update(id).update(secret).digest('hex');
   return `${id}.${hash}`;
+};
+
+UserSchema.methods.info = function (this: User): UserInfo {
+  return { id: this.id, nickname: this.nickname, role: this.role };
 };
 
 UserSchema.statics.nicknameExists = async function (this: UserModel, nickname: string): Promise<boolean> {

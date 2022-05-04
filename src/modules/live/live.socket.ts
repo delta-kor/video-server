@@ -2,13 +2,13 @@ import Socket from '../../classes/socket.class';
 import SocketException from '../../exceptions/socket.exception';
 import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
-import User, { UserInfo } from './interface/user.interface';
+import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
 import LiveService from './service/live.service';
 
 enum SocketState {
   LOITERING,
-  READY,
+  ACTIVE,
 }
 
 class LiveSocket extends Socket {
@@ -37,10 +37,9 @@ class LiveSocket extends Socket {
     const token = packet.token;
 
     const user = await this.liveService.getUser(token);
-    const info: UserInfo = { id: user.id, nickname: user.nickname, role: user.role };
 
     this.ip = parseTicket(ticket);
-    this.state = SocketState.READY;
+    this.state = SocketState.ACTIVE;
     this.user = user;
     this.emit('hello', user);
 
@@ -51,7 +50,7 @@ class LiveSocket extends Socket {
       type: 'hello',
       packet_id: packet.packet_id,
       server_time: Date.now(),
-      user_info: info,
+      user_info: user.info(),
       token: newToken,
     };
     this.sendPacket(response);

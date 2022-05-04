@@ -1,5 +1,6 @@
 import Service from '../../../services/base.service';
 import User from '../interface/user.interface';
+import { ServerPacketBase } from '../live.packet';
 import LiveSocket, { SocketState } from '../live.socket';
 
 class SocketService extends Service {
@@ -13,14 +14,23 @@ class SocketService extends Service {
     this.sockets.delete(socket);
   }
 
-  public removeUserExcept(user: User, except: LiveSocket): void {
+  public removeUser(user: User, except?: LiveSocket): void {
     const id = user.id;
 
     for (const socket of this.sockets) {
-      if (socket.state !== SocketState.READY) continue;
-      if (socket.user!.id === id && except !== socket) {
+      if (socket.state !== SocketState.ACTIVE) continue;
+      if (except && except === socket) continue;
+      if (socket.user!.id === id) {
         socket.onMultipleDevice();
       }
+    }
+  }
+
+  public sendToAllActiveSocket(packet: ServerPacketBase, except?: LiveSocket): void {
+    for (const socket of this.sockets) {
+      if (socket.state !== SocketState.ACTIVE) continue;
+      if (except && except === socket) continue;
+      socket.sendPacket(packet);
     }
   }
 }

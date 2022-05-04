@@ -22,11 +22,11 @@ abstract class Socket extends EventEmitter {
   protected abstract start(): void;
   protected abstract onPacket(packet: ClientPacketBase): Promise<void>;
 
-  protected sendPacket(packet: ServerPacketBase): void {
+  public sendPacket(packet: ServerPacketBase): void {
     this.sendJson(packet);
   }
 
-  protected sendError(message: string, packetId: number | null = null): void {
+  public sendError(message: string, packetId: number | null = null): void {
     const packet: ServerPacket.Error = {
       type: 'error',
       packet_id: packetId,

@@ -1,6 +1,7 @@
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
 import User from '../interface/user.interface';
+import { ServerPacket } from '../live.packet';
 import LiveSocket from '../live.socket';
 import SocketService from './socket.service';
 import UserService from './user.service';
@@ -18,7 +19,14 @@ class LiveService extends Service {
   }
 
   public onHello(socket: LiveSocket, user: User): void {
-    this.socketService.removeUserExcept(user, socket);
+    this.socketService.removeUser(user, socket);
+
+    const packet: ServerPacket.UserConnect = {
+      type: 'user-connect',
+      packet_id: null,
+      user_info: user.info(),
+    };
+    this.socketService.sendToAllActiveSocket(packet, socket);
   }
 
   public async getUser(token: string | null): Promise<User> {
