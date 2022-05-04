@@ -1,4 +1,9 @@
-
+import Service from '../../../services/base.service';
+import ServiceProvider from '../../../services/provider.service';
+import User from '../interface/user.interface';
+import LiveSocket from '../live.socket';
+import SocketService from './socket.service';
+import UserService from './user.service';
 
 class LiveService extends Service {
   private readonly socketService: SocketService = ServiceProvider.get(SocketService);
