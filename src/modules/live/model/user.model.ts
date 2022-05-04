@@ -12,6 +12,7 @@ const UserSchema = new Schema<User, UserModel>({
   nickname: { type: String, required: true, unique: true },
   role: { type: Number, required: true },
   ip: { type: [String], required: true },
+  ban_info: { type: Schema.Types.Mixed, required: true, default: () => ({ banned: false }) },
 });
 
 UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void> {
