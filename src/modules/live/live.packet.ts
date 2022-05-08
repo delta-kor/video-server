@@ -19,7 +19,7 @@ namespace ClientPacket {
   }
 
   export interface UserSync extends ClientPacketBase<'user-sync'> {
-    id: string[] | null;
+    id: string[];
   }
 }
 

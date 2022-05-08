@@ -31,6 +31,10 @@ class UserService extends Service {
     return user || null;
   }
 
+  public async getAllUsersById(id: string[]): Promise<User[]> {
+    return UserModel.find({ id: { $in: id } });
+  }
+
   public async getUserByToken(token: string | null): Promise<User> {
     if (!token) return await this.createUser();
     else {

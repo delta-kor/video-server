@@ -33,12 +33,17 @@ class LiveSocket extends Socket {
       case 'hello':
         await this.onHelloPacketReceived(packet);
         break;
+      case 'user-sync':
+        await this.onUserSyncPacketReceived(packet);
+        break;
       default:
         throw new SocketException();
     }
   }
 
   private async onHelloPacketReceived(packet: ClientPacket.Hello): Promise<void> {
+    if (this.state === SocketState.ACTIVE) throw new SocketException('이미 연결되어 있어요');
+
     const ticket = packet.ticket;
     const token = packet.token;
 
@@ -59,6 +64,20 @@ class LiveSocket extends Socket {
     this.sendPacket(response);
 
     this.emit('hello');
+  }
+
+  private async onUserSyncPacketReceived(packet: ClientPacket.UserSync): Promise<void> {
+    const target = packet.id;
+
+    const users = await this.userService.getAllUsersById(target);
+    const userInfos = users.map(user => user.info());
+
+    const response: ServerPacket.UserSync = {
+      type: 'user-sync',
+      packet_id: packet.packet_id,
+      data: userInfos,
+    };
+    this.sendPacket(response);
   }
 
   public onMultipleConnection(): void {
