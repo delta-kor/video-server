@@ -4,7 +4,7 @@ import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
 import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
-import LiveService from './service/live.service';
+import UserService from './service/user.service';
 
 enum SocketState {
   LOITERING,
@@ -12,7 +12,7 @@ enum SocketState {
 }
 
 class LiveSocket extends Socket {
-  private readonly liveService: LiveService = ServiceProvider.get(LiveService);
+  private readonly userService: UserService = ServiceProvider.get(UserService);
 
   public state: SocketState = SocketState.LOITERING;
   public ip: string | null = null;
@@ -31,38 +31,37 @@ class LiveSocket extends Socket {
 
     switch (type) {
       case 'hello':
-        await this.onHello(packet);
+        await this.onHelloPacketReceived(packet);
         break;
       default:
         throw new SocketException();
     }
   }
 
-  private async onHello(packet: ClientPacket.Hello): Promise<void> {
+  private async onHelloPacketReceived(packet: ClientPacket.Hello): Promise<void> {
     const ticket = packet.ticket;
     const token = packet.token;
 
-    const user = await this.liveService.getUser(token);
+    const user = await this.userService.getUserByToken(token);
 
     this.ip = parseTicket(ticket);
     this.state = SocketState.ACTIVE;
     this.user = user;
-    this.emit('hello');
-
-    user.addIp(this.ip);
-    const newToken = user.createToken();
+    this.user.addIp(this.ip);
 
     const response: ServerPacket.Hello = {
       type: 'hello',
       packet_id: packet.packet_id,
       server_time: Date.now(),
       user_info: user.info(),
-      token: newToken,
+      token: user.createToken(),
     };
     this.sendPacket(response);
+
+    this.emit('hello');
   }
 
-  public onMultipleConnect(): void {
+  public onMultipleConnection(): void {
     const packet: ServerPacket.MultipleConnect = {
       type: 'multiple-connect',
       packet_id: null,

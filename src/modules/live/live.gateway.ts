@@ -15,7 +15,7 @@ class LiveGateway extends Gateway {
     const socket = new LiveSocket(webSocket);
     this.liveService.onConnect(socket);
     socket.on('close', () => this.liveService.onDisconnect(socket));
-    socket.on('hello', () => this.liveService.onHello(socket));
+    socket.on('hello', () => this.liveService.onConnectionActive(socket));
   }
 }
 

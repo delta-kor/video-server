@@ -23,7 +23,7 @@ class SocketService extends Service {
       if (socket.state !== SocketState.ACTIVE) continue;
       if (except && except === socket) continue;
       if (socket.user!.id === id) {
-        socket.onMultipleConnect();
+        socket.onMultipleConnection();
         result = true;
       }
     }
@@ -31,11 +31,11 @@ class SocketService extends Service {
     return result;
   }
 
-  public sendToAllActiveSocket(packet: ServerPacketBase, except?: LiveSocket, exceptUser?: User): void {
+  public sendToAllActiveSockets(packet: ServerPacketBase, except?: LiveSocket, exceptUser?: User): void {
     for (const socket of this.sockets) {
       if (socket.state !== SocketState.ACTIVE) continue;
       if (except && except === socket) continue;
-      if (exceptUser && socket.user && socket.user.id === exceptUser.id) continue;
+      if (exceptUser && socket.user!.id === exceptUser.id) continue;
       socket.sendPacket(packet);
     }
   }
@@ -44,8 +44,16 @@ class SocketService extends Service {
     for (const socket of this.sockets) {
       if (socket.user === user) return true;
     }
-
     return false;
+  }
+
+  public getAllActiveUsers(): User[] {
+    const users: User[] = [];
+    for (const socket of this.sockets) {
+      if (socket.state !== SocketState.ACTIVE) continue;
+      users.push(socket.user!);
+    }
+    return users;
   }
 }
 
