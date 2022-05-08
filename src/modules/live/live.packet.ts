@@ -17,6 +17,10 @@ namespace ClientPacket {
     ticket: string;
     token: string | null;
   }
+
+  export interface UserSync extends ClientPacketBase<'user-sync'> {
+    id: string[] | null;
+  }
 }
 
 namespace ServerPacket {
@@ -38,6 +42,10 @@ namespace ServerPacket {
 
   export interface UserDisconnect extends ServerPacketBase<'user-disconnect'> {
     id: string;
+  }
+
+  export interface UserSync extends ServerPacketBase<'user-sync'> {
+    data: UserInfo[];
   }
 }
 
