@@ -62,7 +62,7 @@ class LiveSocket extends Socket {
     this.sendPacket(response);
   }
 
-  public async onMultipleConnect(): Promise<void> {
+  public onMultipleConnect(): void {
     const packet: ServerPacket.MultipleConnect = {
       type: 'multiple-connect',
       packet_id: null,
