@@ -2,6 +2,7 @@ import Socket from '../../classes/socket.class';
 import SocketException from '../../exceptions/socket.exception';
 import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
+import { ChatInfo } from './interface/chat.interface';
 import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
 import ChatService from './service/chat.service';
@@ -56,6 +57,9 @@ class LiveSocket extends Socket {
         case 'chat-message':
           await this.onChatMessagePacketReceived(packet);
           break;
+        case 'chat-sync':
+          await this.onChatSyncPacketReceived(packet);
+          break;
         default:
           throw new SocketException();
       }
@@ -100,6 +104,20 @@ class LiveSocket extends Socket {
 
   private async onChatMessagePacketReceived(packet: ClientPacket.ChatMessage): Promise<void> {
     this.chatService.onMessageSent(packet.content, this.user!);
+  }
+
+  private async onChatSyncPacketReceived(packet: ClientPacket.ChatSync): Promise<void> {
+    const point = packet.point;
+    const chats = await this.chatService.getChats(point);
+
+    const infos: ChatInfo[] = chats.map(chat => ({ id: chat.id, user_id: chat.user_id, content: chat.content }));
+
+    const response: ServerPacket.ChatSync = {
+      type: 'chat-sync',
+      packet_id: packet.packet_id,
+      data: infos,
+    };
+    this.sendPacket(response);
   }
 }
 

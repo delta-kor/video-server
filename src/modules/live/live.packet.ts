@@ -64,6 +64,10 @@ namespace ServerPacket {
   export interface ChatMessage extends ServerPacketBase<'chat-message'> {
     chat_info: ChatInfo;
   }
+
+  export interface ChatSync extends ServerPacketBase<'chat-sync'> {
+    data: ChatInfo[];
+  }
 }
 
 export { ClientPacketBase, ServerPacketBase, ClientPacket, ServerPacket };

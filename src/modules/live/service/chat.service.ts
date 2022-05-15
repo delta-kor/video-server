@@ -14,7 +14,9 @@ class ChatService extends Service {
   private readonly chats: Chat[] = [];
 
   public async load(): Promise<void> {
-    const reversed: Chat[] = await ChatModel.find().sort({ date: -1 }).limit(Constants.CHAT_SPLIT_COUNT);
+    const reversed: Chat[] = await ChatModel.find({ deleted: false })
+      .sort({ date: -1 })
+      .limit(Constants.CHAT_SPLIT_COUNT);
     const chats = reversed.reverse();
     this.chats.push(...chats);
   }
@@ -34,6 +36,9 @@ class ChatService extends Service {
   }
 
   private sendMessage(chat: Chat): void {
+    void chat.save();
+    this.chats.push(chat);
+
     const chatInfo: ChatInfo = {
       id: chat.id,
       user_id: chat.user_id,
@@ -53,9 +58,11 @@ class ChatService extends Service {
     this.validateChatContent(content);
 
     const chat = new ChatModel({ user_id: user.id, content });
-    void chat.save();
-
     this.sendMessage(chat);
+  }
+
+  public async getChats(point: string | null): Promise<Chat[]> {
+    return this.chats;
   }
 }
 
