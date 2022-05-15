@@ -1,3 +1,4 @@
+import Constants from '../../../constants';
 import SocketException from '../../../exceptions/socket.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
@@ -12,6 +13,12 @@ class ChatService extends Service {
 
   private readonly chats: Chat[] = [];
 
+  public async load(): Promise<void> {
+    const reversed: Chat[] = await ChatModel.find().sort({ date: -1 }).limit(Constants.CHAT_SPLIT_COUNT);
+    const chats = reversed.reverse();
+    this.chats.push(...chats);
+  }
+
   private validateChatContent(content: ChatContent): void {
     switch (content.type) {
       case 'text':
@@ -21,7 +28,6 @@ class ChatService extends Service {
         break;
       case 'emoticon':
         throw new SocketException('존재하지 않는 이모티콘이에요');
-        break;
       default:
         throw new SocketException();
     }

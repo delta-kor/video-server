@@ -3,6 +3,7 @@ const Constants = {
   INTERNAL_SERVER_ERROR: '서버 내부 오류에요\n잠시 후 다시 시도해주세요',
   UNAUTHORIZED: '접근이 거부되었어요\n나중에 다시 시도해주세요',
   WRONG_REQUEST: '잘못된 요청이에요',
+  CHAT_SPLIT_COUNT: 3,
 };
 
 export default Constants;

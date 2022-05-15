@@ -26,6 +26,10 @@ namespace ClientPacket {
   export interface ChatMessage extends ClientPacketBase<'chat-message'> {
     content: ChatContent;
   }
+
+  export interface ChatSync extends ClientPacketBase<'chat-sync'> {
+    point: string | null;
+  }
 }
 
 namespace ServerPacket {
