@@ -1,3 +1,4 @@
+import { ChatContent, ChatInfo } from './interface/chat.interface';
 import { UserInfo } from './interface/user.interface';
 
 interface PacketBase<T extends string = any> {
@@ -20,6 +21,10 @@ namespace ClientPacket {
 
   export interface UserSync extends ClientPacketBase<'user-sync'> {
     id: string[];
+  }
+
+  export interface ChatMessage extends ClientPacketBase<'chat-message'> {
+    content: ChatContent;
   }
 }
 
@@ -50,6 +55,10 @@ namespace ServerPacket {
 
   export interface UserSync extends ServerPacketBase<'user-sync'> {
     data: UserInfo[];
+  }
+
+  export interface ChatMessage extends ServerPacketBase<'chat-message'> {
+    chat_info: ChatInfo;
   }
 }
 

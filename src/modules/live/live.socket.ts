@@ -4,6 +4,7 @@ import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
 import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
+import ChatService from './service/chat.service';
 import UserService from './service/user.service';
 
 enum SocketState {
@@ -13,6 +14,7 @@ enum SocketState {
 
 class LiveSocket extends Socket {
   private readonly userService: UserService = ServiceProvider.get(UserService);
+  private readonly chatService: ChatService = ServiceProvider.get(ChatService);
 
   public state: SocketState = SocketState.LOITERING;
   public ip: string | null = null;
@@ -24,6 +26,15 @@ class LiveSocket extends Socket {
     this.state = SocketState.LOITERING;
     this.ip = null;
     this.user = null;
+  }
+
+  public onMultipleConnection(): void {
+    const packet: ServerPacket.MultipleConnect = {
+      type: 'multiple-connect',
+      packet_id: null,
+    };
+    this.sendPacket(packet);
+    this.softClose();
   }
 
   protected async onPacket(packet: any): Promise<void> {
@@ -41,6 +52,9 @@ class LiveSocket extends Socket {
       switch (type) {
         case 'user-sync':
           await this.onUserSyncPacketReceived(packet);
+          break;
+        case 'chat-message':
+          await this.onChatMessagePacketReceived(packet);
           break;
         default:
           throw new SocketException();
@@ -84,13 +98,8 @@ class LiveSocket extends Socket {
     this.sendPacket(response);
   }
 
-  public onMultipleConnection(): void {
-    const packet: ServerPacket.MultipleConnect = {
-      type: 'multiple-connect',
-      packet_id: null,
-    };
-    this.sendPacket(packet);
-    this.softClose();
+  private async onChatMessagePacketReceived(packet: ClientPacket.ChatMessage): Promise<void> {
+    this.chatService.onMessageSent(packet.content, this.user!);
   }
 }
 
