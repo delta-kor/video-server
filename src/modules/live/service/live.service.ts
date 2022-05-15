@@ -38,8 +38,8 @@ class LiveService extends Service {
 
     const users = this.socketService.getAllActiveUsers();
     const userInfos = users.map(user => user.info());
-    const userSyncPacket: ServerPacket.UserSync = {
-      type: 'user-sync',
+    const userSyncPacket: ServerPacket.LiveUserSync = {
+      type: 'live-user-sync',
       packet_id: null,
       data: userInfos,
     };

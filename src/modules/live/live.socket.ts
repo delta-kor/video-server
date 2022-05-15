@@ -37,8 +37,7 @@ class LiveSocket extends Socket {
         default:
           throw new SocketException();
       }
-
-    if (this.state === SocketState.ACTIVE)
+    else if (this.state === SocketState.ACTIVE)
       switch (type) {
         case 'user-sync':
           await this.onUserSyncPacketReceived(packet);
