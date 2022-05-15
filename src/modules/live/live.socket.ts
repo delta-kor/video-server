@@ -29,21 +29,26 @@ class LiveSocket extends Socket {
   protected async onPacket(packet: any): Promise<void> {
     const type = packet.type;
 
-    switch (type) {
-      case 'hello':
-        await this.onHelloPacketReceived(packet);
-        break;
-      case 'user-sync':
-        await this.onUserSyncPacketReceived(packet);
-        break;
-      default:
-        throw new SocketException();
-    }
+    if (this.state === SocketState.LOITERING)
+      switch (type) {
+        case 'hello':
+          await this.onHelloPacketReceived(packet);
+          break;
+        default:
+          throw new SocketException();
+      }
+
+    if (this.state === SocketState.ACTIVE)
+      switch (type) {
+        case 'user-sync':
+          await this.onUserSyncPacketReceived(packet);
+          break;
+        default:
+          throw new SocketException();
+      }
   }
 
   private async onHelloPacketReceived(packet: ClientPacket.Hello): Promise<void> {
-    if (this.state === SocketState.ACTIVE) throw new SocketException('이미 연결되어 있어요');
-
     const ticket = packet.ticket;
     const token = packet.token;
 
