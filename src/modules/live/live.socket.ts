@@ -1,4 +1,5 @@
 import Socket from '../../classes/socket.class';
+import Constants from '../../constants';
 import SocketException from '../../exceptions/socket.exception';
 import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
@@ -116,6 +117,7 @@ class LiveSocket extends Socket {
       type: 'chat-sync',
       packet_id: packet.packet_id,
       data: infos,
+      last: infos.length !== Constants.CHAT_SPLIT_COUNT,
     };
     this.sendPacket(response);
   }

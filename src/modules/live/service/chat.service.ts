@@ -11,14 +11,36 @@ import SocketService from './socket.service';
 class ChatService extends Service {
   private readonly socketService: SocketService = ServiceProvider.get(SocketService);
 
-  private readonly chats: Chat[] = [];
+  private readonly chats: Map<string, Chat> = new Map();
+  private lastChat: Chat | null = null;
 
   public async load(): Promise<void> {
-    const reversed: Chat[] = await ChatModel.find({ deleted: false })
-      .sort({ date: -1 })
-      .limit(Constants.CHAT_SPLIT_COUNT);
-    const chats = reversed.reverse();
-    this.chats.push(...chats);
+    const chats: Chat[] = await ChatModel.find({ deleted: false }).sort({ date: -1 }).limit(Constants.CHAT_SPLIT_COUNT);
+    chats.forEach(chat => this.chats.set(chat.id, chat));
+
+    const last = await ChatModel.find({ deleted: false }).sort({ date: 1 }).limit(1);
+    this.lastChat = last[0];
+  }
+
+  private getChatFromCache(id: string): Chat | null {
+    for (const chat of this.chats.values()) if (chat.id === id) return chat;
+    return null;
+  }
+
+  private getChatsFromPoint(point: string | null): Chat[] {
+    if (!point) {
+      const sorted = Array.from(this.chats.values()).sort((a, b) => b.date.getTime() - a.date.getTime());
+      return sorted.slice(0, Constants.CHAT_SPLIT_COUNT);
+    }
+
+    const pointChat = this.chats.get(point);
+    if (!pointChat) throw new SocketException();
+
+    const sorted = Array.from(this.chats.values()).sort((a, b) => b.date.getTime() - a.date.getTime());
+    const pointIndex = sorted.indexOf(pointChat);
+
+    const result = sorted.slice(pointIndex + 1, pointIndex + 1 + Constants.CHAT_SPLIT_COUNT);
+    return result.reverse();
   }
 
   private validateChatContent(content: ChatContent): void {
@@ -37,7 +59,7 @@ class ChatService extends Service {
 
   private sendMessage(chat: Chat): void {
     void chat.save();
-    this.chats.push(chat);
+    this.chats.set(chat.id, chat);
 
     const chatInfo: ChatInfo = {
       id: chat.id,
@@ -62,7 +84,23 @@ class ChatService extends Service {
   }
 
   public async getChats(point: string | null): Promise<Chat[]> {
-    return this.chats;
+    if (point) {
+      const pointChat = this.getChatFromCache(point);
+      if (
+        !pointChat ||
+        (this.getChatsFromPoint(point).length < Constants.CHAT_SPLIT_COUNT && !this.chats.has(this.lastChat!.id))
+      ) {
+        const chat: Chat | null = await ChatModel.findOne({ id: point });
+        if (!chat) throw new SocketException();
+
+        const freshChats: Chat[] = await ChatModel.find({ date: { $gte: chat.date }, deleted: false });
+        const oldChats: Chat[] = await ChatModel.find({ date: { $lt: chat.date }, deleted: false })
+          .sort({ date: -1 })
+          .limit(Constants.CHAT_SPLIT_COUNT);
+        [...freshChats, ...oldChats].forEach(chat => this.chats.set(chat.id, chat));
+      }
+    }
+    return this.getChatsFromPoint(point);
   }
 }
 

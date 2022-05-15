@@ -67,6 +67,7 @@ namespace ServerPacket {
 
   export interface ChatSync extends ServerPacketBase<'chat-sync'> {
     data: ChatInfo[];
+    last: boolean;
   }
 }
 
