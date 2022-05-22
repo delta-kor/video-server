@@ -12,6 +12,7 @@ const VideoSchema = new Schema<Video>({
   description: { type: String, required: true },
   date: { type: Date, required: true },
   category: { type: [String], required: true },
+  private: { type: Boolean, required: true },
 });
 
 VideoSchema.virtual('duration').get(function (this: Video): number {

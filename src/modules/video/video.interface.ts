@@ -11,6 +11,8 @@ interface Video extends Document {
 
   duration: number;
   is_4k: boolean;
+
+  private: boolean;
 }
 
 export default Video;

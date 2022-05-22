@@ -9,11 +9,16 @@ import VideoModel from './video.model';
 
 class VideoService extends Service {
   private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
-  public readonly videos: Video[] = [];
+  private readonly videos: Video[] = [];
 
   public async load(): Promise<void> {
     const videos = await VideoModel.find().sort({ _id: 1, date: 1 });
     this.videos.push(...videos);
+  }
+
+  public getAll(privateRequest: boolean = false): Video[] {
+    if (privateRequest) return this.videos;
+    return this.videos.filter(video => !video.private);
   }
 
   public async upload(data: UploadDto): Promise<Video> {
@@ -23,6 +28,7 @@ class VideoService extends Service {
       description: data.description,
       date: new Date(data.date),
       category: data.category,
+      private: data.private,
     });
     await video.save();
 
@@ -31,16 +37,16 @@ class VideoService extends Service {
     return video;
   }
 
-  public get(id: string): Video | null {
-    for (const video of this.videos) {
+  public get(id: string, privateRequest: boolean = false): Video | null {
+    for (const video of this.getAll(privateRequest)) {
       if (video.id === id) return video;
     }
     return null;
   }
 
-  public getByCategory(category: string[]): Video[] {
+  public getByCategory(category: string[], privateRequest: boolean = false): Video[] {
     const result: Video[] = [];
-    for (const video of this.videos) {
+    for (const video of this.getAll(privateRequest)) {
       if (category.every((value, index) => video.category[index] === value)) {
         result.push(video);
       }
@@ -48,16 +54,16 @@ class VideoService extends Service {
     return result;
   }
 
-  public getByTitle(title: string): Video[] {
+  public getByTitle(title: string, privateRequest: boolean = false): Video[] {
     const result: Video[] = [];
-    for (const video of this.videos) {
+    for (const video of this.getAll(privateRequest)) {
       if (video.title === title) result.push(video);
     }
     return result;
   }
 
-  public async getStreamingInfo(id: string, quality: number): Promise<StreamingInfo> {
-    const video = this.get(id);
+  public async getStreamingInfo(id: string, quality: number, privateRequest: boolean = false): Promise<StreamingInfo> {
+    const video = this.get(id, privateRequest);
     if (!video) throw new NotFoundException();
 
     const cdnId = video.is_4k ? video.cdnId_4k : video.cdnId;

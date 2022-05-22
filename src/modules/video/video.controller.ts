@@ -27,11 +27,15 @@ class VideoController extends Controller {
     res.json({ ok: true, id: video.id });
   }
 
-  private async stream(req: TypedRequest, res: TypedResponse<VideoResponse.Stream>): Promise<void> {
+  private async stream(
+    req: TypedRequest<any, { options: string; quality: string }>,
+    res: TypedResponse<VideoResponse.Stream>
+  ): Promise<void> {
     const id = req.params.id;
     const quality = req.query.quality ? parseInt(req.query.quality) : 1080;
-    const info = await this.videoService.getStreamingInfo(id, quality);
-    const duration = this.builderService.getVideoDuration(id);
+    const isPrivate = req.query.options === 'private';
+    const info = await this.videoService.getStreamingInfo(id, quality, isPrivate);
+    const duration = isPrivate ? -1 : this.builderService.getVideoDuration(id);
     res.json({ ok: true, url: info.url, quality: info.quality, qualities: info.qualities, duration });
   }
 

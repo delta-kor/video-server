@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 
 class UploadDto {
   @IsString({ message: 'CDN ID를 입력해주세요' })
@@ -15,6 +15,9 @@ class UploadDto {
 
   @IsArray({ message: '카테고리를 입력해주세요' })
   public category!: string[];
+
+  @IsBoolean({ message: '비공개 여부를 설정해주세요' })
+  public private!: boolean;
 }
 
 export default UploadDto;
