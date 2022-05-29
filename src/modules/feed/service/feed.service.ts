@@ -119,6 +119,11 @@ class FeedService extends Service {
   public getUserRecommends(data: PlaytimeData, count: number = 20): Video[] {
     const result: Video[] = [];
     const emotionData = this.emotionService.getEmotionData(data);
+
+    if (emotionData.some(value => isNaN(value))) {
+      return [];
+    }
+
     const emotionalCount = emotionData.map(item => Math.round(item * count));
 
     const emotionStoreArray = [];
@@ -134,7 +139,12 @@ class FeedService extends Service {
     const titlesSet = new Set<string>();
     const semiResult = [];
 
-    for (let i = 0; i < 4; i++) {
+    const emotionalCountCopy = [...emotionalCount];
+
+    for (let index = 0; index < 4; index++) {
+      const i = emotionalCountCopy.indexOf(Math.max(...emotionalCountCopy));
+      emotionalCountCopy[i] = -999;
+
       const count = emotionalCount[i];
       const sortedTitles = emotionStoreArray
         .filter(item => !titlesSet.has(item[0] as string))
@@ -152,7 +162,7 @@ class FeedService extends Service {
       result.push(video);
     }
 
-    return result;
+    return result.slice(0, 20);
   }
 }
 
