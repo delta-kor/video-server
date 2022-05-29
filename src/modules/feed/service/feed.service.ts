@@ -8,7 +8,7 @@ import VideoService from '../../video/video.service';
 import UploadPlaylistDto from '../dto/upload-playlist.dto';
 import Playlist from '../interface/playlist.interface';
 import PlaylistModel from '../model/playlist.model';
-import EmotionStore, { PlaytimeData } from '../store/emotion.store';
+import EmotionStore, { EmotionData, PlaytimeData } from '../store/emotion.store';
 import EmotionService from './emotion.service';
 
 class FeedService extends Service {
@@ -116,12 +116,12 @@ class FeedService extends Service {
     return result;
   }
 
-  public getUserRecommends(data: PlaytimeData, count: number = 20): Video[] {
+  public getUserRecommends(data: PlaytimeData, count: number = 20): [Video[], EmotionData] {
     const result: Video[] = [];
     const emotionData = this.emotionService.getEmotionData(data);
 
     if (emotionData.some(value => isNaN(value))) {
-      return [];
+      return [[], [0, 0, 0, 0]];
     }
 
     const emotionalCount = emotionData.map(item => Math.round(item * count));
@@ -162,7 +162,7 @@ class FeedService extends Service {
       result.push(video);
     }
 
-    return result.slice(0, 20);
+    return [result.slice(0, 20), emotionData];
   }
 }
 

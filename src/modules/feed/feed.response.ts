@@ -1,3 +1,5 @@
+import { EmotionData } from './store/emotion.store';
+
 interface PlaylistItem {
   id: string;
   title: string;
@@ -24,8 +26,13 @@ namespace FeedResponse {
 
   export interface GetOnePlaylist extends PlaylistItem, ApiResponse {}
 
-  export interface GetRecommends extends ApiResponse {
+  export interface GetVideoRecommends extends ApiResponse {
     videos: VideoItem[];
+  }
+
+  export interface GetUserRecommends extends ApiResponse {
+    videos: VideoItem[];
+    emotion: EmotionData;
   }
 }
 

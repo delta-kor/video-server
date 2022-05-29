@@ -81,7 +81,10 @@ class FeedController extends Controller {
     res.json({ ok: true });
   }
 
-  private async getVideoRecommends(req: TypedRequest, res: TypedResponse<FeedResponse.GetRecommends>): Promise<void> {
+  private async getVideoRecommends(
+    req: TypedRequest,
+    res: TypedResponse<FeedResponse.GetVideoRecommends>
+  ): Promise<void> {
     const id = req.params.id;
     const count = parseInt(req.query.count) || 12;
 
@@ -102,12 +105,14 @@ class FeedController extends Controller {
 
   private async getUserRecommends(
     req: TypedRequest<UserRecommendsDto>,
-    res: TypedResponse<FeedResponse.GetRecommends>
+    res: TypedResponse<FeedResponse.GetUserRecommends>
   ): Promise<void> {
     const count = parseInt(req.query.count) || 20;
 
     const data = req.body.data;
-    const videos = this.feedService.getUserRecommends(data, count);
+    const recommends = this.feedService.getUserRecommends(data, count);
+    const videos = recommends[0];
+    const emotion = recommends[1];
 
     res.json({
       ok: true,
@@ -118,6 +123,7 @@ class FeedController extends Controller {
         duration: video.duration,
         is_4k: video.is_4k,
       })),
+      emotion,
     });
   }
 }
