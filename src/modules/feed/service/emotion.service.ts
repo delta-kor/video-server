@@ -25,12 +25,7 @@ class EmotionService extends Service {
     }
 
     const total = result.reduce((a, b) => a + b, 0);
-    const absoluteTotal = [total * 0.33, total * 0.29, total * 0.21, total * 0.15];
-    const difference = absoluteTotal.map((item, index) => result[index] - item);
-    const minDifference = -Math.min(...difference);
-    const absoluteDifference = difference.map(item => item + minDifference);
-    const differenceTotal = absoluteDifference.reduce((a, b) => a + b, 0);
-    const differenceRatio = absoluteDifference.map(item => item / differenceTotal);
+    const differenceRatio = result.map(item => item / total);
 
     return differenceRatio as EmotionData;
   }
