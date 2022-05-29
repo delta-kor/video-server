@@ -20,6 +20,7 @@ class VideoController extends Controller {
     this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
     this.mounter.get('/:id', this.stream.bind(this));
     this.mounter.get('/:id/info', this.info.bind(this));
+    this.mounter.get('/:id/beacon', this.beacon.bind(this));
   }
 
   private async upload(req: TypedRequest<UploadDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
@@ -61,6 +62,13 @@ class VideoController extends Controller {
       date: video.date.getTime(),
       path,
     });
+  }
+
+  private async beacon(req: TypedRequest, res: TypedResponse): Promise<void> {
+    const id = req.params.id;
+    const time = req.query.time;
+    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] ID=${id} T=${time}`);
+    res.send();
   }
 }
 
