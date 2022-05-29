@@ -126,6 +126,18 @@ class FeedService extends Service {
 
     const emotionalCount = emotionData.map(item => Math.round(item * count));
 
+    if (emotionalCount[0] + emotionalCount[1] > emotionalCount[2] + emotionalCount[3]) {
+      emotionalCount[0]++;
+      emotionalCount[1]++;
+      emotionalCount[2]--;
+      emotionalCount[3]--;
+    } else {
+      emotionalCount[0]--;
+      emotionalCount[1]--;
+      emotionalCount[2]++;
+      emotionalCount[3]++;
+    }
+
     const emotionStoreArray = [];
     for (const item of EmotionStore) {
       emotionStoreArray.push([item[0], ...item[1]]);
