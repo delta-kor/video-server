@@ -1,17 +1,20 @@
-import NotFoundException from '../../exceptions/not-found.exception';
-import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
-import Service from '../../services/base.service';
-import ServiceProvider from '../../services/provider.service';
-import pickItem from '../../utils/pick.util';
-import Video from '../video/video.interface';
-import VideoService from '../video/video.service';
-import UploadPlaylistDto from './dto/upload-playlist.dto';
-import Playlist from './interface/playlist.interface';
-import PlaylistModel from './model/playlist.model';
+import NotFoundException from '../../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../../exceptions/unprocessable-entity.exception';
+import Service from '../../../services/base.service';
+import ServiceProvider from '../../../services/provider.service';
+import pickItem from '../../../utils/pick.util';
+import Video from '../../video/video.interface';
+import VideoService from '../../video/video.service';
+import UploadPlaylistDto from '../dto/upload-playlist.dto';
+import Playlist from '../interface/playlist.interface';
+import PlaylistModel from '../model/playlist.model';
+import EmotionStore, { PlaytimeData } from '../store/emotion.store';
+import EmotionService from './emotion.service';
 
 class FeedService extends Service {
   private readonly playlists: Map<string, Playlist> = new Map();
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
+  private readonly emotionService: EmotionService = ServiceProvider.get(EmotionService);
 
   public async load(): Promise<void> {
     const playlists: Playlist[] = await PlaylistModel.find().sort({ order: 1 });
@@ -54,7 +57,7 @@ class FeedService extends Service {
     this.playlists.delete(id);
   }
 
-  public getRecommends(id: string, count: number): Video[] {
+  public getVideoRecommends(id: string, count: number): Video[] {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
@@ -108,6 +111,45 @@ class FeedService extends Service {
     for (let i = result.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [result[i], result[j]] = [result[j], result[i]];
+    }
+
+    return result;
+  }
+
+  public getUserRecommends(data: PlaytimeData, count: number = 20): Video[] {
+    const result: Video[] = [];
+    const emotionData = this.emotionService.getEmotionData(data);
+    const emotionalCount = emotionData.map(item => Math.round(item * count));
+
+    const emotionStoreArray = [];
+    for (const item of EmotionStore) {
+      emotionStoreArray.push([item[0], ...item[1]]);
+    }
+
+    for (let i = emotionStoreArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [emotionStoreArray[i], emotionStoreArray[j]] = [emotionStoreArray[j], emotionStoreArray[i]];
+    }
+
+    const titlesSet = new Set<string>();
+    const semiResult = [];
+
+    for (let i = 0; i < 4; i++) {
+      const count = emotionalCount[i];
+      const sortedTitles = emotionStoreArray
+        .filter(item => !titlesSet.has(item[0] as string))
+        .sort((a, b) => (b[i + 1] as number) - (a[i + 1] as number));
+      const pickedTitles = sortedTitles.slice(0, count).map(item => item[0] as string);
+      pickedTitles.forEach(title => titlesSet.add(title));
+      semiResult.push(pickedTitles);
+    }
+
+    const titles = semiResult.sort((a, b) => b.length - a.length).flat();
+
+    for (const title of titles) {
+      const targets = this.videoService.getByTitle(title);
+      const video = targets[(targets.length * Math.random()) | 0];
+      result.push(video);
     }
 
     return result;

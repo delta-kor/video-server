@@ -8,7 +8,8 @@ import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
 import FeedController from './modules/feed/feed.controller';
-import FeedService from './modules/feed/feed.service';
+import EmotionService from './modules/feed/service/emotion.service';
+import FeedService from './modules/feed/service/feed.service';
 import LiveGateway from './modules/live/live.gateway';
 import ChatService from './modules/live/service/chat.service';
 import LiveService from './modules/live/service/live.service';
@@ -36,6 +37,7 @@ const services: typeof Service[] = [
   VideoService,
   CategoryService,
   MusicService,
+  EmotionService,
   FeedService,
   RadioService,
   UserService,

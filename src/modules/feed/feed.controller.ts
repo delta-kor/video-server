@@ -5,8 +5,9 @@ import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
 import VideoService from '../video/video.service';
 import UploadPlaylistDto from './dto/upload-playlist.dto';
+import UserRecommendsDto from './dto/user-recommends.dto';
 import FeedResponse from './feed.response';
-import FeedService from './feed.service';
+import FeedService from './service/feed.service';
 
 class FeedController extends Controller {
   public readonly path: string = '/feed';
@@ -18,7 +19,8 @@ class FeedController extends Controller {
     this.mounter.post('/playlist', ValidateGuard(UploadPlaylistDto), this.uploadPlaylist.bind(this));
     this.mounter.get('/playlist/:id', this.getOnePlaylist.bind(this));
     this.mounter.delete('/playlist/:id', ManageGuard, this.deletePlaylist.bind(this));
-    this.mounter.get('/recommends/:id', this.getRecommends.bind(this));
+    this.mounter.get('/recommends/:id', this.getVideoRecommends.bind(this));
+    this.mounter.post('/recommends', ValidateGuard(UserRecommendsDto), this.getUserRecommends.bind(this));
   }
 
   private async uploadPlaylist(
@@ -79,13 +81,34 @@ class FeedController extends Controller {
     res.json({ ok: true });
   }
 
-  private async getRecommends(req: TypedRequest, res: TypedResponse<FeedResponse.GetRecommends>): Promise<void> {
+  private async getVideoRecommends(req: TypedRequest, res: TypedResponse<FeedResponse.GetRecommends>): Promise<void> {
     const id = req.params.id;
     const count = parseInt(req.query.count) || 12;
 
     if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
-    const videos = this.feedService.getRecommends(id, count);
+    const videos = this.feedService.getVideoRecommends(id, count);
+    res.json({
+      ok: true,
+      videos: videos.map(video => ({
+        id: video.id,
+        title: video.title,
+        description: video.description,
+        duration: video.duration,
+        is_4k: video.is_4k,
+      })),
+    });
+  }
+
+  private async getUserRecommends(
+    req: TypedRequest<UserRecommendsDto>,
+    res: TypedResponse<FeedResponse.GetRecommends>
+  ): Promise<void> {
+    const count = parseInt(req.query.count) || 20;
+
+    const data = req.body.data;
+    const videos = this.feedService.getUserRecommends(data, count);
+
     res.json({
       ok: true,
       videos: videos.map(video => ({
