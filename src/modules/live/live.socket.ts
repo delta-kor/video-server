@@ -7,6 +7,7 @@ import { ChatInfo } from './interface/chat.interface';
 import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
 import ChatService from './service/chat.service';
+import CinemaService from './service/cinema.service';
 import UserService from './service/user.service';
 
 enum SocketState {
@@ -17,6 +18,7 @@ enum SocketState {
 class LiveSocket extends Socket {
   private readonly userService: UserService = ServiceProvider.get(UserService);
   private readonly chatService: ChatService = ServiceProvider.get(ChatService);
+  private readonly cinemaService: CinemaService = ServiceProvider.get(CinemaService);
 
   public state: SocketState = SocketState.LOITERING;
   public ip: string | null = null;
@@ -41,29 +43,31 @@ class LiveSocket extends Socket {
 
   protected async onPacket(packet: any): Promise<void> {
     const type = packet.type;
-
     if (this.state === SocketState.LOITERING)
       switch (type) {
         case 'hello':
-          await this.onHelloPacketReceived(packet);
-          break;
+          return this.onHelloPacketReceived(packet);
         default:
           throw new SocketException();
       }
-    else if (this.state === SocketState.ACTIVE)
+    else if (this.state === SocketState.ACTIVE) {
+      if (this.user!.isStaff()) {
+        switch (type) {
+          case 'add-media':
+            return this.onAddMediaPacketReceived(packet);
+        }
+      }
       switch (type) {
         case 'user-sync':
-          await this.onUserSyncPacketReceived(packet);
-          break;
+          return this.onUserSyncPacketReceived(packet);
         case 'chat-message':
-          await this.onChatMessagePacketReceived(packet);
-          break;
+          return this.onChatMessagePacketReceived(packet);
         case 'chat-sync':
-          await this.onChatSyncPacketReceived(packet);
-          break;
+          return this.onChatSyncPacketReceived(packet);
         default:
-          throw new SocketException();
+          throw new SocketException('잘못된 Packet Id 이에요');
       }
+    }
   }
 
   private async onHelloPacketReceived(packet: ClientPacket.Hello): Promise<void> {
@@ -120,6 +124,11 @@ class LiveSocket extends Socket {
       last: infos.length !== Constants.CHAT_SPLIT_COUNT,
     };
     this.sendPacket(response);
+  }
+
+  private async onAddMediaPacketReceived(packet: ClientPacket.Manage.AddMedia): Promise<void> {
+    const data = packet.media;
+    await this.cinemaService.addMedia(data);
   }
 }
 

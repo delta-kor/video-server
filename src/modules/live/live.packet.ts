@@ -1,4 +1,5 @@
 import { ChatContent, ChatInfo } from './interface/chat.interface';
+import { MediaInfo } from './interface/cinema.interface';
 import { UserInfo } from './interface/user.interface';
 
 interface PacketBase<T extends string = any> {
@@ -14,6 +15,12 @@ interface ServerPacketBase<T extends string = any> extends PacketBase<T> {
 }
 
 namespace ClientPacket {
+  export namespace Manage {
+    export interface AddMedia extends ClientPacketBase<'add-media'> {
+      media: MediaInfo;
+    }
+  }
+
   export interface Hello extends ClientPacketBase<'hello'> {
     ticket: string;
     token: string | null;

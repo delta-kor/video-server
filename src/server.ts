@@ -12,6 +12,7 @@ import EmotionService from './modules/feed/service/emotion.service';
 import FeedService from './modules/feed/service/feed.service';
 import LiveGateway from './modules/live/live.gateway';
 import ChatService from './modules/live/service/chat.service';
+import CinemaService from './modules/live/service/cinema.service';
 import LiveService from './modules/live/service/live.service';
 import SocketService from './modules/live/service/socket.service';
 import UserService from './modules/live/service/user.service';
@@ -40,6 +41,7 @@ const services: typeof Service[] = [
   EmotionService,
   FeedService,
   RadioService,
+  CinemaService,
   UserService,
   SocketService,
   ChatService,
