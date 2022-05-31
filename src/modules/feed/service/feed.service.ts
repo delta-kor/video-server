@@ -138,6 +138,8 @@ class FeedService extends Service {
       emotionalCount[3]++;
     }
 
+    emotionalCount.map((item, index) => (emotionalCount[index] = Math.max(item, 0)));
+
     const emotionStoreArray = [];
     for (const item of EmotionStore) {
       emotionStoreArray.push([item[0], ...item[1]]);
