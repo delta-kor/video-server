@@ -11,8 +11,6 @@ interface Media extends Document {
   action?: Action;
   duration: number;
   isSequence: boolean;
-
-  toJSON(): any;
 }
 
 namespace MediaData {

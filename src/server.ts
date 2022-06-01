@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import App from './app';
 import Controller from './classes/controller.class';
+import AdController from './modules/ad/ad.controller';
+import AdService from './modules/ad/ad.service';
 import BuilderService from './modules/builder/builder.service';
 import CategoryController from './modules/category/category.controller';
 import CategoryService from './modules/category/category.service';
@@ -46,6 +48,7 @@ const services: typeof Service[] = [
   UserService,
   ChatService,
   LiveService,
+  AdService,
 ];
 
 const gateway = LiveGateway;
@@ -66,6 +69,7 @@ app
       new MusicController(),
       new FeedController(),
       new RadioController(),
+      new AdController(),
     ];
     return app.load(controllers, gateway);
   })
