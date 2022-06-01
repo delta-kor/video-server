@@ -43,13 +43,13 @@ class ChatService extends Service {
     return result.reverse();
   }
 
-  private validateChatContent(content: ChatContent): void {
+  private sanitizeChatContent(content: ChatContent): ChatContent {
     switch (content.type) {
       case 'text':
         if (typeof content.text! !== 'string') throw new SocketException();
         if (content.text.length === 0) throw new SocketException('메시지를 입력해주세요');
         if (content.text.length > 50) throw new SocketException('50자 이하로 입력해주세요');
-        break;
+        return { type: 'text', text: content.text };
       case 'emoticon':
         throw new SocketException('존재하지 않는 이모티콘이에요');
       default:
@@ -77,7 +77,7 @@ class ChatService extends Service {
   }
 
   public onMessageSent(content: ChatContent, user: User): void {
-    this.validateChatContent(content);
+    content = this.sanitizeChatContent(content);
 
     const chat = new ChatModel({ user_id: user.id, content });
     this.sendMessage(chat);

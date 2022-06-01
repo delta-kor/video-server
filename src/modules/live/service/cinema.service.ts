@@ -23,8 +23,7 @@ class CinemaService extends Service {
   };
 
   public async load(): Promise<void> {
-    const medias: Media[] = await MediaModel.find().sort({ _id: 1 });
-    this.state.cue.push(...medias);
+    this.state.cue = await MediaModel.find().sort({ _id: 1 });
   }
 
   public sendCueSyncPacket(socket?: LiveSocket, packetId: number | null = null): void {

@@ -3,7 +3,7 @@ import generateId from '../../../utils/id.util';
 import { Media } from '../interface/cinema.interface';
 
 const MediaSchema = new Schema<Media>({
-  id: { type: String, required: true, unique: true, default: () => generateId(16) },
+  id: { type: String, required: true, unique: true, default: () => generateId(12) },
   data: { type: Object, required: true },
   action: { type: Object },
   duration: { type: Number, required: true },
