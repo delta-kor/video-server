@@ -43,6 +43,7 @@ class LiveSocket extends Socket {
 
   protected async onPacket(packet: any): Promise<void> {
     const type = packet.type;
+
     if (this.state === SocketState.LOITERING)
       switch (type) {
         case 'hello':
@@ -53,6 +54,8 @@ class LiveSocket extends Socket {
     else if (this.state === SocketState.ACTIVE) {
       if (this.user!.isStaff()) {
         switch (type) {
+          case 'cue-sync':
+            return this.onCueSyncPacketReceived(packet);
           case 'add-media':
             return this.onAddMediaPacketReceived(packet);
         }
@@ -124,6 +127,10 @@ class LiveSocket extends Socket {
       last: infos.length !== Constants.CHAT_SPLIT_COUNT,
     };
     this.sendPacket(response);
+  }
+
+  private async onCueSyncPacketReceived(packet: ClientPacket.Manage.CueSync): Promise<void> {
+    this.cinemaService.sendCueSyncPacket(this, packet.packet_id);
   }
 
   private async onAddMediaPacketReceived(packet: ClientPacket.Manage.AddMedia): Promise<void> {

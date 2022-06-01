@@ -2,8 +2,11 @@ import SocketException from '../../../exceptions/socket.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
 import VideoService from '../../video/video.service';
-import { Media, MediaInfo } from '../interface/cinema.interface';
+import { Media, MediaUpload } from '../interface/cinema.interface';
+import { ServerPacket } from '../live.packet';
+import LiveSocket from '../live.socket';
 import MediaModel from '../model/media.model';
+import SocketService from './socket.service';
 
 interface CinemaState {
   playing: boolean;
@@ -11,6 +14,7 @@ interface CinemaState {
 }
 
 class CinemaService extends Service {
+  private readonly socketService: SocketService = ServiceProvider.get(SocketService);
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
 
   private readonly state: CinemaState = {
@@ -18,14 +22,30 @@ class CinemaService extends Service {
     cue: [],
   };
 
+  public async load(): Promise<void> {
+    const medias: Media[] = await MediaModel.find().sort({ _id: 1 });
+    this.state.cue.push(...medias);
+  }
+
+  public sendCueSyncPacket(socket?: LiveSocket, packetId: number | null = null): void {
+    const packet: ServerPacket.Manage.CueSync = {
+      type: 'cue-sync',
+      packet_id: packetId,
+      media: this.state.cue,
+    };
+    if (socket) socket.sendPacket(packet);
+    else this.socketService.sendToAllStaffSockets(packet);
+  }
+
   private async addMediaToQue(media: Media): Promise<void> {
     await media.save();
     this.state.cue.push(media);
+    this.sendCueSyncPacket();
   }
 
-  public async addMedia(info: MediaInfo): Promise<Media> {
-    const data = info.data;
-    const action = info.action;
+  public async addMedia(upload: MediaUpload): Promise<Media> {
+    const data = upload.data;
+    const action = upload.action;
     switch (data.type) {
       case 'empty': {
         const media = new MediaModel({ data, action, duration: data.duration, isSequence: false });

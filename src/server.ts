@@ -41,9 +41,9 @@ const services: typeof Service[] = [
   EmotionService,
   FeedService,
   RadioService,
+  SocketService,
   CinemaService,
   UserService,
-  SocketService,
   ChatService,
   LiveService,
 ];

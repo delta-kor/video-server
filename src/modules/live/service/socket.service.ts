@@ -40,6 +40,16 @@ class SocketService extends Service {
     }
   }
 
+  public sendToAllStaffSockets(packet: ServerPacketBase, except?: LiveSocket, exceptUser?: User): void {
+    for (const socket of this.sockets) {
+      if (socket.state !== SocketState.ACTIVE) continue;
+      if (except && except === socket) continue;
+      if (exceptUser && socket.user!.id === exceptUser.id) continue;
+      if (!socket.user!.isStaff()) continue;
+      socket.sendPacket(packet);
+    }
+  }
+
   public userExists(user: User): boolean {
     for (const socket of this.sockets) {
       if (socket.user === user) return true;

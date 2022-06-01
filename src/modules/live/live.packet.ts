@@ -1,5 +1,5 @@
 import { ChatContent, ChatInfo } from './interface/chat.interface';
-import { MediaInfo } from './interface/cinema.interface';
+import { Media, MediaUpload } from './interface/cinema.interface';
 import { UserInfo } from './interface/user.interface';
 
 interface PacketBase<T extends string = any> {
@@ -16,8 +16,10 @@ interface ServerPacketBase<T extends string = any> extends PacketBase<T> {
 
 namespace ClientPacket {
   export namespace Manage {
+    export interface CueSync extends ClientPacketBase<'cue-sync'> {}
+
     export interface AddMedia extends ClientPacketBase<'add-media'> {
-      media: MediaInfo;
+      media: MediaUpload;
     }
   }
 
@@ -40,6 +42,12 @@ namespace ClientPacket {
 }
 
 namespace ServerPacket {
+  export namespace Manage {
+    export interface CueSync extends ServerPacketBase<'cue-sync'> {
+      media: Media[];
+    }
+  }
+
   export interface Hello extends ServerPacketBase<'hello'> {
     server_time: number;
     user_info: UserInfo;

@@ -10,6 +10,10 @@ const MediaSchema = new Schema<Media>({
   isSequence: { type: Boolean, required: true },
 });
 
+MediaSchema.methods.toJSON = function (this: Media): Partial<Media> {
+  return { id: this.id, data: this.data, action: this.action, duration: this.duration, isSequence: this.isSequence };
+};
+
 const MediaModel = model<Media>('media', MediaSchema);
 
 export default MediaModel;

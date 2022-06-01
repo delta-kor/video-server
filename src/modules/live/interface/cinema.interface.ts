@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-interface MediaInfo {
+interface MediaUpload {
   data: MediaData;
   action?: Action;
 }
@@ -11,6 +11,8 @@ interface Media extends Document {
   action?: Action;
   duration: number;
   isSequence: boolean;
+
+  toJSON(): any;
 }
 
 namespace MediaData {
@@ -44,4 +46,4 @@ namespace Action {
 type Action = Action.IZFLIXVideoVote;
 type MediaData = MediaData.Empty | MediaData.IZFLIXVideo | MediaData.Youtube;
 
-export { Media, MediaInfo, Action, MediaData };
+export { Media, MediaUpload, Action, MediaData };
