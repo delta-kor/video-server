@@ -1,4 +1,5 @@
 import Controller from '../../classes/controller.class';
+import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
 import AdResponse from './ad.response';
@@ -10,7 +11,7 @@ class AdController extends Controller {
   private readonly adService: AdService = ServiceProvider.get(AdService);
 
   protected mount(): void {
-    this.mounter.post('/', ValidateGuard(AddDto), this.add.bind(this));
+    this.mounter.post('/', ManageGuard, ValidateGuard(AddDto), this.add.bind(this));
     this.mounter.get('/', this.getAll.bind(this));
   }
 
