@@ -1,5 +1,7 @@
 import { Document } from 'mongoose';
 
+type VideoOptions = 'music' | 'category' | 'recommend';
+
 interface Video extends Document {
   id: string;
   cdnId: string;
@@ -12,7 +14,7 @@ interface Video extends Document {
   duration: number;
   is_4k: boolean;
 
-  private: boolean;
+  options: VideoOptions[];
 }
 
 export default Video;

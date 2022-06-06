@@ -16,9 +16,8 @@ class VideoService extends Service {
     this.videos.push(...videos);
   }
 
-  public getAll(privateRequest: boolean = false): Video[] {
-    if (privateRequest) return this.videos;
-    return this.videos.filter(video => !video.private);
+  public getAll(): Video[] {
+    return this.videos;
   }
 
   public async upload(data: UploadDto): Promise<Video> {
@@ -37,16 +36,16 @@ class VideoService extends Service {
     return video;
   }
 
-  public get(id: string, privateRequest: boolean = false): Video | null {
-    for (const video of this.getAll(privateRequest)) {
+  public get(id: string): Video | null {
+    for (const video of this.getAll()) {
       if (video.id === id) return video;
     }
     return null;
   }
 
-  public getByCategory(category: string[], privateRequest: boolean = false): Video[] {
+  public getByCategory(category: string[]): Video[] {
     const result: Video[] = [];
-    for (const video of this.getAll(privateRequest)) {
+    for (const video of this.getAll()) {
       if (category.every((value, index) => video.category[index] === value)) {
         result.push(video);
       }
@@ -54,16 +53,16 @@ class VideoService extends Service {
     return result;
   }
 
-  public getByTitle(title: string, privateRequest: boolean = false): Video[] {
+  public getByTitle(title: string): Video[] {
     const result: Video[] = [];
-    for (const video of this.getAll(privateRequest)) {
+    for (const video of this.getAll()) {
       if (video.title === title) result.push(video);
     }
     return result;
   }
 
-  public async getStreamingInfo(id: string, quality: number, privateRequest: boolean = false): Promise<StreamingInfo> {
-    const video = this.get(id, privateRequest);
+  public async getStreamingInfo(id: string, quality: number): Promise<StreamingInfo> {
+    const video = this.get(id);
     if (!video) throw new NotFoundException();
 
     const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k : video.cdnId;
