@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant';
+type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant' | 'vod';
 
 interface Video extends Document {
   id: string;
