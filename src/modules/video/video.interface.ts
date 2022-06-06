@@ -15,6 +15,9 @@ interface Video extends Document {
   is_4k: boolean;
 
   options: VideoOptions[];
+
+  hasOption(option: VideoOptions): boolean;
 }
 
+export { VideoOptions };
 export default Video;

@@ -4,7 +4,7 @@ import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
 import UploadDto from './dto/upload.dto';
-import Video from './video.interface';
+import Video, { VideoOptions } from './video.interface';
 import VideoModel from './video.model';
 
 class VideoService extends Service {
@@ -18,6 +18,10 @@ class VideoService extends Service {
 
   public getAll(): Video[] {
     return this.videos;
+  }
+
+  public getAllFiltered(option: VideoOptions): Video[] {
+    return this.getAll().filter(video => video.hasOption(option));
   }
 
   public async upload(data: UploadDto): Promise<Video> {
@@ -45,7 +49,7 @@ class VideoService extends Service {
 
   public getByCategory(category: string[]): Video[] {
     const result: Video[] = [];
-    for (const video of this.getAll()) {
+    for (const video of this.getAllFiltered('category')) {
       if (category.every((value, index) => video.category[index] === value)) {
         result.push(video);
       }
@@ -53,9 +57,9 @@ class VideoService extends Service {
     return result;
   }
 
-  public getByTitle(title: string): Video[] {
+  public getByTitle(title: string, option?: VideoOptions): Video[] {
     const result: Video[] = [];
-    for (const video of this.getAll()) {
+    for (const video of option ? this.getAllFiltered(option) : this.getAll()) {
       if (video.title === title) result.push(video);
     }
     return result;

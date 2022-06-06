@@ -17,7 +17,7 @@ class CategoryService extends Service {
   }
 
   public async load(): Promise<void> {
-    const videos = this.videoService.getAll();
+    const videos = this.videoService.getAllFiltered('category');
 
     const categoriesMap: Map<string, Map<string, Map<string, Video[]>>> = new Map();
     for (const video of videos) {

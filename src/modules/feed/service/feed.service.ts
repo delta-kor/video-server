@@ -171,7 +171,7 @@ class FeedService extends Service {
     const titles = semiResult.sort((a, b) => b.length - a.length).flat();
 
     for (const title of titles) {
-      const targets = this.videoService.getByTitle(title);
+      const targets = this.videoService.getByTitle(title, 'recommend');
       const video = targets[(targets.length * Math.random()) | 0];
       result.push(video);
     }

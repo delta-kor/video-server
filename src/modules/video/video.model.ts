@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
-import Video from './video.interface';
+import Video, { VideoOptions } from './video.interface';
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -23,6 +23,10 @@ VideoSchema.virtual('duration').get(function (this: Video): number {
 VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
   return !!this.cdnId_4k;
 });
+
+VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {
+  return this.options.includes(option);
+};
 
 const VideoModel = model<Video>('video', VideoSchema);
 

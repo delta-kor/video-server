@@ -15,7 +15,7 @@ class MusicService extends Service {
   }
 
   public async load(): Promise<void> {
-    const videos = this.videoService.getAll();
+    const videos = this.videoService.getAllFiltered('music');
 
     for (const video of videos) {
       const title = video.title;
