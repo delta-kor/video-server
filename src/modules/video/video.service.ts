@@ -31,7 +31,7 @@ class VideoService extends Service {
       description: data.description,
       date: new Date(data.date),
       category: data.category,
-      private: data.private,
+      options: data.options,
     });
     await video.save();
 
