@@ -8,9 +8,9 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node .\"",
     "build": "tsc",
-    "video:build": "ts-node run/build.ts",
-    "video:thumbnail": "ts-node run/thumbnail.ts",
-    "radio:build": "ts-node run/build-radio.ts",
+    "build:video": "ts-node run/build.ts",
+    "build:radio": "ts-node run/build-radio.ts",
+    "build:thumbnail": "ts-node run/thumbnail.ts",
     "export": "ts-node run/export.ts",
     "deploy": "node .",
     "start": "yarn build && yarn deploy"
