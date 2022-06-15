@@ -12,7 +12,7 @@ class VideoService extends Service {
   private readonly videos: Video[] = [];
 
   public async load(): Promise<void> {
-    const videos = await VideoModel.find().sort({ _id: 1, date: 1 });
+    const videos = await VideoModel.find().sort({ date: 1, _id: 1 });
     this.videos.push(...videos);
   }
 
