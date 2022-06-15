@@ -68,7 +68,8 @@ class VideoController extends Controller {
   private async beacon(req: TypedRequest, res: TypedResponse): Promise<void> {
     const id = req.params.id;
     const time = req.query.time;
-    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] ID=${id} T=${time}`);
+    const total = req.query.total;
+    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] ID=${id} T=${time} TT=${total}`);
     res.send();
   }
 }
