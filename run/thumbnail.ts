@@ -45,9 +45,11 @@ mongoose.connect(databaseUrl).then(async () => {
         const duration = metadata.format.duration!;
         const roundedDuration = Math.round(duration);
 
+        const limitedDuration = Math.min(duration, 60 * 5);
+
         ffmpeg(cdnUrl.url)
           .thumbnail({
-            timestamps: [duration * 0.3, duration * 0.4],
+            timestamps: [limitedDuration * 0.3, limitedDuration * 0.4],
             filename: `${id}.${roundedDuration}.%i.jpg`,
             folder: thumbnailPath,
             size: '720x405',
