@@ -1,5 +1,6 @@
 import Controller from '../../classes/controller.class';
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -7,7 +8,7 @@ import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
 import UploadDto from './dto/upload.dto';
-import VideoResponse from './video.response';
+import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
 
 class VideoController extends Controller {
@@ -18,6 +19,7 @@ class VideoController extends Controller {
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
+    this.mounter.get('/list', this.list.bind(this));
     this.mounter.get('/:id', this.stream.bind(this));
     this.mounter.get('/:id/info', this.info.bind(this));
     this.mounter.get('/:id/beacon', this.beacon.bind(this));
@@ -63,6 +65,23 @@ class VideoController extends Controller {
       date: video.date.getTime(),
       path,
     });
+  }
+
+  private async list(req: TypedRequest, res: TypedResponse<VideoResponse.List>): Promise<void> {
+    const query = req.query.ids as string;
+    if (!query) throw new UnprocessableEntityException('ID를 입력해주세요');
+
+    const ids = query.split(',').map(item => item.trim());
+    const list: ShortVideoInfo[] = [];
+
+    for (const id of ids) {
+      const video = this.videoService.get(id);
+      if (!video) continue;
+
+      list.push({ id, title: video.title, description: video.description, duration: video.duration });
+    }
+
+    res.json({ ok: true, data: list });
   }
 
   private async beacon(req: TypedRequest, res: TypedResponse): Promise<void> {
