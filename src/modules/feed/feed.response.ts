@@ -34,6 +34,10 @@ namespace FeedResponse {
     videos: VideoItem[];
     emotion: EmotionData;
   }
+
+  export interface GetEmotion extends ApiResponse {
+    emotion: EmotionData;
+  }
 }
 
 export default FeedResponse;

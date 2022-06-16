@@ -21,6 +21,7 @@ class FeedController extends Controller {
     this.mounter.delete('/playlist/:id', ManageGuard, this.deletePlaylist.bind(this));
     this.mounter.get('/recommends/:id', this.getVideoRecommends.bind(this));
     this.mounter.post('/recommends', ValidateGuard(UserRecommendsDto), this.getUserRecommends.bind(this));
+    this.mounter.post('/emotion', ValidateGuard(UserRecommendsDto), this.getEmotion.bind(this));
   }
 
   private async uploadPlaylist(
@@ -125,6 +126,14 @@ class FeedController extends Controller {
       })),
       emotion,
     });
+  }
+
+  private async getEmotion(
+    req: TypedRequest<UserRecommendsDto>,
+    res: TypedResponse<FeedResponse.GetEmotion>
+  ): Promise<void> {
+    const emotion = this.feedService.getEmotionData(req.body.data);
+    res.json({ ok: true, emotion });
   }
 }
 

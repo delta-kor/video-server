@@ -178,6 +178,10 @@ class FeedService extends Service {
 
     return [result.slice(0, 20), emotionData];
   }
+
+  public getEmotionData(data: PlaytimeData): EmotionData {
+    return this.emotionService.getEmotionData(data);
+  }
 }
 
 export default FeedService;
