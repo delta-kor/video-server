@@ -75,7 +75,7 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k : video.cdnId;
+    const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k! : video.cdnId;
     const info = await this.deliverService.getCdnInfo(cdnId, quality);
 
     if (video.is_4k) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];

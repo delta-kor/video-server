@@ -2,11 +2,12 @@ import crypto from 'crypto';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import VideoService from '../video/video.service';
-import Music from './music.interface';
+import { Album, Music } from './music.interface';
+import { AlbumStore, MusicStore } from './music.store';
 
 class MusicService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
-  private readonly music: Map<string, Music> = new Map();
+  private readonly album: Map<string, Map<string, Music>> = new Map();
 
   private static hashTitle(title: string): string {
     const hasher = crypto.createHash('md5');
@@ -15,23 +16,31 @@ class MusicService extends Service {
   }
 
   public async load(): Promise<void> {
+    const albumTitles = Object.values(AlbumStore);
+    for (const title of albumTitles) this.album.set(title, new Map());
+
     const videos = this.videoService.getAllFiltered('music');
 
     for (const video of videos) {
+      const albumTitle = MusicStore.get(video.title);
+      if (!albumTitle) continue;
+
       const title = video.title;
       const hash = MusicService.hashTitle(title);
 
-      if (!this.music.has(hash)) this.music.set(hash, { title, hash, videos: [] });
-      this.music.get(hash)!.videos.push(video);
+      const musicMap = this.album.get(albumTitle)!;
+
+      if (!musicMap.has(hash)) musicMap.set(hash, { title, hash, videos: [] });
+      musicMap.get(hash)!.videos.push(video);
     }
   }
 
-  public viewAll(): Music[] {
-    return Array.from(this.music.values());
-  }
+  public getAllAlbums(): Album[] {
+    const albums: Album[] = [];
+    for (const [albumTitle, musicMap] of this.album.entries())
+      albums.push({ id: MusicService.hashTitle(albumTitle), title: albumTitle, count: musicMap.size });
 
-  public viewOne(hash: string): Music | null {
-    return this.music.get(hash) || null;
+    return albums;
   }
 }
 
