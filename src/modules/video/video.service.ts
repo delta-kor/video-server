@@ -1,4 +1,5 @@
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
@@ -25,8 +26,13 @@ class VideoService extends Service {
   }
 
   public async upload(data: UploadDto): Promise<Video> {
+    if (!['performance', 'vod'].includes(data.type)) {
+      throw new UnprocessableEntityException('잘못된 영상 타입이에요');
+    }
+
     const video: Video = new VideoModel({
       cdnId: data.cdnId,
+      type: data.type,
       title: data.title,
       description: data.description,
       date: new Date(data.date),

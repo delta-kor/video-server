@@ -8,6 +8,7 @@ const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
   cdnId: { type: String, required: true },
   cdnId_4k: { type: String, required: false },
+  type: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: Date, required: true },

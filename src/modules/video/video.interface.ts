@@ -1,11 +1,14 @@
 import { Document } from 'mongoose';
 
-type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant' | 'vod';
+type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant';
+type VideoType = 'performance' | 'vod';
 
 interface Video extends Document {
   id: string;
   cdnId: string;
-  cdnId_4k: string;
+  cdnId_4k?: string;
+
+  type: VideoType;
   title: string;
   description: string;
   date: Date;
@@ -15,9 +18,8 @@ interface Video extends Document {
   is_4k: boolean;
 
   options: VideoOptions[];
-
   hasOption(option: VideoOptions): boolean;
 }
 
-export { VideoOptions };
+export { VideoOptions, VideoType };
 export default Video;
