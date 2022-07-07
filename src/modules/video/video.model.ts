@@ -25,6 +25,18 @@ VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
   return !!this.cdnId_4k;
 });
 
+VideoSchema.method('serialize', function (this: Video, ...keys: (keyof Video)[]): Video {
+  const result: any = {};
+  for (const key of keys) {
+    let value: any = this[key];
+    if (value instanceof Date) value = value.getTime();
+
+    result[key] = value;
+  }
+
+  return result;
+});
+
 VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {
   return this.options.includes(option);
 };

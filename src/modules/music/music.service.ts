@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import VideoService from '../video/video.service';
@@ -41,6 +42,23 @@ class MusicService extends Service {
       albums.push({ id: MusicService.hashTitle(albumTitle), title: albumTitle, count: musicMap.size });
 
     return albums;
+  }
+
+  public getOneAlbum(id: string): { album: Album; musics: Music[] } {
+    let musicMap: Map<string, Music>;
+    let title: string;
+
+    for (const key of this.album.keys()) {
+      if (MusicService.hashTitle(key) === id) {
+        musicMap = this.album.get(key)!;
+        title = key;
+        break;
+      }
+    }
+
+    if (!musicMap! || !title!) throw new NotFoundException();
+
+    return { album: { id, title, count: musicMap.size }, musics: [...musicMap.values()] };
   }
 }
 
