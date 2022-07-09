@@ -13,7 +13,7 @@ class MusicController extends Controller {
     this.mounter.get('/album/:id', this.getOneAlbum.bind(this));
   }
 
-  private async getAllAlbums(req: TypedRequest, res: TypedResponse<MusicResponse.GetAllAlbums>): Promise<void> {
+  private async getAllAlbums(_req: TypedRequest, res: TypedResponse<MusicResponse.GetAllAlbums>): Promise<void> {
     const albums = this.musicService.getAllAlbums();
     res.json({ ok: true, albums });
   }
