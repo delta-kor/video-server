@@ -30,6 +30,13 @@ class CategoryService extends Service {
     return result;
   }
 
+  public createPath(paths: string[]): Path[] {
+    return CategoryService.hashMultiplePath(paths).map(id => {
+      const parentFolder = this.folders.get(id)!;
+      return { id, title: parentFolder.title, count: parentFolder.count };
+    });
+  }
+
   private addFolder(path: string[], video: Video): void {
     const folderHash = CategoryService.hashPath(...path);
 
@@ -70,12 +77,7 @@ class CategoryService extends Service {
     const itemFiles = this.fileItems.get(pathId);
 
     const folder = this.folders.get(pathId);
-    const path: Path[] = !folder
-      ? []
-      : folder.path.map(id => {
-          const parentFolder = this.folders.get(id)!;
-          return { id, title: parentFolder.title, count: parentFolder.count };
-        });
+    const path: Path[] = !folder ? [] : this.createPath(folder.path);
 
     if (itemFolders)
       return {
