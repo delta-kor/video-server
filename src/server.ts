@@ -11,9 +11,11 @@ import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
-import FeedController from './modules/feed/feed.controller';
+import PlaylistController from './modules/feed/controller/playlist.controller';
+import RecommendController from './modules/feed/controller/recommend.controller';
 import EmotionService from './modules/feed/service/emotion.service';
-import FeedService from './modules/feed/service/feed.service';
+import PlaylistService from './modules/feed/service/playlist.service';
+import RecommendService from './modules/feed/service/recommend.service';
 import LiveGateway from './modules/live/live.gateway';
 import ChatService from './modules/live/service/chat.service';
 import CinemaService from './modules/live/service/cinema.service';
@@ -44,7 +46,8 @@ const services: typeof Service[] = [
   MusicService,
   CalendarService,
   EmotionService,
-  FeedService,
+  PlaylistService,
+  RecommendService,
   RadioService,
   SocketService,
   CinemaService,
@@ -71,7 +74,8 @@ app
       new CategoryController(),
       new MusicController(),
       new CalendarController(),
-      new FeedController(),
+      new PlaylistController(),
+      new RecommendController(),
       new RadioController(),
       new AdController(),
     ];

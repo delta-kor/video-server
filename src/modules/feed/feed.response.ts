@@ -16,7 +16,7 @@ interface VideoItem {
 }
 
 namespace FeedResponse {
-  export interface UploadPlaylist extends ApiResponse {
+  export interface CreatePlaylist extends ApiResponse {
     id: string;
   }
 

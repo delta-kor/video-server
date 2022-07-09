@@ -5,6 +5,7 @@ const Constants = {
   WRONG_REQUEST: '잘못된 요청이에요',
   CHAT_SPLIT_COUNT: 30,
   CATEGORY_LENGTH: 3,
+  VIDEO_TYPES: ['performance', 'vod'],
 };
 
 export default Constants;
