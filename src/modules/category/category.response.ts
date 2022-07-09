@@ -1,37 +1,34 @@
-interface Folder {
-  title: string;
-  path: string;
-  count: number;
-  children: number;
-}
+import Video from '../video/video.interface';
 
-interface File {
+interface Folder {
   id: string;
+  path: string[];
   title: string;
+  count: number;
   date: number;
-  duration: number;
-  is_4k: boolean;
 }
 
 interface Path {
-  name: string;
-  path: string;
+  id: string;
+  title: string;
   count: number;
 }
 
-namespace CategoryResponse {
-  export interface Parent extends ApiResponse {
-    type: 'parent';
+export namespace CategoryResponse {
+  interface ViewFolder extends ApiResponse {
+    type: 'folder';
     path: Path[];
-    folders: Folder[];
+    data: Omit<Folder, 'path'>[];
   }
 
-  export interface Children extends ApiResponse {
-    type: 'children';
+  interface ViewFile extends ApiResponse {
+    type: 'file';
     path: Path[];
-    files: File[];
+    data: Video[];
   }
+
+  export type View = ViewFolder | ViewFile;
 }
 
+export { Folder, Path };
 export default CategoryResponse;
-export { Path };

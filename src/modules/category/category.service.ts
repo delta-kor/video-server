@@ -1,112 +1,99 @@
 import crypto from 'crypto';
+import Constants from '../../constants';
+import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import ArrayMap from '../../utils/arraymap.util';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
-import { ChildCategory, ParentCategory } from './category.interface';
-import { Path } from './category.response';
+import CategoryResponse, { Folder, Path } from './category.response';
 
 class CategoryService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
-  private category!: Map<string, ParentCategory>;
+  private folders: Map<string, Folder> = new Map();
+  private folderItems: ArrayMap<string, Folder> = new ArrayMap();
+  private fileItems: ArrayMap<string, Video> = new ArrayMap();
 
-  public static hashPath(...path: string[]): string {
+  private static hashPath(...path: string[]): string {
     const hasher = crypto.createHash('md5');
     for (const item of path) hasher.update(item);
     return hasher.digest('hex').slice(0, 16);
   }
 
+  private static hashMultiplePath(paths: string[]): string[] {
+    const result: string[] = [];
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths.slice(0, i + 1);
+      result.push(CategoryService.hashPath(...path));
+    }
+
+    return result;
+  }
+
+  private addFolder(path: string[], video: Video): void {
+    const folderHash = CategoryService.hashPath(...path);
+
+    let folder: Folder | undefined = this.folders.get(folderHash);
+    if (!folder) {
+      folder = {
+        id: folderHash,
+        path: CategoryService.hashMultiplePath(path),
+        title: path[path.length - 1],
+        count: 0,
+        date: video.date.getTime(),
+      };
+      this.folders.set(folderHash, folder);
+    }
+
+    folder.count++;
+
+    const parentFolder = path.slice(0, path.length - 1);
+    const parentFolderHash = parentFolder.length === 0 ? 'root' : CategoryService.hashPath(...parentFolder);
+
+    if (path.length === Constants.CATEGORY_LENGTH) this.fileItems.add(folderHash, video);
+    this.folderItems.add(parentFolderHash, folder);
+  }
+
   public async load(): Promise<void> {
     const videos = this.videoService.getAllFiltered('category');
 
-    const categoriesMap: Map<string, Map<string, Map<string, Video[]>>> = new Map();
     for (const video of videos) {
-      const [topCategoryName, middleCategoryName, bottomCategoryName] = video.category;
-
-      if (!categoriesMap.has(topCategoryName)) categoriesMap.set(topCategoryName, new Map());
-      const topCategory = categoriesMap.get(topCategoryName)!;
-
-      if (!topCategory.has(middleCategoryName)) topCategory.set(middleCategoryName, new Map());
-      const middleCategory = topCategory.get(middleCategoryName)!;
-
-      if (!middleCategory.has(bottomCategoryName)) middleCategory.set(bottomCategoryName, []);
-      const bottomList = middleCategory.get(bottomCategoryName)!;
-
-      bottomList.push(video);
-    }
-
-    const categories: Map<string, ParentCategory> = new Map();
-    for (const [topName, topCategoryMap] of categoriesMap.entries()) {
-      const topParentCategory: ParentCategory = {
-        name: topName,
-        hash: CategoryService.hashPath(topName),
-        children: new Map(),
-      };
-      for (const [middleName, middleCategoryMap] of topCategoryMap.entries()) {
-        const middleParentCategory: ParentCategory = {
-          name: middleName,
-          hash: CategoryService.hashPath(topName, middleName),
-          children: new Map(),
-        };
-        for (const [bottomName, bottomVideos] of middleCategoryMap.entries()) {
-          const childCategory: ChildCategory = {
-            name: bottomName,
-            hash: CategoryService.hashPath(topName, middleName, bottomName),
-            videos: bottomVideos,
-          };
-          middleParentCategory.children.set(bottomName, childCategory);
-        }
-        topParentCategory.children.set(middleName, middleParentCategory);
+      for (let i = 0; i < Constants.CATEGORY_LENGTH; i++) {
+        const target = video.category.slice(0, i + 1);
+        this.addFolder(target, video);
       }
-      categories.set(topName, topParentCategory);
     }
-
-    this.category = categories;
   }
 
-  public view(hash?: string): { path: Path[]; data: (ParentCategory | ChildCategory | Video)[] } | null {
-    if (!hash) return { path: [], data: Array.from(this.category.values()) };
-    for (const topCategory of this.category.values()) {
-      if (topCategory.hash === hash)
-        return {
-          path: [{ name: topCategory.name, path: topCategory.hash, count: topCategory.children.size }],
-          data: <ParentCategory[]>Array.from(topCategory.children.values()),
-        };
-      for (const middleCategory of topCategory.children.values()) {
-        if (middleCategory.hash === hash)
-          return {
-            path: [
-              { name: topCategory.name, path: topCategory.hash, count: topCategory.children.size },
-              {
-                name: middleCategory.name,
-                path: middleCategory.hash,
-                count: (<ParentCategory>middleCategory).children.size,
-              },
-            ],
-            data: <ParentCategory[]>Array.from((<ParentCategory>middleCategory).children.values()),
-          };
-        for (const bottomCategory of (<ParentCategory>middleCategory).children.values()) {
-          if (bottomCategory.hash === hash)
-            return {
-              path: [
-                { name: topCategory.name, path: topCategory.hash, count: topCategory.children.size },
-                {
-                  name: middleCategory.name,
-                  path: middleCategory.hash,
-                  count: (<ParentCategory>middleCategory).children.size,
-                },
-                {
-                  name: bottomCategory.name,
-                  path: bottomCategory.hash,
-                  count: (<ChildCategory>bottomCategory).videos.length,
-                },
-              ],
-              data: Array.from((<ChildCategory>bottomCategory).videos.values()),
-            };
-        }
-      }
-    }
-    return null;
+  public view(pathId: string = 'root'): CategoryResponse.View {
+    const itemFolders = this.folderItems.get(pathId);
+    const itemFiles = this.fileItems.get(pathId);
+
+    const folder = this.folders.get(pathId);
+    const path: Path[] = !folder
+      ? []
+      : folder.path.map(id => {
+          const parentFolder = this.folders.get(id)!;
+          return { id, title: parentFolder.title, count: parentFolder.count };
+        });
+
+    if (itemFolders)
+      return {
+        ok: true,
+        type: 'folder',
+        path,
+        data: itemFolders.map(item => ({ id: item.id, title: item.title, count: item.count, date: item.date })),
+      };
+
+    if (itemFiles)
+      return {
+        ok: true,
+        type: 'file',
+        path,
+        data: itemFiles.map(video => video.serialize('id', 'title', 'duration', 'date', 'is_4k')),
+      };
+
+    throw new NotFoundException();
   }
 }
 
