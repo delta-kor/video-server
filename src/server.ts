@@ -4,6 +4,8 @@ import Controller from './classes/controller.class';
 import AdController from './modules/ad/ad.controller';
 import AdService from './modules/ad/ad.service';
 import BuilderService from './modules/builder/builder.service';
+import CalendarController from './modules/calendar/calendar.controller';
+import CalendarService from './modules/calendar/calendar.service';
 import CategoryController from './modules/category/category.controller';
 import CategoryService from './modules/category/category.service';
 import DeliverService from './modules/deliver/deliver.service';
@@ -40,6 +42,7 @@ const services: typeof Service[] = [
   VideoService,
   CategoryService,
   MusicService,
+  CalendarService,
   EmotionService,
   FeedService,
   RadioService,
@@ -67,6 +70,7 @@ app
       new VideoController(),
       new CategoryController(),
       new MusicController(),
+      new CalendarController(),
       new FeedController(),
       new RadioController(),
       new AdController(),

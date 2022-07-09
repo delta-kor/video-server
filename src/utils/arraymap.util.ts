@@ -40,6 +40,13 @@ class ArrayMap<K, V> {
 
     return [...set];
   }
+
+  public getAll(): [K, V[]][] {
+    const result: [K, V[]][] = [];
+    this.map.forEach((value, key) => result.push([key, [...value]]));
+
+    return result;
+  }
 }
 
 export default ArrayMap;

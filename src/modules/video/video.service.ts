@@ -17,7 +17,7 @@ class VideoService extends Service {
     this.videos.push(...videos);
   }
 
-  public getAll(): Video[] {
+  private getAll(): Video[] {
     return this.videos;
   }
 

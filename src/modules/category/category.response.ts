@@ -14,7 +14,7 @@ interface Path {
   count: number;
 }
 
-export namespace CategoryResponse {
+namespace CategoryResponse {
   interface ViewFolder extends ApiResponse {
     type: 'folder';
     path: Path[];
