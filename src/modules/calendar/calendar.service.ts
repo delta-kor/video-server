@@ -1,3 +1,4 @@
+import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import ArrayMap from '../../utils/arraymap.util';
@@ -35,6 +36,13 @@ class CalendarService extends Service {
     }
 
     return result;
+  }
+
+  public getOne(timestamp: string): Video[] {
+    const videos = this.timestamps.get(timestamp);
+    if (!videos) throw new NotFoundException();
+
+    return videos;
   }
 }
 

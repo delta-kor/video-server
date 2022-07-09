@@ -9,11 +9,20 @@ class CalendarController extends Controller {
 
   protected mount(): void {
     this.mounter.get('/', this.getAll.bind(this));
+    this.mounter.get('/:timestamp', this.getOne.bind(this));
   }
 
-  private async getAll(_req: TypedRequest, res: TypedResponse<CalendarResponse.GetAll>) {
+  private async getAll(_req: TypedRequest, res: TypedResponse<CalendarResponse.GetAll>): Promise<void> {
     const timestamps = this.calendarService.getAll();
     res.json({ ok: true, timestamps });
+  }
+
+  private async getOne(req: TypedRequest, res: TypedResponse<CalendarResponse.GetOne>): Promise<void> {
+    const timestamp = req.params.timestamp;
+    const videos = this.calendarService
+      .getOne(timestamp)
+      .map(video => video.serialize('id', 'title', 'description', 'duration', 'is_4k'));
+    res.json({ ok: true, videos });
   }
 }
 

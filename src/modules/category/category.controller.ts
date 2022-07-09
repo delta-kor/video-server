@@ -11,7 +11,7 @@ class CategoryController extends Controller {
     this.mounter.get('/:path', this.view.bind(this));
   }
 
-  public async view(req: TypedRequest, res: TypedResponse<any>): Promise<any> {
+  public async view(req: TypedRequest, res: TypedResponse<any>): Promise<void> {
     const pathId: string = req.params.path;
     const data = this.categoryService.view(pathId);
     res.json(data);
