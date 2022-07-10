@@ -1,5 +1,8 @@
 import { model, Schema } from 'mongoose';
+import ServiceProvider from '../../../services/provider.service';
 import generateId from '../../../utils/id.util';
+import Video from '../../video/video.interface';
+import VideoService from '../../video/video.service';
 import Playlist from '../interface/playlist.interface';
 
 const PlaylistSchema = new Schema<Playlist>({
@@ -16,6 +19,22 @@ const PlaylistSchema = new Schema<Playlist>({
 PlaylistSchema.method('serialize', function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
   const result: any = {};
   for (const key of keys) {
+    if (key === 'video') {
+      const videoService: VideoService = ServiceProvider.get(VideoService);
+
+      const videos: Video[] = [];
+      for (const videoId of this.video) {
+        const video = videoService.get(videoId);
+        if (!video) continue;
+
+        const serializedVideo = video.serialize('id', 'type', 'title', 'description', 'duration', 'is_4k');
+        videos.push(serializedVideo);
+      }
+
+      result.video = videos;
+      continue;
+    }
+
     let value: any = this[key];
     if (value instanceof Date) value = value.getTime();
 
