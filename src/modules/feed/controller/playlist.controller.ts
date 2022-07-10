@@ -12,6 +12,7 @@ class PlaylistController extends Controller {
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(PlaylistDto), this.create.bind(this));
+    this.mounter.get('/:id', this.read.bind(this));
     this.mounter.put('/:id', ManageGuard, ValidateGuard(PlaylistDto, 'body', true), this.update.bind(this));
     this.mounter.delete('/:id', ManageGuard, this.delete.bind(this));
   }
@@ -21,11 +22,19 @@ class PlaylistController extends Controller {
     res.json({ ok: true, id: playlist.id });
   }
 
+  private async read(req: TypedRequest, res: TypedResponse<FeedResponse.ReadPlaylist>): Promise<void> {
+    const id: string = req.params.id;
+    const playlist = await this.playlistService.read(id);
+    const serializedPlaylist = playlist.serialize('id', 'title', 'description', 'video');
+
+    res.json({ ok: true, playlist: serializedPlaylist });
+  }
+
   private async update(
     req: TypedRequest<Partial<PlaylistDto>>,
     res: TypedResponse<FeedResponse.UpdatePlaylist>
   ): Promise<void> {
-    const id = req.params.id;
+    const id: string = req.params.id;
     const playlist = await this.playlistService.update(id, req.body);
     const serializedPlaylist = playlist.serialize(
       'id',
@@ -42,7 +51,7 @@ class PlaylistController extends Controller {
   }
 
   private async delete(req: TypedRequest, res: TypedResponse): Promise<void> {
-    const id = req.params.id;
+    const id: string = req.params.id;
     await this.playlistService.delete(id);
     res.json({ ok: true });
   }

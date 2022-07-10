@@ -14,6 +14,10 @@ namespace FeedResponse {
     id: string;
   }
 
+  export interface ReadPlaylist extends ApiResponse {
+    playlist: Playlist;
+  }
+
   export interface UpdatePlaylist extends ApiResponse {
     playlist: Playlist;
   }

@@ -39,13 +39,19 @@ class PlaylistService extends Service {
 
     this.playlists.set(playlist.id, playlist);
 
-    this.load();
+    await this.load();
+    return playlist;
+  }
+
+  public read(id: string): Playlist {
+    const playlist = this.playlists.get(id);
+    if (!playlist) throw new NotFoundException();
+
     return playlist;
   }
 
   public async update(id: string, data: Partial<PlaylistDto>): Promise<Playlist> {
-    const playlist = this.playlists.get(id);
-    if (!playlist) throw new NotFoundException();
+    const playlist = this.read(id);
 
     if (data.type && !Constants.VIDEO_TYPES.includes(data.type))
       throw new UnprocessableEntityException('잘못된 타입이에요');
@@ -54,17 +60,17 @@ class PlaylistService extends Service {
     updater.update(data, 'label', 'type', 'title', 'description', 'video', 'featured', 'order');
     await updater.save();
 
+    await this.load();
     return playlist;
   }
 
   public async delete(id: string): Promise<void> {
-    const playlist = this.playlists.get(id);
-    if (!playlist) throw new NotFoundException();
+    const playlist = this.read(id);
 
     await playlist.deleteOne();
     this.playlists.delete(id);
 
-    this.load();
+    await this.load();
   }
 }
 
