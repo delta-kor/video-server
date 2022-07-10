@@ -13,6 +13,18 @@ const PlaylistSchema = new Schema<Playlist>({
   order: { type: Number, required: true },
 });
 
+PlaylistSchema.method('serialize', function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
+  const result: any = {};
+  for (const key of keys) {
+    let value: any = this[key];
+    if (value instanceof Date) value = value.getTime();
+
+    result[key] = value;
+  }
+
+  return result;
+});
+
 const PlaylistModel = model<Playlist>('playlist', PlaylistSchema);
 
 export default PlaylistModel;

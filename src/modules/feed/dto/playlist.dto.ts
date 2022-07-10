@@ -1,11 +1,12 @@
 import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { VideoType } from '../../video/video.interface';
 
-class CreatePlaylistDto {
+class PlaylistDto {
   @IsString({ message: '라벨을 입력해주세요' })
   public label!: string;
 
   @IsString({ message: '타입을 선택해주세요' })
-  public type!: string;
+  public type!: VideoType;
 
   @IsString({ message: '제목을 입력해주세요' })
   public title!: string;
@@ -23,4 +24,4 @@ class CreatePlaylistDto {
   public order!: number;
 }
 
-export default CreatePlaylistDto;
+export default PlaylistDto;
