@@ -3,8 +3,9 @@ import NotFoundException from '../../exceptions/not-found.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import { pickFromArray } from '../../utils/pick.util';
 import Updater from '../../utils/updater';
-import { VideoType } from '../video/video.interface';
+import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
 import Playlist from './playlist.interface';
@@ -58,6 +59,31 @@ class PlaylistService extends Service {
     }
 
     return result;
+  }
+
+  public readFeatured(type: VideoType): { video: Video; playlist: Playlist } {
+    for (const item of this.playlists.values()) {
+      if (item.type === type && item.featured) {
+        switch (type) {
+          case 'performance': {
+            const videoId = pickFromArray(item.video);
+            const video = this.videoService.get(videoId);
+            if (!video) throw new ReferenceError('Video id not found in featured playlist');
+
+            return { video, playlist: item };
+          }
+          case 'vod': {
+            const videoId = item.video[0];
+            const video = this.videoService.get(videoId);
+            if (!video) throw new ReferenceError('Video id not found in featured playlist');
+
+            return { video, playlist: item };
+          }
+        }
+      }
+    }
+
+    throw new ReferenceError('No featured playlist in database');
   }
 
   public async update(id: string, data: Partial<PlaylistDto>): Promise<Playlist> {

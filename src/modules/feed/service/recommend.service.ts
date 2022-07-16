@@ -1,7 +1,7 @@
 import NotFoundException from '../../../exceptions/not-found.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
-import pickItem from '../../../utils/pick.util';
+import { pickFromSetAndDelete } from '../../../utils/pick.util';
 import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import EmotionStore, { EmotionData, PlaytimeData } from '../store/emotion.store';
@@ -47,17 +47,17 @@ class RecommendService extends Service {
     for (let i = 0; i < count; i++) {
       if (i % 2 === 0) {
         const item =
-          pickItem(equalTitleVideos) ||
-          pickItem(equalCategoryVideos) ||
-          pickItem(secondaryCategoryVideos) ||
-          pickItem(tertiaryCategoryVideos);
+          pickFromSetAndDelete(equalTitleVideos) ||
+          pickFromSetAndDelete(equalCategoryVideos) ||
+          pickFromSetAndDelete(secondaryCategoryVideos) ||
+          pickFromSetAndDelete(tertiaryCategoryVideos);
         item && result.push(item);
       } else {
         const item =
-          pickItem(equalCategoryVideos) ||
-          pickItem(secondaryCategoryVideos) ||
-          pickItem(tertiaryCategoryVideos) ||
-          pickItem(equalTitleVideos);
+          pickFromSetAndDelete(equalCategoryVideos) ||
+          pickFromSetAndDelete(secondaryCategoryVideos) ||
+          pickFromSetAndDelete(tertiaryCategoryVideos) ||
+          pickFromSetAndDelete(equalTitleVideos);
         item && result.push(item);
       }
     }

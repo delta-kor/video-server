@@ -1,6 +1,7 @@
 import { NextFunction } from 'express';
 import Controller from '../../classes/controller.class';
 import Constants from '../../constants';
+import NotFoundException from '../../exceptions/not-found.exception';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -16,6 +17,7 @@ class PlaylistController extends Controller {
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(PlaylistDto), this.create.bind(this));
     this.mounter.get('/:type', this.readAll.bind(this));
+    this.mounter.get('/:type/featured', this.readFeatured.bind(this));
     this.mounter.get('/:id', this.read.bind(this));
     this.mounter.put('/:id', ManageGuard, ValidateGuard(PlaylistDto, 'body', true), this.update.bind(this));
     this.mounter.delete('/:id', ManageGuard, this.delete.bind(this));
@@ -49,6 +51,20 @@ class PlaylistController extends Controller {
     const serializedPlaylist = playlists.map(playlist => playlist.serialize('id', 'title', 'description', 'video'));
 
     res.json({ ok: true, playlists: serializedPlaylist });
+  }
+
+  private async readFeatured(req: TypedRequest, res: TypedResponse<PlaylistResponse.ReadFeatured>): Promise<void> {
+    const type = req.params.type as VideoType;
+    if (!Constants.VIDEO_TYPES.includes(type)) throw new NotFoundException();
+
+    const featured = this.playlistService.readFeatured(type);
+
+    const video = featured.video;
+    const serializedVideo = video.serialize('id', 'type', 'title', 'description', 'duration', 'is_4k');
+
+    const playlistId = featured.playlist.id;
+
+    res.json({ ok: true, playlist_id: playlistId, video: serializedVideo });
   }
 
   private async update(
