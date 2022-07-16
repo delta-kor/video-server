@@ -1,7 +1,7 @@
 import { IsArray, IsNumber, IsString } from 'class-validator';
 import { VideoOptions, VideoType } from '../video.interface';
 
-class UploadDto {
+class VideoDto {
   @IsString({ message: 'CDN ID를 입력해주세요' })
   public cdnId!: string;
 
@@ -24,4 +24,4 @@ class UploadDto {
   public options!: VideoOptions[];
 }
 
-export default UploadDto;
+export default VideoDto;

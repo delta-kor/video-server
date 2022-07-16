@@ -1,13 +1,13 @@
-import Constants from '../../../constants';
-import NotFoundException from '../../../exceptions/not-found.exception';
-import UnprocessableEntityException from '../../../exceptions/unprocessable-entity.exception';
-import Service from '../../../services/base.service';
-import ServiceProvider from '../../../services/provider.service';
-import Updater from '../../../utils/updater';
-import VideoService from '../../video/video.service';
-import PlaylistDto from '../dto/playlist.dto';
-import Playlist from '../interface/playlist.interface';
-import PlaylistModel from '../model/playlist.model';
+import Constants from '../../constants';
+import NotFoundException from '../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
+import Service from '../../services/base.service';
+import ServiceProvider from '../../services/provider.service';
+import Updater from '../../utils/updater';
+import VideoService from '../video/video.service';
+import PlaylistDto from './dto/playlist.dto';
+import Playlist from './playlist.interface';
+import PlaylistModel from './playlist.model';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);

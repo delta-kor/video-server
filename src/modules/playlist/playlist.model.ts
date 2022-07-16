@@ -1,9 +1,9 @@
 import { model, Schema } from 'mongoose';
-import ServiceProvider from '../../../services/provider.service';
-import generateId from '../../../utils/id.util';
-import Video from '../../video/video.interface';
-import VideoService from '../../video/video.service';
-import Playlist from '../interface/playlist.interface';
+import ServiceProvider from '../../services/provider.service';
+import generateId from '../../utils/id.util';
+import Video from '../video/video.interface';
+import VideoService from '../video/video.service';
+import Playlist from './playlist.interface';
 
 const PlaylistSchema = new Schema<Playlist>({
   id: { type: String, required: true, unique: true, default: () => generateId(8) },

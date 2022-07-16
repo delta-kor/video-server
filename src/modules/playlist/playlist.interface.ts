@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { VideoType } from '../../video/video.interface';
+import { VideoType } from '../video/video.interface';
 
 interface Playlist extends Document {
   id: string;

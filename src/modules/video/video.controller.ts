@@ -7,7 +7,7 @@ import ServiceProvider from '../../services/provider.service';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
-import UploadDto from './dto/upload.dto';
+import VideoDto from './dto/video.dto';
 import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
 
@@ -18,14 +18,14 @@ class VideoController extends Controller {
   private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
 
   protected mount(): void {
-    this.mounter.post('/', ManageGuard, ValidateGuard(UploadDto), this.upload.bind(this));
+    this.mounter.post('/', ManageGuard, ValidateGuard(VideoDto), this.upload.bind(this));
     this.mounter.get('/list', this.list.bind(this));
     this.mounter.get('/:id', this.stream.bind(this));
     this.mounter.get('/:id/info', this.info.bind(this));
     this.mounter.get('/:id/beacon', this.beacon.bind(this));
   }
 
-  private async upload(req: TypedRequest<UploadDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
+  private async upload(req: TypedRequest<VideoDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
     const video = await this.videoService.upload(req.body);
     res.json({ ok: true, id: video.id });
   }

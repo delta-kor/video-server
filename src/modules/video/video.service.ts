@@ -4,7 +4,7 @@ import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
-import UploadDto from './dto/upload.dto';
+import VideoDto from './dto/video.dto';
 import Video, { VideoOptions } from './video.interface';
 import VideoModel from './video.model';
 
@@ -25,7 +25,7 @@ class VideoService extends Service {
     return this.getAll().filter(video => video.hasOption(option));
   }
 
-  public async upload(data: UploadDto): Promise<Video> {
+  public async upload(data: VideoDto): Promise<Video> {
     if (!['performance', 'vod'].includes(data.type)) {
       throw new UnprocessableEntityException('잘못된 영상 타입이에요');
     }

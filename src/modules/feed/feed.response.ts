@@ -1,4 +1,3 @@
-import Playlist from './interface/playlist.interface';
 import { EmotionData } from './store/emotion.store';
 
 interface VideoItem {
@@ -10,18 +9,6 @@ interface VideoItem {
 }
 
 namespace FeedResponse {
-  export interface CreatePlaylist extends ApiResponse {
-    id: string;
-  }
-
-  export interface ReadPlaylist extends ApiResponse {
-    playlist: Playlist;
-  }
-
-  export interface UpdatePlaylist extends ApiResponse {
-    playlist: Playlist;
-  }
-
   export interface GetVideoRecommends extends ApiResponse {
     videos: VideoItem[];
   }

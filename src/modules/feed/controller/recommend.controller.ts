@@ -2,7 +2,7 @@ import Controller from '../../../classes/controller.class';
 import UnprocessableEntityException from '../../../exceptions/unprocessable-entity.exception';
 import ValidateGuard from '../../../guards/validate.guard';
 import ServiceProvider from '../../../services/provider.service';
-import GetUserRecommendsDto from '../dto/get-user-recommends.dto';
+import PlaytimeDto from '../dto/playtime.dto';
 import FeedResponse from '../feed.response';
 import RecommendService from '../service/recommend.service';
 
@@ -12,8 +12,8 @@ class RecommendController extends Controller {
 
   protected mount(): void {
     this.mounter.get('/:id', this.getVideoRecommends.bind(this));
-    this.mounter.post('/', ValidateGuard(GetUserRecommendsDto), this.getUserRecommends.bind(this));
-    this.mounter.post('/emotion', ValidateGuard(GetUserRecommendsDto), this.getEmotion.bind(this));
+    this.mounter.post('/', ValidateGuard(PlaytimeDto), this.getUserRecommends.bind(this));
+    this.mounter.post('/emotion', ValidateGuard(PlaytimeDto), this.getEmotion.bind(this));
   }
 
   private async getVideoRecommends(
@@ -39,7 +39,7 @@ class RecommendController extends Controller {
   }
 
   private async getUserRecommends(
-    req: TypedRequest<GetUserRecommendsDto>,
+    req: TypedRequest<PlaytimeDto>,
     res: TypedResponse<FeedResponse.GetUserRecommends>
   ): Promise<void> {
     const count = parseInt(req.query.count) || 20;
@@ -62,10 +62,7 @@ class RecommendController extends Controller {
     });
   }
 
-  private async getEmotion(
-    req: TypedRequest<GetUserRecommendsDto>,
-    res: TypedResponse<FeedResponse.GetEmotion>
-  ): Promise<void> {
+  private async getEmotion(req: TypedRequest<PlaytimeDto>, res: TypedResponse<FeedResponse.GetEmotion>): Promise<void> {
     const emotion = this.recommendService.getEmotionData(req.body.data);
     res.json({ ok: true, emotion });
   }
