@@ -9,6 +9,10 @@ namespace PlaylistResponse {
     playlist: Playlist;
   }
 
+  export interface ReadAllPlaylists extends ApiResponse {
+    playlists: Playlist[];
+  }
+
   export interface UpdatePlaylist extends ApiResponse {
     playlist: Playlist;
   }

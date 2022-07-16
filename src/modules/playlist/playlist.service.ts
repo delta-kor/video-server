@@ -4,6 +4,7 @@ import UnprocessableEntityException from '../../exceptions/unprocessable-entity.
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import Updater from '../../utils/updater';
+import { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
 import Playlist from './playlist.interface';
@@ -48,6 +49,15 @@ class PlaylistService extends Service {
     if (!playlist) throw new NotFoundException();
 
     return playlist;
+  }
+
+  public readAll(type: VideoType): Playlist[] {
+    const result: Playlist[] = [];
+    for (const item of this.playlists.values()) {
+      if (item.type === type && !item.featured) result.push(item);
+    }
+
+    return result;
   }
 
   public async update(id: string, data: Partial<PlaylistDto>): Promise<Playlist> {
