@@ -8,7 +8,7 @@ interface VideoItem {
   is_4k: boolean;
 }
 
-namespace FeedResponse {
+namespace RecommendResponse {
   export interface GetVideoRecommends extends ApiResponse {
     videos: VideoItem[];
   }
@@ -23,4 +23,4 @@ namespace FeedResponse {
   }
 }
 
-export default FeedResponse;
+export default RecommendResponse;

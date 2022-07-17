@@ -1,13 +1,13 @@
-import Controller from '../../../classes/controller.class';
-import UnprocessableEntityException from '../../../exceptions/unprocessable-entity.exception';
-import ValidateGuard from '../../../guards/validate.guard';
-import ServiceProvider from '../../../services/provider.service';
-import PlaytimeDto from '../dto/playtime.dto';
-import FeedResponse from '../feed.response';
-import RecommendService from '../service/recommend.service';
+import Controller from '../../classes/controller.class';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
+import ValidateGuard from '../../guards/validate.guard';
+import ServiceProvider from '../../services/provider.service';
+import PlaytimeDto from './dto/playtime.dto';
+import RecommendResponse from './recommend.response';
+import RecommendService from './service/recommend.service';
 
 class RecommendController extends Controller {
-  public readonly path: string = '/feed/recommend';
+  public readonly path: string = '/recommend';
   private readonly recommendService: RecommendService = ServiceProvider.get(RecommendService);
 
   protected mount(): void {
@@ -18,7 +18,7 @@ class RecommendController extends Controller {
 
   private async getVideoRecommends(
     req: TypedRequest,
-    res: TypedResponse<FeedResponse.GetVideoRecommends>
+    res: TypedResponse<RecommendResponse.GetVideoRecommends>
   ): Promise<void> {
     const id = req.params.id;
     const count = parseInt(req.query.count) || 12;
@@ -40,9 +40,11 @@ class RecommendController extends Controller {
 
   private async getUserRecommends(
     req: TypedRequest<PlaytimeDto>,
-    res: TypedResponse<FeedResponse.GetUserRecommends>
+    res: TypedResponse<RecommendResponse.GetUserRecommends>
   ): Promise<void> {
     const count = parseInt(req.query.count) || 20;
+
+    if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
     const data = req.body.data;
     const recommends = this.recommendService.getUserRecommends(data, count);
@@ -62,7 +64,10 @@ class RecommendController extends Controller {
     });
   }
 
-  private async getEmotion(req: TypedRequest<PlaytimeDto>, res: TypedResponse<FeedResponse.GetEmotion>): Promise<void> {
+  private async getEmotion(
+    req: TypedRequest<PlaytimeDto>,
+    res: TypedResponse<RecommendResponse.GetEmotion>
+  ): Promise<void> {
     const emotion = this.recommendService.getEmotionData(req.body.data);
     res.json({ ok: true, emotion });
   }
