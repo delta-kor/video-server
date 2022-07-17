@@ -1,21 +1,13 @@
+import Video from '../video/video.interface';
 import { EmotionData } from './store/emotion.store';
-
-interface VideoItem {
-  id: string;
-  title: string;
-  description: string;
-  duration: number;
-  is_4k: boolean;
-}
 
 namespace RecommendResponse {
   export interface GetVideoRecommends extends ApiResponse {
-    videos: VideoItem[];
+    videos: Video[];
   }
 
   export interface GetUserRecommends extends ApiResponse {
-    videos: VideoItem[];
-    emotion: EmotionData;
+    videos: Video[];
   }
 
   export interface GetEmotion extends ApiResponse {

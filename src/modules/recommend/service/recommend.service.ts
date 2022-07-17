@@ -1,10 +1,10 @@
 import NotFoundException from '../../../exceptions/not-found.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
-import { pickFromSetAndDelete } from '../../../utils/pick.util';
+import { pickFromArray, pickFromSetAndDelete } from '../../../utils/pick.util';
 import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
-import EmotionStore, { EmotionData, PlaytimeData } from '../store/emotion.store';
+import { EmotionData, PlaytimeData } from '../store/emotion.store';
 import EmotionService from './emotion.service';
 
 class RecommendService extends Service {
@@ -70,67 +70,28 @@ class RecommendService extends Service {
     return result;
   }
 
-  public getUserRecommends(data: PlaytimeData, count: number = 20): [Video[], EmotionData] {
+  public getUserRecommends(data: PlaytimeData, count: number): Video[] {
     const result: Video[] = [];
     const emotionData = this.emotionService.getEmotionData(data);
 
-    if (emotionData.some(value => isNaN(value))) {
-      return [[], [0, 0, 0, 0]];
+    const emotionalVideoCount: [number, number][] = [];
+    for (let i = 0; i < 4; i++) emotionalVideoCount.push([i, Math.round(count * emotionData[i])]);
+
+    const titles: string[] = [];
+
+    for (const count of emotionalVideoCount.sort((a, b) => b[1] - a[1])) {
+      for (let i = 0; i < count[1]; i++) titles.push(this.emotionService.pickOne(count[0]));
     }
-
-    const emotionalCount = emotionData.map(item => Math.round(item * count));
-
-    if (emotionalCount[0] + emotionalCount[1] > emotionalCount[2] + emotionalCount[3]) {
-      emotionalCount[0]++;
-      emotionalCount[1]++;
-      emotionalCount[2]--;
-      emotionalCount[3]--;
-    } else {
-      emotionalCount[0]--;
-      emotionalCount[1]--;
-      emotionalCount[2]++;
-      emotionalCount[3]++;
-    }
-
-    emotionalCount.map((item, index) => (emotionalCount[index] = Math.max(item, 0)));
-
-    const emotionStoreArray = [];
-    for (const item of EmotionStore) {
-      emotionStoreArray.push([item[0], ...item[1]]);
-    }
-
-    for (let i = emotionStoreArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [emotionStoreArray[i], emotionStoreArray[j]] = [emotionStoreArray[j], emotionStoreArray[i]];
-    }
-
-    const titlesSet = new Set<string>();
-    const semiResult = [];
-
-    const emotionalCountCopy = [...emotionalCount];
-
-    for (let index = 0; index < 4; index++) {
-      const i = emotionalCountCopy.indexOf(Math.max(...emotionalCountCopy));
-      emotionalCountCopy[i] = -999;
-
-      const count = emotionalCount[i];
-      const sortedTitles = emotionStoreArray
-        .filter(item => !titlesSet.has(item[0] as string))
-        .sort((a, b) => (b[i + 1] as number) - (a[i + 1] as number));
-      const pickedTitles = sortedTitles.slice(0, count).map(item => item[0] as string);
-      pickedTitles.forEach(title => titlesSet.add(title));
-      semiResult.push(pickedTitles);
-    }
-
-    const titles = semiResult.sort((a, b) => b.length - a.length).flat();
 
     for (const title of titles) {
-      const targets = this.videoService.getByTitle(title, 'recommend');
-      const video = targets[(targets.length * Math.random()) | 0];
+      const videos = this.videoService.getByTitle(title, 'recommend').filter(video => !result.includes(video));
+      if (!videos.length) continue;
+
+      const video = pickFromArray(videos);
       result.push(video);
     }
 
-    return [result.slice(0, 20), emotionData];
+    return result;
   }
 
   public getEmotionData(data: PlaytimeData): EmotionData {

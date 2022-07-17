@@ -26,15 +26,11 @@ class RecommendController extends Controller {
     if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
     const videos = this.recommendService.getVideoRecommends(id, count);
+    const serializedVideos = videos.map(video => video.serialize('id', 'title', 'description', 'duration', 'is_4k'));
+
     res.json({
       ok: true,
-      videos: videos.map(video => ({
-        id: video.id,
-        title: video.title,
-        description: video.description,
-        duration: video.duration,
-        is_4k: video.is_4k,
-      })),
+      videos: serializedVideos,
     });
   }
 
@@ -46,21 +42,16 @@ class RecommendController extends Controller {
 
     if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
-    const data = req.body.data;
-    const recommends = this.recommendService.getUserRecommends(data, count);
-    const videos = recommends[0];
-    const emotion = recommends[1];
+    const playtime = req.body.data;
+
+    const recommends = this.recommendService.getUserRecommends(playtime, count);
+    const serializedVideos = recommends.map(video =>
+      video.serialize('id', 'title', 'description', 'duration', 'is_4k')
+    );
 
     res.json({
       ok: true,
-      videos: videos.map(video => ({
-        id: video.id,
-        title: video.title,
-        description: video.description,
-        duration: video.duration,
-        is_4k: video.is_4k,
-      })),
-      emotion,
+      videos: serializedVideos,
     });
   }
 
