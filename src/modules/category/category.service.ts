@@ -97,6 +97,18 @@ class CategoryService extends Service {
 
     throw new NotFoundException();
   }
+
+  public getVideosByPath(path: string[]): Video[] {
+    const result: Video[] = [];
+
+    const pathId = CategoryService.hashPath(...path);
+
+    const response = this.view(pathId);
+    if (!response.ok) return result;
+    if (response.type === 'folder') return result;
+
+    return response.data.map(video => video.restore());
+  }
 }
 
 export default CategoryService;
