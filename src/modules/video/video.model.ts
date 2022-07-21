@@ -1,8 +1,10 @@
 import { model, Schema } from 'mongoose';
+import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import Video, { VideoOptions } from './video.interface';
+import VideoService from './video.service';
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -25,7 +27,11 @@ VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
   return !!this.cdnId_4k;
 });
 
-VideoSchema.method('serialize', function (this: Video, ...keys: (keyof Video)[]): Video {
+VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {
+  return this.options.includes(option);
+};
+
+VideoSchema.methods.serialize = function (this: Video, ...keys: (keyof Video)[]): Video {
   const result: any = {};
   for (const key of keys) {
     let value: any = this[key];
@@ -35,10 +41,16 @@ VideoSchema.method('serialize', function (this: Video, ...keys: (keyof Video)[])
   }
 
   return result;
-});
+};
 
-VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {
-  return this.options.includes(option);
+VideoSchema.methods.restore = function (this: Video): Video {
+  const id = this.id;
+
+  const videoService: VideoService = ServiceProvider.get(VideoService);
+  const video = videoService.get(id);
+
+  if (!video) throw new NotFoundException();
+  return video;
 };
 
 const VideoModel = model<Video>('video', VideoSchema);

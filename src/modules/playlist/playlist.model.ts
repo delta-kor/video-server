@@ -16,7 +16,7 @@ const PlaylistSchema = new Schema<Playlist>({
   order: { type: Number, required: true },
 });
 
-PlaylistSchema.method('serialize', function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
+PlaylistSchema.methods.serialize = function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
   const result: any = {};
   for (const key of keys) {
     if (key === 'video') {
@@ -42,7 +42,7 @@ PlaylistSchema.method('serialize', function (this: Playlist, ...keys: (keyof Pla
   }
 
   return result;
-});
+};
 
 const PlaylistModel = model<Playlist>('playlist', PlaylistSchema);
 
