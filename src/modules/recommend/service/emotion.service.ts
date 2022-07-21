@@ -33,25 +33,20 @@ class EmotionService extends Service {
 
   public pickOne(emotion: number): string {
     const title: string[] = [];
-    const weight: number[] = [];
+    const point: number[] = [];
     for (const item of EmotionStore) {
       title.push(item[0]);
-      weight.push(item[1][emotion]);
+      point.push(item[1][emotion]);
     }
 
-    const distribution = [];
-    const sum = weight.reduce((a, b) => a + b, 0);
-
-    const quantity = 10 / sum;
-    for (let i = 0; i < title.length; ++i) {
-      const limit = quantity * weight[i];
-      for (let j = 0; j < limit; ++j) {
-        distribution.push(i);
-      }
+    const candidates: string[] = [];
+    for (let i = 0; i < point.length; i++) {
+      const target = title[i];
+      const count = point[i];
+      for (let j = 0; j < count; j++) candidates.push(target);
     }
 
-    const index = pickFromArray(distribution);
-    return title[index];
+    return pickFromArray(candidates);
   }
 }
 

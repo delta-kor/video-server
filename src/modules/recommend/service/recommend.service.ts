@@ -77,9 +77,9 @@ class RecommendService extends Service {
     const emotionalVideoCount: [number, number][] = [];
     for (let i = 0; i < 4; i++) emotionalVideoCount.push([i, Math.round(count * emotionData[i])]);
 
+    const sortedEmotionalVideoCount = emotionalVideoCount.sort((a, b) => b[1] - a[1]);
     const titles: string[] = [];
-
-    for (const count of emotionalVideoCount.sort((a, b) => b[1] - a[1])) {
+    for (const count of sortedEmotionalVideoCount) {
       for (let i = 0; i < count[1]; i++) titles.push(this.emotionService.pickOne(count[0]));
     }
 
