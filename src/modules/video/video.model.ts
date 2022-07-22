@@ -1,10 +1,8 @@
 import { model, Schema } from 'mongoose';
-import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import Video, { VideoOptions } from './video.interface';
-import VideoService from './video.service';
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -41,16 +39,6 @@ VideoSchema.methods.serialize = function (this: Video, ...keys: (keyof Video)[])
   }
 
   return result;
-};
-
-VideoSchema.statics.restore = function (video: Video): Video {
-  const id = video.id;
-
-  const videoService: VideoService = ServiceProvider.get(VideoService);
-  const newVideo = videoService.get(id);
-
-  if (!newVideo) throw new NotFoundException();
-  return newVideo;
 };
 
 const VideoModel = model<Video>('video', VideoSchema);
