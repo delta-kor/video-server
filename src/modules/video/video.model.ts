@@ -43,14 +43,14 @@ VideoSchema.methods.serialize = function (this: Video, ...keys: (keyof Video)[])
   return result;
 };
 
-VideoSchema.methods.restore = function (this: Video): Video {
-  const id = this.id;
+VideoSchema.statics.restore = function (video: Video): Video {
+  const id = video.id;
 
   const videoService: VideoService = ServiceProvider.get(VideoService);
-  const video = videoService.get(id);
+  const newVideo = videoService.get(id);
 
-  if (!video) throw new NotFoundException();
-  return video;
+  if (!newVideo) throw new NotFoundException();
+  return newVideo;
 };
 
 const VideoModel = model<Video>('video', VideoSchema);
