@@ -1,3 +1,4 @@
+import Constants from '../../../constants';
 import NotFoundException from '../../../exceptions/not-found.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
@@ -20,7 +21,7 @@ class RecommendService extends Service {
     const { type, title, category } = video;
 
     const result: Video[] = [];
-    const categoryVideos = this.categoryService.getVideosByCategory(category);
+    const categoryVideos = this.videoService.getByCategory(category);
     const currentIndex = categoryVideos.indexOf(video);
 
     if (categoryVideos.length >= 2 && currentIndex !== -1) {
@@ -29,7 +30,7 @@ class RecommendService extends Service {
       if (nextVideo) result.push(nextVideo);
     }
 
-    if (video.type === 'vod') {
+    if (type === 'vod') {
       const intros = new Set(this.categoryService.getVodIntros());
       for (let i = 0; i < count - 1; i++) {
         if (!intros.size) continue;
@@ -39,6 +40,48 @@ class RecommendService extends Service {
           i--;
           continue;
         }
+
+        result.push(video);
+      }
+    }
+
+    if (type === 'performance') {
+      const titleLikeVideoCount = Math.round((count - 1) / 2);
+
+      const titleLikeVideos = new Set(
+        this.videoService.getByTitle(title, 'recommend').filter(item => !result.includes(item) && item !== video)
+      );
+
+      while (titleLikeVideos.size > titleLikeVideoCount) {
+        pickFromSetAndDelete(titleLikeVideos);
+      }
+
+      const categoryLikeVideoCount = count - 1 - titleLikeVideos.size;
+
+      const currentCategory = [...category];
+      const categoryLikeVideos: Set<Video> = new Set();
+      for (let i = 0; i < Constants.CATEGORY_LENGTH; i++, currentCategory.pop()) {
+        if (categoryLikeVideos.size > categoryLikeVideoCount) continue;
+
+        const videos = new Set(
+          this.videoService.getByCategory(currentCategory).filter(item => !result.includes(item) && item !== video)
+        );
+        const limit = categoryLikeVideoCount - categoryLikeVideos.size;
+
+        for (let i = 0; i < limit; i++) {
+          const video = pickFromSetAndDelete(videos);
+          if (!video) break;
+
+          categoryLikeVideos.add(video);
+        }
+      }
+
+      const integrated = new Set([...titleLikeVideos, ...categoryLikeVideos]);
+      const size = integrated.size;
+
+      for (let i = 0; i < size; i++) {
+        const video = pickFromSetAndDelete(integrated);
+        if (!video) continue;
 
         result.push(video);
       }
