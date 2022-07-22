@@ -2,6 +2,7 @@ import NotFoundException from '../../../exceptions/not-found.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
 import { pickFromArray, pickFromSetAndDelete } from '../../../utils/pick.util';
+import CategoryService from '../../category/category.service';
 import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import { EmotionData, PlaytimeData } from '../store/emotion.store';
@@ -9,62 +10,38 @@ import EmotionService from './emotion.service';
 
 class RecommendService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
+  private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
   private readonly emotionService: EmotionService = ServiceProvider.get(EmotionService);
 
   public getVideoRecommends(id: string, count: number): Video[] {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    const title = video.title;
-    const category = video.category;
-
-    const equalTitleVideos = new Set(this.videoService.getByTitle(title));
-    const equalCategoryVideos = new Set(this.videoService.getByCategory(category));
-
-    equalTitleVideos.delete(video);
-    equalCategoryVideos.delete(video);
-    equalTitleVideos.forEach(equalCategoryVideos.delete, equalCategoryVideos);
-
-    let secondaryCategoryVideos = new Set(),
-      tertiaryCategoryVideos = new Set();
-
-    if (equalCategoryVideos.size < count / 2) {
-      secondaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 2)));
-      secondaryCategoryVideos.delete(video);
-      equalCategoryVideos.forEach(secondaryCategoryVideos.delete, secondaryCategoryVideos);
-      equalTitleVideos.forEach(secondaryCategoryVideos.delete, secondaryCategoryVideos);
-
-      if (equalCategoryVideos.size + secondaryCategoryVideos.size < count / 2) {
-        tertiaryCategoryVideos = new Set(this.videoService.getByCategory(category.slice(0, 1)));
-        tertiaryCategoryVideos.delete(video);
-        equalCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
-        secondaryCategoryVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
-        equalTitleVideos.forEach(tertiaryCategoryVideos.delete, tertiaryCategoryVideos);
-      }
-    }
+    const { type, title, category } = video;
 
     const result: Video[] = [];
-    for (let i = 0; i < count; i++) {
-      if (i % 2 === 0) {
-        const item =
-          pickFromSetAndDelete(equalTitleVideos) ||
-          pickFromSetAndDelete(equalCategoryVideos) ||
-          pickFromSetAndDelete(secondaryCategoryVideos) ||
-          pickFromSetAndDelete(tertiaryCategoryVideos);
-        item && result.push(item);
-      } else {
-        const item =
-          pickFromSetAndDelete(equalCategoryVideos) ||
-          pickFromSetAndDelete(secondaryCategoryVideos) ||
-          pickFromSetAndDelete(tertiaryCategoryVideos) ||
-          pickFromSetAndDelete(equalTitleVideos);
-        item && result.push(item);
-      }
+    const categoryVideos = this.categoryService.getVideosByCategory(category);
+    const currentIndex = categoryVideos.indexOf(video);
+
+    if (categoryVideos.length >= 2 && currentIndex !== -1) {
+      const nextIndex = categoryVideos.length - 1 === currentIndex ? 0 : currentIndex + 1;
+      const nextVideo = categoryVideos[nextIndex];
+      if (nextVideo) result.push(nextVideo);
     }
 
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+    if (video.type === 'vod') {
+      const intros = new Set(this.categoryService.getVodIntros());
+      for (let i = 0; i < count - 1; i++) {
+        if (!intros.size) continue;
+
+        const video = pickFromSetAndDelete(intros);
+        if (result.includes(video)) {
+          i--;
+          continue;
+        }
+
+        result.push(video);
+      }
     }
 
     return result;

@@ -10,11 +10,12 @@ import CategoryResponse, { Folder, Path } from './category.response';
 
 class CategoryService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
-  private folders: Map<string, Folder> = new Map();
-  private folderItems: ArrayMap<string, Folder> = new ArrayMap();
-  private fileItems: ArrayMap<string, Video> = new ArrayMap();
+  private readonly folders: Map<string, Folder> = new Map();
+  private readonly folderItems: ArrayMap<string, Folder> = new ArrayMap();
+  private readonly fileItems: ArrayMap<string, Video> = new ArrayMap();
+  private readonly vodIntros: Video[] = [];
 
-  private static hashPath(...path: string[]): string {
+  private static hashPath(path: string[]): string {
     const hasher = crypto.createHash('md5');
     for (const item of path) hasher.update(item);
     return hasher.digest('hex').slice(0, 16);
@@ -24,21 +25,21 @@ class CategoryService extends Service {
     const result: string[] = [];
     for (let i = 0; i < paths.length; i++) {
       const path = paths.slice(0, i + 1);
-      result.push(CategoryService.hashPath(...path));
+      result.push(CategoryService.hashPath(path));
     }
 
     return result;
   }
 
   public createPath(paths: string[]): Path[] {
-    return CategoryService.hashMultiplePath(paths).map(id => {
+    return paths.map(id => {
       const parentFolder = this.folders.get(id)!;
       return { id, title: parentFolder.title, count: parentFolder.count };
     });
   }
 
   private addFolder(path: string[], video: Video): void {
-    const folderHash = CategoryService.hashPath(...path);
+    const folderHash = CategoryService.hashPath(path);
 
     let folder: Folder | undefined = this.folders.get(folderHash);
     if (!folder) {
@@ -50,12 +51,14 @@ class CategoryService extends Service {
         date: video.date.getTime(),
       };
       this.folders.set(folderHash, folder);
+
+      if (video.type === 'vod') this.vodIntros.push(video);
     }
 
     folder.count++;
 
     const parentFolder = path.slice(0, path.length - 1);
-    const parentFolderHash = parentFolder.length === 0 ? 'root' : CategoryService.hashPath(...parentFolder);
+    const parentFolderHash = parentFolder.length === 0 ? 'root' : CategoryService.hashPath(parentFolder);
 
     if (path.length === Constants.CATEGORY_LENGTH) this.fileItems.add(folderHash, video);
     this.folderItems.add(parentFolderHash, folder);
@@ -98,16 +101,20 @@ class CategoryService extends Service {
     throw new NotFoundException();
   }
 
-  public getVideosByPath(path: string[]): Video[] {
+  public getVideosByCategory(path: string[]): Video[] {
     const result: Video[] = [];
 
-    const pathId = CategoryService.hashPath(...path);
+    const pathId = CategoryService.hashPath(path);
 
     const response = this.view(pathId);
     if (!response.ok) return result;
     if (response.type === 'folder') return result;
 
-    return response.data.map(video => video.restore());
+    return response.data.map(video => this.videoService.get(video.id)!);
+  }
+
+  public getVodIntros(): Video[] {
+    return this.vodIntros;
   }
 }
 

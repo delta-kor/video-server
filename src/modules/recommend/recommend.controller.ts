@@ -23,7 +23,7 @@ class RecommendController extends Controller {
     const id = req.params.id;
     const count = parseInt(req.query.count) || 12;
 
-    if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
+    if (count > 50 || count < 1) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
     const videos = this.recommendService.getVideoRecommends(id, count);
     const serializedVideos = videos.map(video => video.serialize('id', 'title', 'description', 'duration', 'is_4k'));
@@ -40,7 +40,7 @@ class RecommendController extends Controller {
   ): Promise<void> {
     const count = parseInt(req.query.count) || 20;
 
-    if (count > 50) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
+    if (count > 50 || count < 1) throw new UnprocessableEntityException('허용되지 않은 범위이에요');
 
     const playtime = req.body.data;
 
