@@ -38,6 +38,11 @@ class CategoryService extends Service {
     });
   }
 
+  public createPathFromCategory(category: string[]): Path[] {
+    const paths = CategoryService.hashMultiplePath(category);
+    return this.createPath(paths);
+  }
+
   private addFolder(path: string[], video: Video): void {
     const folderHash = CategoryService.hashPath(path);
 

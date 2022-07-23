@@ -48,7 +48,7 @@ class VideoController extends Controller {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    const path: Path[] = this.categoryService.createPath(video.category);
+    const path: Path[] = this.categoryService.createPathFromCategory(video.category);
 
     res.json({
       ok: true,
