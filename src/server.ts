@@ -26,6 +26,8 @@ import RadioService from './modules/radio/radio.service';
 import RecommendController from './modules/recommend/recommend.controller';
 import EmotionService from './modules/recommend/service/emotion.service';
 import RecommendService from './modules/recommend/service/recommend.service';
+import SearchController from './modules/search/search.controller';
+import SearchService from './modules/search/search.service';
 import ThumbnailController from './modules/thumbnail/thumbnail.controller';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
@@ -48,6 +50,7 @@ const services: typeof Service[] = [
   EmotionService,
   PlaylistService,
   RecommendService,
+  SearchService,
   RadioService,
   SocketService,
   CinemaService,
@@ -76,6 +79,7 @@ app
       new CalendarController(),
       new PlaylistController(),
       new RecommendController(),
+      new SearchController(),
       new RadioController(),
       new AdController(),
     ];
