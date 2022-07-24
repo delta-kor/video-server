@@ -2,6 +2,8 @@ import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
+import { MusicStore } from '../music/music.store';
+import VideoTagStore from './store/tag.store';
 import Video, { VideoOptions } from './video.interface';
 
 const VideoSchema = new Schema<Video>({
@@ -23,6 +25,16 @@ VideoSchema.virtual('duration').get(function (this: Video): number {
 
 VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
   return !!this.cdnId_4k;
+});
+
+VideoSchema.virtual('tags').get(function (this: Video): string[] {
+  const result: string[] = [];
+  if (MusicStore.has(this.title)) {
+    const tags = VideoTagStore.get(this.title);
+    if (tags) result.push(...tags);
+  }
+
+  return result;
 });
 
 VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {

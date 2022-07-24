@@ -9,7 +9,7 @@ class SearchService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly index: Fuse<Video> = new Fuse([], {
     includeScore: true,
-    keys: [{ name: 'title' }, { name: 'description' }, { name: 'category' }],
+    keys: [{ name: 'title' }, { name: 'description' }, { name: 'category' }, { name: 'tags' }],
     threshold: 0.4,
   });
 
@@ -19,7 +19,10 @@ class SearchService extends Service {
       let convertedQuery = currentQuery;
       for (const item of SearchConvertStore) {
         const [key, value] = item;
-        convertedQuery = convertedQuery.replace(new RegExp(key, 'g'), value);
+        convertedQuery = convertedQuery.replace(
+          new RegExp(key.toLowerCase().replace(/ /g, ''), 'g'),
+          value.toLowerCase().replace(/ /g, '')
+        );
       }
 
       if (convertedQuery === currentQuery) return convertedQuery;
@@ -35,7 +38,7 @@ class SearchService extends Service {
   }
 
   public search(query: string): Video[] {
-    const convertedQuery = SearchService.convert(query);
+    const convertedQuery = SearchService.convert(query.toLowerCase().replace(/ /g, ''));
     const data = this.index.search(convertedQuery, { limit: 50 });
     return data.map(item => item.item);
   }

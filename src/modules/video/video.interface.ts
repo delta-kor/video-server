@@ -20,6 +20,8 @@ interface Video extends Document {
   options: VideoOptions[];
   hasOption(option: VideoOptions): boolean;
 
+  tags: string[];
+
   serialize(...keys: (keyof Video)[]): Video;
 }
 
