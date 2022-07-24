@@ -1,38 +1,43 @@
-import { Document } from 'flexsearch';
+import Fuse from 'fuse.js';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
+import SearchConvertStore from './store/convert.store';
 
 class SearchService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
-  private readonly index: Document<Video> = new Document({
-    document: {
-      id: 'id',
-      index: [
-        { field: 'title' },
-        {
-          field: 'description',
-        },
-        { field: 'category' },
-      ],
-    },
-    encode: item => item.replace(/ - /g, ' ').split(' '),
-    tokenize: 'full',
+  private readonly index: Fuse<Video> = new Fuse([], {
+    includeScore: true,
+    keys: [{ name: 'title' }, { name: 'description' }, { name: 'category' }],
+    threshold: 0.4,
   });
+
+  private static convert(query: string): string {
+    let currentQuery: string = query;
+    for (let i = 0; i < 100; i++) {
+      let convertedQuery = currentQuery;
+      for (const item of SearchConvertStore) {
+        const [key, value] = item;
+        convertedQuery = convertedQuery.replace(new RegExp(key, 'g'), value);
+      }
+
+      if (convertedQuery === currentQuery) return convertedQuery;
+      currentQuery = convertedQuery;
+    }
+
+    return currentQuery;
+  }
 
   public async load(): Promise<void> {
     const videos = this.videoService.getAllFiltered('category');
-    for (const video of videos) this.index.add(video.id, video);
+    for (const video of videos) this.index.add(video);
   }
 
   public search(query: string): Video[] {
-    const data = this.index.search(query);
-
-    const result: Set<Video> = new Set();
-    data.forEach(item => item.result.forEach(id => result.add(this.videoService.get(id as any)!)));
-
-    return [...result];
+    const convertedQuery = SearchService.convert(query);
+    const data = this.index.search(convertedQuery, { limit: 50 });
+    return data.map(item => item.item);
   }
 }
 
