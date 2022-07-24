@@ -113,6 +113,13 @@ SearchConvertStoreBase.set('댕댕가요', '인기가요');
 SearchConvertStoreBase.set('유진가요', '인기가요');
 SearchConvertStoreBase.set('녕직뱅크', '뮤직뱅크');
 SearchConvertStoreBase.set('원영뱅크', '뮤직뱅크');
+SearchConvertStoreBase.set('온콘', '온라인 콘서트');
+SearchConvertStoreBase.set('잠실콘', 'EYES ON ME IN SEOUL');
+SearchConvertStoreBase.set('서울콘', 'EYES ON ME IN SEOUL');
+SearchConvertStoreBase.set('설콘', 'EYES ON ME IN SEOUL');
+SearchConvertStoreBase.set('첫콘', 'EYES ON ME IN SEOUL');
+SearchConvertStoreBase.set('오프콘', 'EYES ON ME IN SEOUL');
+SearchConvertStoreBase.set('막콘', 'ONE, THE STORY');
 
 const SearchConvertStore = new Map<string, string>();
 const keys = [...SearchConvertStoreBase.keys()].sort((a, b) => b.length - a.length);

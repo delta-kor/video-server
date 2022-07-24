@@ -2,7 +2,7 @@ const VideoTagStore = new Map<string, string[]>();
 
 VideoTagStore.set('아름다운 색', ['Colors', '컬러즈']);
 VideoTagStore.set("O' My!", ['오마이', '어머']);
-VideoTagStore.set('라비앙로즈', ['La Vie en Rose', '라뱡', '장미']);
+VideoTagStore.set('라비앙로즈', ['La Vie en Rose', '라뱡', '라비앙', '장미']);
 VideoTagStore.set('비밀의 시간', ['Memory', '메모리']);
 VideoTagStore.set('앞으로 잘 부탁해', ['We Together', '앞잘부']);
 VideoTagStore.set('반해버리잖아?', ['好きになっちゃうだろう', 'Crush on You', '반버잖']);
@@ -19,7 +19,7 @@ VideoTagStore.set('Suki to Iwasetai', [
 VideoTagStore.set('춤이 생각날 때까지', ['ダンスを思い出すまで', 'Dance wo Omoidasu made', '춤생날']);
 
 VideoTagStore.set('해바라기', ['Hey bae like it', 'sunflower', '히바라기', '히토미']);
-VideoTagStore.set('비올레타', ['Violeta']);
+VideoTagStore.set('비올레타', ['Violeta', '비올']);
 VideoTagStore.set('Highlight', ['하이라이트', '할랕', '30']);
 VideoTagStore.set('Really Like You', ['릴리 라이크 유', '릴랔유']);
 VideoTagStore.set('Airplane', ['에어플레인', '비행기']);

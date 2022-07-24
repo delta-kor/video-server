@@ -10,7 +10,7 @@ class SearchService extends Service {
   private readonly index: Fuse<Video> = new Fuse([], {
     includeScore: true,
     keys: [{ name: 'title' }, { name: 'description' }, { name: 'category' }, { name: 'tags' }],
-    threshold: 0.4,
+    threshold: 0.8,
   });
 
   private static convert(query: string): string {
@@ -39,7 +39,7 @@ class SearchService extends Service {
 
   public search(query: string): Video[] {
     const convertedQuery = SearchService.convert(query.toLowerCase().replace(/ /g, ''));
-    const data = this.index.search(convertedQuery, { limit: 50 });
+    const data = this.index.search(convertedQuery, { limit: 20 });
     return data.map(item => item.item);
   }
 }
