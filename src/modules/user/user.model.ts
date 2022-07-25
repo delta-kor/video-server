@@ -1,6 +1,6 @@
-import crypto from 'crypto';
 import { Model, model, Schema } from 'mongoose';
 import generateId from '../../utils/id.util';
+import TokenUtil from '../../utils/token.util';
 import User, { Role, UserInfo } from './user.interface';
 
 interface UserModel extends Model<User> {
@@ -23,10 +23,7 @@ UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void
 };
 
 UserSchema.methods.createToken = function (this: User): string {
-  const id = this.id;
-  const secret = process.env.SECRET_KEY as string;
-  const hash = crypto.createHash('md5').update(id).update(secret).digest('hex');
-  return `${id}.${hash}`;
+  return TokenUtil.create(this);
 };
 
 UserSchema.methods.info = function (this: User): UserInfo {

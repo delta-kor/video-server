@@ -2,15 +2,15 @@ import Video from '../video/video.interface';
 import Playlist from './playlist.interface';
 
 namespace PlaylistResponse {
-  export interface CreatePlaylist extends ApiResponse {
+  export interface Create extends ApiResponse {
     id: string;
   }
 
-  export interface ReadPlaylist extends ApiResponse {
+  export interface Read extends ApiResponse {
     playlist: Playlist;
   }
 
-  export interface ReadAllPlaylists extends ApiResponse {
+  export interface ReadAll extends ApiResponse {
     playlists: Playlist[];
   }
 
@@ -19,7 +19,7 @@ namespace PlaylistResponse {
     video: Video;
   }
 
-  export interface UpdatePlaylist extends ApiResponse {
+  export interface Update extends ApiResponse {
     playlist: Playlist;
   }
 }

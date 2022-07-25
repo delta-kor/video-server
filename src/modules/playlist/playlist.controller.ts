@@ -23,15 +23,12 @@ class PlaylistController extends Controller {
     this.mounter.delete('/:id', ManageGuard, this.delete.bind(this));
   }
 
-  private async create(
-    req: TypedRequest<PlaylistDto>,
-    res: TypedResponse<PlaylistResponse.CreatePlaylist>
-  ): Promise<void> {
+  private async create(req: TypedRequest<PlaylistDto>, res: TypedResponse<PlaylistResponse.Create>): Promise<void> {
     const playlist = await this.playlistService.create(req.body);
     res.json({ ok: true, id: playlist.id });
   }
 
-  private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.ReadPlaylist>): Promise<void> {
+  private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
     const id: string = req.params.id;
     const playlist = this.playlistService.read(id);
     const serializedPlaylist = playlist.serialize('id', 'title', 'description', 'video');
@@ -41,7 +38,7 @@ class PlaylistController extends Controller {
 
   private async readAll(
     req: TypedRequest,
-    res: TypedResponse<PlaylistResponse.ReadAllPlaylists>,
+    res: TypedResponse<PlaylistResponse.ReadAll>,
     next: NextFunction
   ): Promise<void> {
     const type = req.params.type as VideoType;
@@ -69,7 +66,7 @@ class PlaylistController extends Controller {
 
   private async update(
     req: TypedRequest<Partial<PlaylistDto>>,
-    res: TypedResponse<PlaylistResponse.UpdatePlaylist>
+    res: TypedResponse<PlaylistResponse.Update>
   ): Promise<void> {
     const id: string = req.params.id;
     const playlist = await this.playlistService.update(id, req.body);
