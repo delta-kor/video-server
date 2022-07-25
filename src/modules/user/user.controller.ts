@@ -1,5 +1,6 @@
 import Controller from '../../classes/controller.class';
 import AuthGuard from '../../guards/auth.guard';
+import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
 import UserDto from './dto/user.dto';
 import UserResponse from './user.response';
@@ -11,6 +12,7 @@ class UserController extends Controller {
 
   protected mount(): void {
     this.mounter.get('/', AuthGuard, this.get.bind(this));
+    this.mounter.put('/', ValidateGuard(UserDto, 'body', true), AuthGuard, this.update.bind(this));
   }
 
   private async get(req: TypedRequest, res: TypedResponse<UserResponse.Get>): Promise<void> {

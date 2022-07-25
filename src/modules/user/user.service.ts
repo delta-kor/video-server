@@ -17,7 +17,7 @@ class UserService extends Service {
     let currentNumber = lastUserNumber! + 1;
     let nickname = `WIZ-${currentNumber}`;
 
-    while (await UserModel.nicknameExists(nickname)) {
+    while (await this.nicknameExists(nickname)) {
       currentNumber++;
       nickname = `WIZ-${currentNumber}`;
     }
@@ -61,7 +61,7 @@ class UserService extends Service {
     const user = await this.getUserById(id);
     if (!user) throw new UnauthorizedException();
 
-    if (user.nickname && (await this.nicknameExists(user.nickname)))
+    if (data.nickname && data.nickname !== user.nickname && (await this.nicknameExists(data.nickname)))
       throw new UnprocessableEntityException('이미 사용중인 닉네임이에요');
 
     const updater = new Updater<User>(user);
