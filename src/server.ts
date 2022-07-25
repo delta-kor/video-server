@@ -16,7 +16,6 @@ import ChatService from './modules/live/service/chat.service';
 import CinemaService from './modules/live/service/cinema.service';
 import LiveService from './modules/live/service/live.service';
 import SocketService from './modules/live/service/socket.service';
-import UserService from './modules/live/service/user.service';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import PlaylistController from './modules/playlist/playlist.controller';
@@ -29,6 +28,8 @@ import RecommendService from './modules/recommend/service/recommend.service';
 import SearchController from './modules/search/search.controller';
 import SearchService from './modules/search/search.service';
 import ThumbnailController from './modules/thumbnail/thumbnail.controller';
+import UserController from './modules/user/user.controller';
+import UserService from './modules/user/user.service';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
 import Service from './services/base.service';
@@ -81,6 +82,7 @@ app
       new RecommendController(),
       new SearchController(),
       new RadioController(),
+      new UserController(),
       new AdController(),
     ];
     return app.load(controllers, gateway);

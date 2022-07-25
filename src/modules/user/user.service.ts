@@ -1,9 +1,9 @@
 import crypto from 'crypto';
-import Service from '../../../services/base.service';
-import ServiceProvider from '../../../services/provider.service';
-import EnvService from '../../env/env.service';
-import User from '../interface/user.interface';
-import UserModel from '../model/user.model';
+import Service from '../../services/base.service';
+import ServiceProvider from '../../services/provider.service';
+import EnvService from '../env/env.service';
+import User from './user.interface';
+import UserModel from './user.model';
 
 class UserService extends Service {
   private readonly envService: EnvService = ServiceProvider.get(EnvService);
@@ -20,8 +20,8 @@ class UserService extends Service {
 
     const user = new UserModel({ nickname, role: 0 }) as User;
 
-    await user.save();
     this.envService.set('user_index', currentNumber);
+    await user.save();
 
     return user;
   }

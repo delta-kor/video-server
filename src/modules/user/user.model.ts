@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Model, model, Schema } from 'mongoose';
-import generateId from '../../../utils/id.util';
-import User, { Role, UserInfo } from '../interface/user.interface';
+import generateId from '../../utils/id.util';
+import User, { Role, UserInfo } from './user.interface';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
@@ -35,6 +35,18 @@ UserSchema.methods.info = function (this: User): UserInfo {
 
 UserSchema.methods.isStaff = function (this: User): boolean {
   return this.role === Role.STAFF || this.role === Role.MASTER;
+};
+
+UserSchema.methods.serialize = function (this: User, ...keys: (keyof User)[]): User {
+  const result: any = {};
+  for (const key of keys) {
+    let value: any = this[key];
+    if (value instanceof Date) value = value.getTime();
+
+    result[key] = value;
+  }
+
+  return result;
 };
 
 UserSchema.statics.nicknameExists = async function (this: UserModel, nickname: string): Promise<boolean> {
