@@ -6,4 +6,10 @@ interface Music {
   videos: Video[];
 }
 
-export default Music;
+interface Album {
+  id: string;
+  title: string;
+  count: number;
+}
+
+export { Music, Album };

@@ -1,5 +1,6 @@
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
+import { pickFromArray } from '../../../utils/pick.util';
 import VideoService from '../../video/video.service';
 import EmotionStore, { EmotionData, PlaytimeData } from '../store/emotion.store';
 
@@ -28,6 +29,24 @@ class EmotionService extends Service {
     const differenceRatio = result.map(item => item / total);
 
     return differenceRatio as EmotionData;
+  }
+
+  public pickOne(emotion: number): string {
+    const title: string[] = [];
+    const point: number[] = [];
+    for (const item of EmotionStore) {
+      title.push(item[0]);
+      point.push(item[1][emotion]);
+    }
+
+    const candidates: string[] = [];
+    for (let i = 0; i < point.length; i++) {
+      const target = title[i];
+      const count = point[i];
+      for (let j = 0; j < count; j++) candidates.push(target);
+    }
+
+    return pickFromArray(candidates);
   }
 }
 

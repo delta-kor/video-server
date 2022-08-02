@@ -1,7 +1,7 @@
 import Controller from '../../classes/controller.class';
-import NotFoundException from '../../exceptions/not-found.exception';
 import ServiceProvider from '../../services/provider.service';
-import MusicResponse, { MusicItem, VideoItem } from './music.response';
+import { Music } from './music.interface';
+import MusicResponse from './music.response';
 import MusicService from './music.service';
 
 class MusicController extends Controller {
@@ -9,38 +9,29 @@ class MusicController extends Controller {
   private readonly musicService: MusicService = ServiceProvider.get(MusicService);
 
   protected mount(): void {
-    this.mounter.get('/', this.viewAll.bind(this));
-    this.mounter.get('/:id', this.viewOne.bind(this));
+    this.mounter.get('/album', this.getAllAlbums.bind(this));
+    this.mounter.get('/album/:id', this.getOneAlbum.bind(this));
   }
 
-  private async viewAll(_req: TypedRequest, res: TypedResponse<MusicResponse.ViewAll>): Promise<void> {
-    const musics = this.musicService.viewAll();
-    const result: MusicItem[] = [];
+  private async getAllAlbums(_req: TypedRequest, res: TypedResponse<MusicResponse.GetAllAlbums>): Promise<void> {
+    const albums = this.musicService.getAllAlbums();
+    res.json({ ok: true, albums });
+  }
 
+  private async getOneAlbum(req: TypedRequest, res: TypedResponse<MusicResponse.GetOneAlbum>): Promise<void> {
+    const id: string = req.params.id;
+    const { album, musics } = this.musicService.getOneAlbum(id);
+
+    const serializedMusics: Music[] = [];
     for (const music of musics) {
-      result.push({ id: music.hash, title: music.title, count: music.videos.length });
+      serializedMusics.push({
+        title: music.title,
+        hash: music.hash,
+        videos: music.videos.map(video => video.serialize('id', 'description', 'duration', 'is_4k')),
+      });
     }
 
-    const sortedResult = result.sort((a, b) => b.count - a.count);
-
-    res.json({ ok: true, musics: sortedResult });
-  }
-
-  private async viewOne(req: TypedRequest, res: TypedResponse<MusicResponse.ViewOne>): Promise<void> {
-    const id = req.params.id;
-
-    const music = this.musicService.viewOne(id);
-    if (!music) throw new NotFoundException();
-
-    const result = music.videos.map<VideoItem>(video => ({
-      id: video.id,
-      description: video.description,
-      date: video.date.getTime(),
-      duration: video.duration,
-      is_4k: video.is_4k,
-    }));
-
-    res.json({ ok: true, videos: result });
+    res.json({ ok: true, album, musics: serializedMusics });
   }
 }
 

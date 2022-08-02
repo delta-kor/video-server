@@ -21,6 +21,7 @@ class ExceptionFilter {
       }
 
       console.error(err.name, err.message, err.stack);
+      res.status(500);
       res.json({ ok: false, message: Constants.INTERNAL_SERVER_ERROR });
       return true;
     });

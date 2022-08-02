@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-class AddDto {
+class AdDto {
   @IsString({ message: '제목을 입력해주세요' })
   public title!: string;
 
@@ -11,4 +11,4 @@ class AddDto {
   public link!: string;
 }
 
-export default AddDto;
+export default AdDto;

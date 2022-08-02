@@ -1,7 +1,7 @@
-import crypto from 'crypto';
 import { Model, model, Schema } from 'mongoose';
-import generateId from '../../../utils/id.util';
-import User, { Role, UserInfo } from '../interface/user.interface';
+import generateId from '../../utils/id.util';
+import TokenUtil from '../../utils/token.util';
+import User, { Role, UserInfo } from './user.interface';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
@@ -23,10 +23,7 @@ UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void
 };
 
 UserSchema.methods.createToken = function (this: User): string {
-  const id = this.id;
-  const secret = process.env.SECRET_KEY as string;
-  const hash = crypto.createHash('md5').update(id).update(secret).digest('hex');
-  return `${id}.${hash}`;
+  return TokenUtil.create(this);
 };
 
 UserSchema.methods.info = function (this: User): UserInfo {
@@ -35,6 +32,18 @@ UserSchema.methods.info = function (this: User): UserInfo {
 
 UserSchema.methods.isStaff = function (this: User): boolean {
   return this.role === Role.STAFF || this.role === Role.MASTER;
+};
+
+UserSchema.methods.serialize = function (this: User, ...keys: (keyof User)[]): User {
+  const result: any = {};
+  for (const key of keys) {
+    let value: any = this[key];
+    if (value instanceof Date) value = value.getTime();
+
+    result[key] = value;
+  }
+
+  return result;
 };
 
 UserSchema.statics.nicknameExists = async function (this: UserModel, nickname: string): Promise<boolean> {

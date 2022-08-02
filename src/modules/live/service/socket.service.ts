@@ -1,5 +1,5 @@
 import Service from '../../../services/base.service';
-import User from '../interface/user.interface';
+import User from '../../user/user.interface';
 import { ServerPacketBase } from '../live.packet';
 import LiveSocket, { SocketState } from '../live.socket';
 

@@ -1,8 +1,18 @@
 import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { VideoType } from '../../video/video.interface';
 
-class UploadPlaylistDto {
+class PlaylistDto {
+  @IsString({ message: '라벨을 입력해주세요' })
+  public label!: string;
+
+  @IsString({ message: '타입을 선택해주세요' })
+  public type!: VideoType;
+
   @IsString({ message: '제목을 입력해주세요' })
   public title!: string;
+
+  @IsString({ message: '설명을 입력해주세요' })
+  public description!: string;
 
   @IsArray({ message: '영상을 선택해주세요' })
   public video!: string[];
@@ -14,4 +24,4 @@ class UploadPlaylistDto {
   public order!: number;
 }
 
-export default UploadPlaylistDto;
+export default PlaylistDto;

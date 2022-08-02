@@ -1,8 +1,12 @@
-function pickItem<T>(data: Set<T>): T {
+function pickFromSetAndDelete<T>(data: Set<T>): T {
   const items = Array.from(data);
   const picked = items[Math.floor(Math.random() * items.length)];
   data.delete(picked);
   return picked;
 }
 
-export default pickItem;
+function pickFromArray<T>(data: T[]): T {
+  return data[Math.floor(Math.random() * data.length)];
+}
+
+export { pickFromSetAndDelete, pickFromArray };

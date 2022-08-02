@@ -1,6 +1,6 @@
+import { UserInfo } from '../user/user.interface';
 import { ChatContent, ChatInfo } from './interface/chat.interface';
 import { Media, MediaUpload } from './interface/cinema.interface';
-import { UserInfo } from './interface/user.interface';
 
 interface PacketBase<T extends string = any> {
   type: T;

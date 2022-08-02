@@ -17,6 +17,8 @@ interface User extends Document {
   createToken(): string;
   info(): UserInfo;
   isStaff(): boolean;
+
+  serialize(...keys: (keyof User)[]): User;
 }
 
 interface UserInfo {

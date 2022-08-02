@@ -1,9 +1,10 @@
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
-import UploadDto from './dto/upload.dto';
+import VideoDto from './dto/video.dto';
 import Video, { VideoOptions } from './video.interface';
 import VideoModel from './video.model';
 
@@ -16,7 +17,7 @@ class VideoService extends Service {
     this.videos.push(...videos);
   }
 
-  public getAll(): Video[] {
+  private getAll(): Video[] {
     return this.videos;
   }
 
@@ -24,9 +25,14 @@ class VideoService extends Service {
     return this.getAll().filter(video => video.hasOption(option));
   }
 
-  public async upload(data: UploadDto): Promise<Video> {
+  public async upload(data: VideoDto): Promise<Video> {
+    if (!['performance', 'vod'].includes(data.type)) {
+      throw new UnprocessableEntityException('잘못된 영상 타입이에요');
+    }
+
     const video: Video = new VideoModel({
       cdnId: data.cdnId,
+      type: data.type,
       title: data.title,
       description: data.description,
       date: new Date(data.date),
@@ -69,7 +75,7 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k : video.cdnId;
+    const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k! : video.cdnId;
     const info = await this.deliverService.getCdnInfo(cdnId, quality);
 
     if (video.is_4k) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
