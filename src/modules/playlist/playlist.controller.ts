@@ -6,12 +6,14 @@ import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
 import { VideoType } from '../video/video.interface';
+import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
 import PlaylistResponse from './playlist.response';
 import PlaylistService from './playlist.service';
 
 class PlaylistController extends Controller {
   public readonly path: string = '/playlist';
+  private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly playlistService: PlaylistService = ServiceProvider.get(PlaylistService);
 
   protected mount(): void {
@@ -45,7 +47,7 @@ class PlaylistController extends Controller {
     if (!Constants.VIDEO_TYPES.includes(type)) return next();
 
     const playlists = this.playlistService.readAll(type);
-    const serializedPlaylist = playlists.map(playlist => playlist.serialize('id', 'title', 'description', 'video'));
+    const serializedPlaylist = playlists.map(playlist => playlist.serialize('id', 'title', 'thumbnail'));
 
     res.json({ ok: true, playlists: serializedPlaylist });
   }
@@ -61,7 +63,10 @@ class PlaylistController extends Controller {
 
     const playlistId = featured.playlist.id;
 
-    res.json({ ok: true, playlist_id: playlistId, video: serializedVideo });
+    const streamingInfo = await this.videoService.getStreamingInfo(video.id, 1080);
+    const url = streamingInfo.url;
+
+    res.json({ ok: true, playlist_id: playlistId, video: serializedVideo, url });
   }
 
   private async update(

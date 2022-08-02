@@ -9,7 +9,7 @@ class Updater<T> {
 
   public update(dto: Partial<T>, ...keys: (keyof T)[]): this {
     for (const key of keys) {
-      if (dto[key]) this.document[key] = dto[key];
+      if (typeof dto[key] !== 'undefined') this.document[key] = dto[key];
     }
 
     return this;

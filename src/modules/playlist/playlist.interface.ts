@@ -10,6 +10,8 @@ interface Playlist extends Document {
   video: string[];
   featured: boolean;
   order: number;
+  thumbnail: string;
+  image?: string;
 
   serialize(...keys: (keyof Playlist)[]): Playlist;
 }

@@ -17,6 +17,7 @@ namespace PlaylistResponse {
   export interface ReadFeatured extends ApiResponse {
     playlist_id: string;
     video: Video;
+    url: string;
   }
 
   export interface Update extends ApiResponse {

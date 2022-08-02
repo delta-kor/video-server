@@ -14,6 +14,11 @@ const PlaylistSchema = new Schema<Playlist>({
   video: { type: [String], required: true },
   featured: { type: Boolean, required: true },
   order: { type: Number, required: true },
+  image: { type: String, required: false },
+});
+
+PlaylistSchema.virtual('thumbnail').get(function (this: Playlist): string {
+  return this.image || this.video[0];
 });
 
 PlaylistSchema.methods.serialize = function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
