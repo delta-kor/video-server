@@ -8,6 +8,8 @@ class EmotionService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
 
   public getEmotionData(data: PlaytimeData): EmotionData {
+    if (data.length === 0) return [0.25, 0.25, 0.25, 0.25];
+
     const result: EmotionData = [0, 0, 0, 0];
 
     for (const item of data) {
