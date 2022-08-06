@@ -43,7 +43,7 @@ class BuilderService extends Service {
 
     if (id.length === 8) {
       void this.playlistService.read(id);
-      const fileName = `${id}.jpg`;
+      const fileName = `${id}.png`;
       return path.join(__dirname, '../../../', 'build', 'playlist', fileName);
     }
 
