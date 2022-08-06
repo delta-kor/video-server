@@ -32,7 +32,7 @@ PlaylistSchema.methods.serialize = function (this: Playlist, ...keys: (keyof Pla
         const video = videoService.get(videoId);
         if (!video) continue;
 
-        const serializedVideo = video.serialize('id', 'type', 'title', 'description', 'duration', 'is_4k');
+        const serializedVideo = video.serialize('id', 'title', 'description', 'duration', 'is_4k');
         videos.push(serializedVideo);
       }
 
