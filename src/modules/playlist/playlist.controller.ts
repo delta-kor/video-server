@@ -47,7 +47,11 @@ class PlaylistController extends Controller {
     if (!Constants.VIDEO_TYPES.includes(type)) return next();
 
     const playlists = this.playlistService.readAll(type);
-    const serializedPlaylist = playlists.map(playlist => playlist.serialize('id', 'title', 'thumbnail'));
+    const serializedPlaylist = playlists.map(playlist =>
+      type === 'performance'
+        ? playlist.serialize('id', 'title', 'thumbnail')
+        : playlist.serialize('id', 'title', 'description', 'video')
+    );
 
     res.json({ ok: true, playlists: serializedPlaylist });
   }
@@ -59,7 +63,7 @@ class PlaylistController extends Controller {
     const featured = this.playlistService.readFeatured(type);
 
     const video = featured.video;
-    const serializedVideo = video.serialize('id', 'type', 'title', 'description', 'duration', 'is_4k');
+    const serializedVideo = video.serialize('id', 'title', 'description');
 
     const playlistId = featured.playlist.id;
 

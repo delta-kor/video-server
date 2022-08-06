@@ -41,7 +41,6 @@ const port = parseInt(process.env.PORT!) || 3000;
 
 const app = new App(port);
 const services: typeof Service[] = [
-  BuilderService,
   EnvService,
   DeliverService,
   VideoService,
@@ -50,6 +49,7 @@ const services: typeof Service[] = [
   CalendarService,
   EmotionService,
   PlaylistService,
+  BuilderService,
   RecommendService,
   SearchService,
   RadioService,
@@ -73,8 +73,8 @@ app
   .then(() => {
     const controllers: Controller[] = [
       new EnvController(),
-      new ThumbnailController(),
       new VideoController(),
+      new ThumbnailController(),
       new CategoryController(),
       new MusicController(),
       new CalendarController(),
