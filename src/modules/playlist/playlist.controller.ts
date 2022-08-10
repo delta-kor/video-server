@@ -33,7 +33,7 @@ class PlaylistController extends Controller {
   private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
     const id: string = req.params.id;
     const playlist = this.playlistService.read(id);
-    const serializedPlaylist = playlist.serialize('id', 'title', 'description', 'video');
+    const serializedPlaylist = playlist.serialize('id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });
   }

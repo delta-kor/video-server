@@ -55,7 +55,9 @@ class PlaylistService extends Service {
   public readAll(type: VideoType): Playlist[] {
     const result: Playlist[] = [];
     for (const item of this.playlists.values()) {
-      if (item.type === type && !item.featured) result.push(item);
+      if (item.type !== type) continue;
+      if (item.type === 'performance' && item.featured) continue;
+      result.push(item);
     }
 
     return result;
