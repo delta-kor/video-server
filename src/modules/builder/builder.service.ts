@@ -3,12 +3,14 @@ import path from 'path';
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import MusicService from '../music/music.service';
 import PlaylistService from '../playlist/playlist.service';
 import Radio from '../radio/radio.interface';
 import { FileItem, RadioFileItem } from './builder.interface';
 
 class BuilderService extends Service {
   private readonly playlistService: PlaylistService = ServiceProvider.get(PlaylistService);
+  private readonly musicService: MusicService = ServiceProvider.get(MusicService);
 
   private readonly videoFile: Map<string, FileItem> = new Map();
   private readonly radioFile: Map<string, RadioFileItem> = new Map();
@@ -45,6 +47,12 @@ class BuilderService extends Service {
       void this.playlistService.read(id);
       const fileName = `${id}.png`;
       return path.join(__dirname, '../../../', 'build', 'playlist', fileName);
+    }
+
+    if (id.length === 10) {
+      void this.musicService.getOneAlbum(id);
+      const fileName = `${id}.png`;
+      return path.join(__dirname, '../../../', 'build', 'album', fileName);
     }
 
     throw new NotFoundException();

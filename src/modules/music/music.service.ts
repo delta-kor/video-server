@@ -13,7 +13,7 @@ class MusicService extends Service {
   private static hashTitle(title: string): string {
     const hasher = crypto.createHash('md5');
     hasher.update(title);
-    return hasher.digest('hex').slice(0, 8);
+    return hasher.digest('hex').slice(0, 10);
   }
 
   public async load(): Promise<void> {
@@ -31,7 +31,7 @@ class MusicService extends Service {
 
       const musicMap = this.album.get(albumTitle)!;
 
-      if (!musicMap.has(hash)) musicMap.set(hash, { title, hash, videos: [] });
+      if (!musicMap.has(hash)) musicMap.set(hash, { title, id: hash, videos: [] });
       musicMap.get(hash)!.videos.push(video);
     }
   }

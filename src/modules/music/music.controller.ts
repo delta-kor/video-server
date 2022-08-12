@@ -26,7 +26,7 @@ class MusicController extends Controller {
     for (const music of musics) {
       serializedMusics.push({
         title: music.title,
-        hash: music.hash,
+        id: music.id,
         videos: music.videos.map(video => video.serialize('id', 'description', 'duration', 'is_4k')),
       });
     }

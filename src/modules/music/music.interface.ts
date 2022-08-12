@@ -1,8 +1,8 @@
 import Video from '../video/video.interface';
 
 interface Music {
+  id: string;
   title: string;
-  hash: string;
   videos: Video[];
 }
 
