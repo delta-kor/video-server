@@ -51,7 +51,7 @@ class BuilderService extends Service {
 
     if (id.length === 10) {
       void this.musicService.getOneAlbum(id);
-      const fileName = `${id}.png`;
+      const fileName = `${id}.jpg`;
       return path.join(__dirname, '../../../', 'build', 'album', fileName);
     }
 
