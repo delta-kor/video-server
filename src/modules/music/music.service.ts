@@ -58,7 +58,11 @@ class MusicService extends Service {
 
     if (!musicMap! || !title!) throw new NotFoundException();
 
-    return { album: { id, title, count: musicMap.size }, musics: [...musicMap.values()] };
+    const titles = [...MusicStore.keys()];
+    const musics = [...musicMap.values()];
+    const sortedMusics = musics.sort((a, b) => titles.indexOf(a.title) - titles.indexOf(b.title));
+
+    return { album: { id, title, count: musicMap.size }, musics: sortedMusics };
   }
 }
 
