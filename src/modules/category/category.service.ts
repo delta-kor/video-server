@@ -34,7 +34,8 @@ class CategoryService extends Service {
   public createPath(paths: string[]): Path[] {
     return paths.map(id => {
       const parentFolder = this.folders.get(id)!;
-      return { id, title: parentFolder.title, count: parentFolder.count };
+      const children = this.folderItems.get(parentFolder.id)?.length ?? parentFolder.count;
+      return { id, title: parentFolder.title, count: parentFolder.count, children };
     });
   }
 
@@ -53,6 +54,7 @@ class CategoryService extends Service {
         path: CategoryService.hashMultiplePath(path),
         title: path[path.length - 1],
         count: 0,
+        children: Constants.CATEGORY_CHILDREN_COUNT,
         date: video.date.getTime(),
       };
       this.folders.set(folderHash, folder);
@@ -92,7 +94,13 @@ class CategoryService extends Service {
         ok: true,
         type: 'folder',
         path,
-        data: itemFolders.map(item => ({ id: item.id, title: item.title, count: item.count, date: item.date })),
+        data: itemFolders.map(item => ({
+          id: item.id,
+          title: item.title,
+          count: item.count,
+          children: this.folderItems.get(item.id)?.length ?? item.count,
+          date: item.date,
+        })),
       };
 
     if (itemFiles)

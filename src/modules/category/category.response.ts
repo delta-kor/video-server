@@ -5,6 +5,7 @@ interface Folder {
   path: string[];
   title: string;
   count: number;
+  children: number;
   date: number;
 }
 
@@ -12,6 +13,7 @@ interface Path {
   id: string;
   title: string;
   count: number;
+  children: number;
 }
 
 namespace CategoryResponse {
