@@ -52,6 +52,7 @@ class VideoController extends Controller {
 
     res.json({
       ok: true,
+      id: video.id,
       title: video.title,
       description: video.description,
       duration: video.duration,
