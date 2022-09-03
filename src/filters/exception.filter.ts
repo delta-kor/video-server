@@ -1,5 +1,4 @@
 import { Application, NextFunction } from 'express';
-import Constants from '../constants';
 import HttpException from '../exceptions/http.exception';
 import NotFoundException from '../exceptions/not-found.exception';
 
@@ -15,14 +14,16 @@ class ExceptionFilter {
 
     application.use((err: Error, req: TypedRequest, res: TypedResponse<ApiErrorResponse>, _next: NextFunction) => {
       if (err instanceof HttpException) {
+        const message = req.i18n.exists(err.message) ? req.t(err.message) : err.message;
+
         res.status(err.status);
-        res.json({ ok: false, message: err.message });
+        res.json({ ok: false, message });
         return true;
       }
 
       console.error(err.name, err.message, err.stack);
       res.status(500);
-      res.json({ ok: false, message: Constants.INTERNAL_SERVER_ERROR });
+      res.json({ ok: false, message: req.t('error.internal_server_error') });
       return true;
     });
   }

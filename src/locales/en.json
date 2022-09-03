@@ -1,0 +1,8 @@
+{
+  "error": {
+    "not_found": "Page does not exist",
+    "internal_server_error": "Internal server error occurred\nPlease try again in a moment",
+    "unauthorized": "Access denied\nPlease try again in a moment",
+    "wrong_request": "Wrong request"
+  }
+}
