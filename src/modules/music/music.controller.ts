@@ -11,6 +11,7 @@ class MusicController extends Controller {
   protected mount(): void {
     this.mounter.get('/album', this.getAllAlbums.bind(this));
     this.mounter.get('/album/:id', this.getOneAlbum.bind(this));
+    this.mounter.get('/:id', this.getOneMusic.bind(this));
   }
 
   private async getAllAlbums(_req: TypedRequest, res: TypedResponse<MusicResponse.GetAllAlbums>): Promise<void> {
@@ -32,6 +33,16 @@ class MusicController extends Controller {
     }
 
     res.json({ ok: true, album, musics: serializedMusics });
+  }
+
+  private async getOneMusic(req: TypedRequest, res: TypedResponse<MusicResponse.GetOneMusic>): Promise<void> {
+    const id: string = req.params.id;
+    const music = this.musicService.getOneMusic(id);
+    const serializedMusic = {
+      ...music,
+      videos: music.videos.map(video => video.serialize('id', 'description', 'duration', 'is_4k')),
+    };
+    res.json({ ok: true, music: serializedMusic });
   }
 }
 

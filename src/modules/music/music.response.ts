@@ -9,6 +9,10 @@ namespace MusicResponse {
     album: Album;
     musics: Music[];
   }
+
+  export interface GetOneMusic extends ApiResponse {
+    music: Music;
+  }
 }
 
 export default MusicResponse;

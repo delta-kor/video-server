@@ -64,6 +64,14 @@ class MusicService extends Service {
 
     return { album: { id, title, count: musicMap.size }, musics: sortedMusics };
   }
+
+  public getOneMusic(id: string): Music {
+    for (const musicMap of this.album.values()) {
+      if (musicMap.has(id)) return musicMap.get(id)!;
+    }
+
+    throw new NotFoundException();
+  }
 }
 
 export default MusicService;
