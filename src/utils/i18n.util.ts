@@ -1,6 +1,6 @@
 import musicEnglish from '../locales/en/music.json';
 
-function getMusicTitle(title: string, language: string): string {
+function getVideoTitle(title: string, language: string): string {
   let dataset: any;
   if (language === 'en') dataset = musicEnglish;
   else if (language === 'ko') dataset = {};
@@ -8,4 +8,4 @@ function getMusicTitle(title: string, language: string): string {
   return dataset[title] || title;
 }
 
-export { getMusicTitle };
+export { getVideoTitle };

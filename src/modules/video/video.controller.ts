@@ -4,6 +4,7 @@ import UnprocessableEntityException from '../../exceptions/unprocessable-entity.
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
+import { getVideoTitle } from '../../utils/i18n.util';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
@@ -53,7 +54,7 @@ class VideoController extends Controller {
     res.json({
       ok: true,
       id: video.id,
-      title: video.title,
+      title: getVideoTitle(video.title, req.language),
       description: video.description,
       duration: video.duration,
       date: video.date.getTime(),
@@ -72,7 +73,12 @@ class VideoController extends Controller {
       const video = this.videoService.get(id);
       if (!video) continue;
 
-      list.push({ id, title: video.title, description: video.description, duration: video.duration });
+      list.push({
+        id,
+        title: getVideoTitle(video.title, req.language),
+        description: video.description,
+        duration: video.duration,
+      });
     }
 
     res.json({ ok: true, data: list });
