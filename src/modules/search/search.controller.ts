@@ -17,7 +17,9 @@ class SearchController extends Controller {
     if (!query) throw new UnprocessableEntityException('검색어를 입력해주세요');
 
     const videos = this.searchService.search(query);
-    const serializedVideos = videos.map(video => video.serialize('id', 'title', 'description', 'duration', 'is_4k'));
+    const serializedVideos = videos.map(video =>
+      video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k')
+    );
 
     res.json({ ok: true, videos: serializedVideos });
   }

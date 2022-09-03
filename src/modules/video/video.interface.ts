@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { Document } from 'mongoose';
 
 type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant';
@@ -22,7 +23,7 @@ interface Video extends Document {
 
   tags: string[];
 
-  serialize(...keys: (keyof Video)[]): Video;
+  serialize(req: Request, ...keys: (keyof Video)[]): Video;
 }
 
 export { VideoOptions, VideoType };

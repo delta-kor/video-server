@@ -2,11 +2,11 @@ const VideoTagStore = new Map<string, string[]>();
 
 VideoTagStore.set('아름다운 색', ['Colors', '컬러즈']);
 VideoTagStore.set("O' My!", ['오마이', '어머']);
-VideoTagStore.set('라비앙로즈', ['La Vie en Rose', '라뱡', '라비앙', '장미']);
+VideoTagStore.set('라비앙로즈', ['La Vie en Rose', '라뱡', '라비앙', '장미', 'lver']);
 VideoTagStore.set('비밀의 시간', ['Memory', '메모리']);
 VideoTagStore.set('앞으로 잘 부탁해', ['We Together', '앞잘부']);
-VideoTagStore.set('반해버리잖아?', ['好きになっちゃうだろう', 'Crush on You', '반버잖']);
-VideoTagStore.set('꿈을 꾸는 동안', ['夢を見ている間', '꿈꾸동', 'In our Dreams']);
+VideoTagStore.set('반해버리잖아?', ['好きになっちゃうだろう', 'Crush on You', 'Suki ni Nacchaudarou', '반버잖']);
+VideoTagStore.set('꿈을 꾸는 동안', ['夢を見ている間', '꿈꾸동', 'In our Dreams', 'Yume wo Miteiru Aida']);
 VideoTagStore.set('내꺼야', ['Pick me', '픽미']);
 VideoTagStore.set('Rumor', ['루머']);
 
@@ -62,6 +62,6 @@ VideoTagStore.set('느린 여행', ['Slow Journey', '김채원']);
 VideoTagStore.set('D-D-DANCE', ['DDDANCE', '디디댄스']);
 
 VideoTagStore.set('Lesson', ['레슨', '너에게', '최예나']);
-VideoTagStore.set('평행우주', ['Parallel Universe', 'Only One', '권은비']);
+VideoTagStore.set('평행우주', ['Parallel Universe', 'Only One', '권은비', 'pu']);
 
 export default VideoTagStore;

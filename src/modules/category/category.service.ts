@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Request } from 'express';
 import Constants from '../../constants';
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
@@ -82,7 +83,7 @@ class CategoryService extends Service {
     }
   }
 
-  public view(pathId: string = 'root'): CategoryResponse.View {
+  public view(req: Request, pathId: string = 'root'): CategoryResponse.View {
     const itemFolders = this.folderItems.get(pathId);
     const itemFiles = this.fileItems.get(pathId);
 
@@ -108,7 +109,7 @@ class CategoryService extends Service {
         ok: true,
         type: 'file',
         path,
-        data: itemFiles.map(video => video.serialize('id', 'title', 'duration', 'date', 'is_4k')),
+        data: itemFiles.map(video => video.serialize(req, 'id', 'title', 'duration', 'date', 'is_4k')),
       };
 
     throw new NotFoundException();

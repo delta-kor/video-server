@@ -33,7 +33,7 @@ class PlaylistController extends Controller {
   private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
     const id: string = req.params.id;
     const playlist = this.playlistService.read(id);
-    const serializedPlaylist = playlist.serialize('id', 'title', 'description', 'video', 'thumbnail');
+    const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });
   }
@@ -51,8 +51,8 @@ class PlaylistController extends Controller {
     const playlists = this.playlistService.readAll(type);
     const serializedPlaylist = playlists.map(playlist =>
       data === 'default'
-        ? playlist.serialize('id', 'title', 'thumbnail')
-        : playlist.serialize('id', 'title', 'description', 'video')
+        ? playlist.serialize(req, 'id', 'title', 'thumbnail')
+        : playlist.serialize(req, 'id', 'title', 'description', 'video')
     );
 
     res.json({ ok: true, playlists: serializedPlaylist });
@@ -65,7 +65,7 @@ class PlaylistController extends Controller {
     const featured = this.playlistService.readFeatured(type);
 
     const video = featured.video;
-    const serializedVideo = video.serialize('id', 'title', 'description');
+    const serializedVideo = video.serialize(req, 'id', 'title', 'description');
 
     const playlistId = featured.playlist.id;
 
@@ -82,6 +82,7 @@ class PlaylistController extends Controller {
     const id: string = req.params.id;
     const playlist = await this.playlistService.update(id, req.body);
     const serializedPlaylist = playlist.serialize(
+      req,
       'id',
       'label',
       'type',

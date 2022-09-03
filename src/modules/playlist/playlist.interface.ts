@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { Document } from 'mongoose';
 import { VideoType } from '../video/video.interface';
 
@@ -13,7 +14,7 @@ interface Playlist extends Document {
   thumbnail: string;
   image?: string;
 
-  serialize(...keys: (keyof Playlist)[]): Playlist;
+  serialize(req: Request, ...keys: (keyof Playlist)[]): Playlist;
 }
 
 export default Playlist;

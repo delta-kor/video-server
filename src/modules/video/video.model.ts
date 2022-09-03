@@ -1,5 +1,7 @@
+import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
+import { getMusicTitle } from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
@@ -41,10 +43,13 @@ VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): bo
   return this.options.includes(option);
 };
 
-VideoSchema.methods.serialize = function (this: Video, ...keys: (keyof Video)[]): Video {
+VideoSchema.methods.serialize = function (this: Video, req: Request, ...keys: (keyof Video)[]): Video {
   const result: any = {};
+
   for (const key of keys) {
     let value: any = this[key];
+
+    if (key === 'title') value = getMusicTitle(value, req.language);
     if (value instanceof Date) value = value.getTime();
 
     result[key] = value;

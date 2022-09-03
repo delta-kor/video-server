@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
@@ -21,7 +22,7 @@ PlaylistSchema.virtual('thumbnail').get(function (this: Playlist): string {
   return this.image || this.video[0];
 });
 
-PlaylistSchema.methods.serialize = function (this: Playlist, ...keys: (keyof Playlist)[]): Playlist {
+PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...keys: (keyof Playlist)[]): Playlist {
   const result: any = {};
   for (const key of keys) {
     if (key === 'video') {
@@ -32,7 +33,7 @@ PlaylistSchema.methods.serialize = function (this: Playlist, ...keys: (keyof Pla
         const video = videoService.get(videoId);
         if (!video) continue;
 
-        const serializedVideo = video.serialize('id', 'title', 'description', 'duration', 'is_4k');
+        const serializedVideo = video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k');
         videos.push(serializedVideo);
       }
 

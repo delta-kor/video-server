@@ -13,7 +13,7 @@ class CategoryController extends Controller {
 
   public async view(req: TypedRequest, res: TypedResponse<any>): Promise<void> {
     const pathId: string = req.params.path;
-    const data = this.categoryService.view(pathId);
+    const data = this.categoryService.view(req, pathId);
     res.json(data);
   }
 }
