@@ -1,7 +1,7 @@
 import musicEnglish from '../locales/en/music.json';
 
 function getMusicTitle(title: string, language: string): string {
-  let dataset;
+  let dataset: any;
   if (language === 'en') dataset = musicEnglish;
   else if (language === 'ko') dataset = {};
   else dataset = musicEnglish;

@@ -1,5 +1,6 @@
 import Controller from '../../classes/controller.class';
 import ServiceProvider from '../../services/provider.service';
+import { getMusicTitle } from '../../utils/i18n.util';
 import { Music } from './music.interface';
 import MusicResponse from './music.response';
 import MusicService from './music.service';
@@ -26,8 +27,8 @@ class MusicController extends Controller {
     const serializedMusics: Music[] = [];
     for (const music of musics) {
       serializedMusics.push({
-        title: music.title,
         id: music.id,
+        title: getMusicTitle(music.title, req.language),
         videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'date', 'duration', 'is_4k')),
       });
     }
@@ -38,8 +39,9 @@ class MusicController extends Controller {
   private async getOneMusic(req: TypedRequest, res: TypedResponse<MusicResponse.GetOneMusic>): Promise<void> {
     const id: string = req.params.id;
     const music = this.musicService.getOneMusic(id);
-    const serializedMusic = {
-      ...music,
+    const serializedMusic: Music = {
+      id: music.id,
+      title: getMusicTitle(music.title, req.language),
       videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'duration', 'is_4k')),
     };
     res.json({ ok: true, music: serializedMusic });
