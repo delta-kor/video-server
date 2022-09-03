@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
-import { getVideoTitle } from '../../utils/i18n.util';
+import { getVideoCategory, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
@@ -50,6 +50,9 @@ VideoSchema.methods.serialize = function (this: Video, req: Request, ...keys: (k
     let value: any = this[key];
 
     if (key === 'title') value = getVideoTitle(value, req.language);
+    if (key === 'description') value = getVideoDescription(value, req.language);
+    if (key === 'category') value = getVideoCategory(value, req.language);
+
     if (value instanceof Date) value = value.getTime();
 
     result[key] = value;

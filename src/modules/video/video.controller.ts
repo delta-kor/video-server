@@ -4,7 +4,7 @@ import UnprocessableEntityException from '../../exceptions/unprocessable-entity.
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
-import { getVideoTitle } from '../../utils/i18n.util';
+import { getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
@@ -50,12 +50,13 @@ class VideoController extends Controller {
     if (!video) throw new NotFoundException();
 
     const path: Path[] = this.categoryService.createPathFromCategory(video.category);
+    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.language)));
 
     res.json({
       ok: true,
       id: video.id,
       title: getVideoTitle(video.title, req.language),
-      description: video.description,
+      description: getVideoDescription(video.description, req.language),
       duration: video.duration,
       date: video.date.getTime(),
       path,
@@ -76,7 +77,7 @@ class VideoController extends Controller {
       list.push({
         id,
         title: getVideoTitle(video.title, req.language),
-        description: video.description,
+        description: getVideoDescription(video.description, req.language),
         duration: video.duration,
       });
     }
