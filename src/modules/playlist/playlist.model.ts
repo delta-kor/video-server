@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
+import { getLocaleString } from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
@@ -10,8 +11,8 @@ const PlaylistSchema = new Schema<Playlist>({
   id: { type: String, required: true, unique: true, default: () => generateId(8) },
   label: { type: String, required: true, unique: true },
   type: { type: String, required: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+  title: { type: Object, required: true },
+  description: { type: Object, required: true },
   video: { type: [String], required: true },
   featured: { type: Boolean, required: true },
   order: { type: Number, required: true },
@@ -38,6 +39,11 @@ PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...ke
       }
 
       result.video = videos;
+      continue;
+    }
+
+    if (key === 'title' || key === 'description') {
+      result[key] = getLocaleString(this[key], req.language);
       continue;
     }
 

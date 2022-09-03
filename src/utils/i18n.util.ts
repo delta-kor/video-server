@@ -49,4 +49,9 @@ function getVideoCategory(category: string[], language: string): string[] {
   return category.map(item => getVideoCategoryItem(item, language));
 }
 
-export { getVideoTitle, getVideoDescription, getVideoCategoryItem, getVideoCategory };
+function getLocaleString(data: Locales, language: string): string {
+  const locale = data[language];
+  return locale || data.en || data.ko;
+}
+
+export { getVideoTitle, getVideoDescription, getVideoCategoryItem, getVideoCategory, getLocaleString };

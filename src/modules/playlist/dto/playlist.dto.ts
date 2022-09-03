@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsObject, IsString } from 'class-validator';
 import { VideoType } from '../../video/video.interface';
 
 class PlaylistDto {
@@ -8,8 +8,8 @@ class PlaylistDto {
   @IsString({ message: '타입을 선택해주세요' })
   public type!: VideoType;
 
-  @IsString({ message: '제목을 입력해주세요' })
-  public title!: string;
+  @IsObject({ message: '제목을 입력해주세요' })
+  public title!: Locales;
 
   @IsString({ message: '설명을 입력해주세요' })
   public description!: string;

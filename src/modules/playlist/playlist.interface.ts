@@ -6,8 +6,8 @@ interface Playlist extends Document {
   id: string;
   label: string;
   type: VideoType;
-  title: string;
-  description: string;
+  title: Locales;
+  description: Locales;
   video: string[];
   featured: boolean;
   order: number;
