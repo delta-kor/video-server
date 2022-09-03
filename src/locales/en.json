@@ -3,6 +3,15 @@
     "not_found": "Page does not exist",
     "internal_server_error": "Internal server error occurred\nPlease try again in a moment",
     "unauthorized": "Access denied\nPlease try again in a moment",
-    "wrong_request": "Wrong request"
+    "wrong_request": "Wrong request",
+    "user": {
+      "enter_nickname": "Enter nickname",
+      "nickname_too_long": "Nickname must be less than 12 characters"
+    },
+    "chat": {
+      "enter_message": "Enter message",
+      "message_too_long": "Message must be less than 50 characters",
+      "emoticon_not_found": "Emoticon not found"
+    }
   }
 }

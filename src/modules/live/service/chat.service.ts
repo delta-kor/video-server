@@ -47,11 +47,11 @@ class ChatService extends Service {
     switch (content.type) {
       case 'text':
         if (typeof content.text! !== 'string') throw new SocketException();
-        if (content.text.length === 0) throw new SocketException('메시지를 입력해주세요');
-        if (content.text.length > 50) throw new SocketException('50자 이하로 입력해주세요');
+        if (content.text.length === 0) throw new SocketException('error.chat.enter_message');
+        if (content.text.length > 50) throw new SocketException('error.chat.message_too_long');
         return { type: 'text', text: content.text };
       case 'emoticon':
-        throw new SocketException('존재하지 않는 이모티콘이에요');
+        throw new SocketException('error.chat.emoticon_not_found');
       default:
         throw new SocketException();
     }
