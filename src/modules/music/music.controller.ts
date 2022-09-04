@@ -42,7 +42,7 @@ class MusicController extends Controller {
     const serializedMusic: Music = {
       id: music.id,
       title: getVideoTitle(music.title, req.i18n.resolvedLanguage),
-      videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'duration', 'is_4k')),
+      videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'date', 'duration', 'is_4k')),
     };
     res.json({ ok: true, music: serializedMusic });
   }
