@@ -28,7 +28,7 @@ class MusicController extends Controller {
     for (const music of musics) {
       serializedMusics.push({
         id: music.id,
-        title: getVideoTitle(music.title, req.language),
+        title: getVideoTitle(music.title, req.i18n.resolvedLanguage),
         videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'date', 'duration', 'is_4k')),
       });
     }
@@ -41,7 +41,7 @@ class MusicController extends Controller {
     const music = this.musicService.getOneMusic(id);
     const serializedMusic: Music = {
       id: music.id,
-      title: getVideoTitle(music.title, req.language),
+      title: getVideoTitle(music.title, req.i18n.resolvedLanguage),
       videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'duration', 'is_4k')),
     };
     res.json({ ok: true, music: serializedMusic });

@@ -90,7 +90,7 @@ class CategoryService extends Service {
 
     const folder = this.folders.get(pathId);
     const path: Path[] = !folder ? [] : this.createPath(folder.path);
-    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.language)));
+    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     if (itemFolders)
       return {
@@ -99,7 +99,7 @@ class CategoryService extends Service {
         path,
         data: itemFolders.map(item => ({
           id: item.id,
-          title: getVideoCategoryItem(item.title, req.language),
+          title: getVideoCategoryItem(item.title, req.i18n.resolvedLanguage),
           count: item.count,
           children: this.folderItems.get(item.id)?.length ?? item.count,
           date: item.date,

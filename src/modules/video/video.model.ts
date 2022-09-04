@@ -49,9 +49,9 @@ VideoSchema.methods.serialize = function (this: Video, req: Request, ...keys: (k
   for (const key of keys) {
     let value: any = this[key];
 
-    if (key === 'title') value = getVideoTitle(value, req.language);
-    if (key === 'description') value = getVideoDescription(value, req.language);
-    if (key === 'category') value = getVideoCategory(value, req.language);
+    if (key === 'title') value = getVideoTitle(value, req.i18n.resolvedLanguage);
+    if (key === 'description') value = getVideoDescription(value, req.i18n.resolvedLanguage);
+    if (key === 'category') value = getVideoCategory(value, req.i18n.resolvedLanguage);
 
     if (value instanceof Date) value = value.getTime();
 

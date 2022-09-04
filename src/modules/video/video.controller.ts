@@ -50,13 +50,13 @@ class VideoController extends Controller {
     if (!video) throw new NotFoundException();
 
     const path: Path[] = this.categoryService.createPathFromCategory(video.category);
-    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.language)));
+    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     res.json({
       ok: true,
       id: video.id,
-      title: getVideoTitle(video.title, req.language),
-      description: getVideoDescription(video.description, req.language),
+      title: getVideoTitle(video.title, req.i18n.resolvedLanguage),
+      description: getVideoDescription(video.description, req.i18n.resolvedLanguage),
       duration: video.duration,
       date: video.date.getTime(),
       path,
@@ -76,8 +76,8 @@ class VideoController extends Controller {
 
       list.push({
         id,
-        title: getVideoTitle(video.title, req.language),
-        description: getVideoDescription(video.description, req.language),
+        title: getVideoTitle(video.title, req.i18n.resolvedLanguage),
+        description: getVideoDescription(video.description, req.i18n.resolvedLanguage),
         duration: video.duration,
       });
     }

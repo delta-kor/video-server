@@ -15,6 +15,7 @@ class I18nPipe {
           common: commonKorean,
         },
       },
+      load: 'languageOnly',
       lng: 'en',
       fallbackLng: 'en',
       defaultNS: 'common',
