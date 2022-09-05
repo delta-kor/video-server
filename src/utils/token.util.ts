@@ -18,7 +18,7 @@ class TokenUtil {
 
     const json = JSON.stringify(payload);
     const payloadEncoded = Buffer.from(json, 'utf-8').toString('base64');
-    const payloadHashed = crypto.createHash('sha256').update(json).update(secret).digest('base64url');
+    const payloadHashed = crypto.createHash('sha256').update(json).update(secret).digest('base64');
 
     return `iz.${payloadEncoded}.${payloadHashed}`;
   }
@@ -36,7 +36,7 @@ class TokenUtil {
       const json = Buffer.from(payloadEncoded, 'base64').toString('utf-8');
       const data: TokenPayload = JSON.parse(json);
 
-      const hash = crypto.createHash('sha256').update(json).update(secret).digest('base64url');
+      const hash = crypto.createHash('sha256').update(json).update(secret).digest('base64');
 
       if (data.iss !== iss || hash !== payloadHashed) return null;
 
