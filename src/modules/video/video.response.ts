@@ -26,12 +26,15 @@ namespace VideoResponse {
     duration: number;
     date: number;
     path: Path[];
-    liked: boolean;
-    likes_total: number;
   }
 
   export interface List extends ApiResponse {
     data: ShortVideoInfo[];
+  }
+
+  export interface Action extends ApiResponse {
+    liked: boolean;
+    likes_total: number;
   }
 
   export interface Like extends ApiResponse {

@@ -85,6 +85,13 @@ class VideoService extends Service {
     return info;
   }
 
+  public async getAction(id: string, user: User): Promise<{ liked: boolean; total: number }> {
+    const video = await this.get(id);
+    if (!video) throw new NotFoundException();
+
+    return { liked: video.liked.includes(user.id), total: video.liked.length };
+  }
+
   public async like(id: string, user: User): Promise<{ liked: boolean; total: number }> {
     const video = await this.get(id);
     if (!video) throw new NotFoundException();
