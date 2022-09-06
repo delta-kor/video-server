@@ -11,7 +11,7 @@ class UserController extends Controller {
   private readonly userService: UserService = ServiceProvider.get(UserService);
 
   protected mount(): void {
-    this.mounter.get('/', AuthGuard(true), this.get.bind(this));
+    this.mounter.post('/', AuthGuard(true), this.get.bind(this));
     this.mounter.put('/', ValidateGuard(UserDto, 'body', true), AuthGuard(false), this.update.bind(this));
   }
 
