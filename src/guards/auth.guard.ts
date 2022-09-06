@@ -11,7 +11,7 @@ function AuthGuard(create: boolean): (req: TypedRequest, res: TypedResponse, nex
     if (!header) {
       if (!create) throw new UnauthorizedException();
       req.user = await userService.createUser();
-      res.header('Iz-User-Token', req.user.createToken());
+      res.header('Iz-Auth-Token', req.user.createToken());
       return next();
     }
 
@@ -19,12 +19,12 @@ function AuthGuard(create: boolean): (req: TypedRequest, res: TypedResponse, nex
     if (type !== 'izflix' || !credentials) {
       if (!create) throw new UnauthorizedException();
       req.user = await userService.createUser();
-      res.header('Iz-User-Token', req.user.createToken());
+      res.header('Iz-Auth-Token', req.user.createToken());
       return next();
     }
 
     req.user = await userService.getUserByToken(credentials, create);
-    res.header('Iz-User-Token', req.user.createToken());
+    res.header('Iz-Auth-Token', req.user.createToken());
     return next();
   };
 }
