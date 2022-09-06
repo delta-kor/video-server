@@ -1,11 +1,11 @@
 import User from './user.interface';
 
 namespace UserResponse {
-  export interface Get extends ApiResponseWithToken {
+  export interface Get extends ApiResponse {
     user: User;
   }
 
-  export interface Update extends ApiResponseWithToken {
+  export interface Update extends ApiResponse {
     user: User;
   }
 }

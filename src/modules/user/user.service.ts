@@ -39,15 +39,24 @@ class UserService extends Service {
     return UserModel.find({ id: { $in: id } });
   }
 
-  public async getUserByToken(token: string | null): Promise<User> {
-    if (!token) return this.createUser();
+  public async getUserByToken(token: string | null, create: boolean): Promise<User> {
+    if (!token) {
+      if (!create) throw new UnauthorizedException();
+      return this.createUser();
+    }
 
     const payload = TokenUtil.parse(token);
-    if (!payload) return this.createUser();
+    if (!payload) {
+      if (!create) throw new UnauthorizedException();
+      return this.createUser();
+    }
 
     const id = payload.id;
     const user = await this.getUserById(id);
-    if (!user) return this.createUser();
+    if (!user) {
+      if (!create) throw new UnauthorizedException();
+      return this.createUser();
+    }
 
     return user;
   }

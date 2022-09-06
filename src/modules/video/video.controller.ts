@@ -1,6 +1,7 @@
 import Controller from '../../classes/controller.class';
 import NotFoundException from '../../exceptions/not-found.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
+import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -22,8 +23,9 @@ class VideoController extends Controller {
     this.mounter.post('/', ManageGuard, ValidateGuard(VideoDto), this.upload.bind(this));
     this.mounter.get('/list', this.list.bind(this));
     this.mounter.get('/:id', this.stream.bind(this));
-    this.mounter.get('/:id/info', this.info.bind(this));
+    this.mounter.get('/:id/info', AuthGuard(false), this.info.bind(this));
     this.mounter.get('/:id/beacon', this.beacon.bind(this));
+    this.mounter.get('/:id/like', AuthGuard(false), this.like.bind(this));
   }
 
   private async upload(req: TypedRequest<VideoDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
@@ -52,6 +54,9 @@ class VideoController extends Controller {
     const path: Path[] = this.categoryService.createPathFromCategory(video.category);
     path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
+    const likedTotal = video.liked.length;
+    const liked = video.liked.includes(req.user!.id);
+
     res.json({
       ok: true,
       id: video.id,
@@ -59,6 +64,8 @@ class VideoController extends Controller {
       description: getVideoDescription(video.description, req.i18n.resolvedLanguage),
       duration: video.duration,
       date: video.date.getTime(),
+      liked,
+      likes_total: likedTotal,
       path,
     });
   }
@@ -91,6 +98,14 @@ class VideoController extends Controller {
     const total = req.query.total;
     console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] ID=${id} T=${time} TT=${total}`);
     res.send();
+  }
+
+  private async like(req: TypedRequest, res: TypedResponse<VideoResponse.Like>): Promise<void> {
+    const id = req.params.id;
+    const user = req.user!;
+
+    const { liked, total } = await this.videoService.like(id, user);
+    res.json({ ok: true, liked, total });
   }
 }
 

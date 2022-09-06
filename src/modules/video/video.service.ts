@@ -4,6 +4,7 @@ import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
+import User from '../user/user.interface';
 import VideoDto from './dto/video.dto';
 import Video, { VideoOptions } from './video.interface';
 import VideoModel from './video.model';
@@ -38,6 +39,7 @@ class VideoService extends Service {
       date: new Date(data.date),
       category: data.category,
       options: data.options,
+      liked: [],
     });
     await video.save();
 
@@ -81,6 +83,23 @@ class VideoService extends Service {
     if (video.is_4k) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
 
     return info;
+  }
+
+  public async like(id: string, user: User): Promise<{ liked: boolean; total: number }> {
+    const video = await this.get(id);
+    if (!video) throw new NotFoundException();
+
+    let liked: boolean;
+    if (video.liked.includes(user.id)) {
+      video.liked = video.liked.filter(liked => liked !== user.id);
+      liked = false;
+    } else {
+      video.liked.push(user.id);
+      liked = true;
+    }
+
+    await video.save();
+    return { liked, total: video.liked.length };
   }
 }
 

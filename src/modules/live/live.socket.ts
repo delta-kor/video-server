@@ -77,7 +77,7 @@ class LiveSocket extends Socket {
     const ticket = packet.ticket;
     const token = packet.token;
 
-    const user = await this.userService.getUserByToken(token);
+    const user = await this.userService.getUserByToken(token, true);
 
     this.ip = parseTicket(ticket);
     this.state = SocketState.ACTIVE;

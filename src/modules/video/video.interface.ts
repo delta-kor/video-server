@@ -14,15 +14,13 @@ interface Video extends Document {
   description: string;
   date: Date;
   category: [string, string, string];
-
-  duration: number;
-  is_4k: boolean;
-
+  duration: number; // virtual
+  is_4k: boolean; // virtual
+  tags: string[]; // virtual
   options: VideoOptions[];
+  liked: string[];
+
   hasOption(option: VideoOptions): boolean;
-
-  tags: string[];
-
   serialize(req: Request, ...keys: (keyof Video)[]): Video;
 }
 

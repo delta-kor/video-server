@@ -11,17 +11,15 @@ class UserController extends Controller {
   private readonly userService: UserService = ServiceProvider.get(UserService);
 
   protected mount(): void {
-    this.mounter.get('/', AuthGuard, this.get.bind(this));
-    this.mounter.put('/', ValidateGuard(UserDto, 'body', true), AuthGuard, this.update.bind(this));
+    this.mounter.get('/', AuthGuard(true), this.get.bind(this));
+    this.mounter.put('/', ValidateGuard(UserDto, 'body', true), AuthGuard(false), this.update.bind(this));
   }
 
   private async get(req: TypedRequest, res: TypedResponse<UserResponse.Get>): Promise<void> {
     const user = req.user!;
     const serializedUser = user.serialize('id', 'nickname', 'role');
 
-    const token = user.createToken();
-
-    res.json({ ok: true, user: serializedUser, token });
+    res.json({ ok: true, user: serializedUser });
   }
 
   private async update(req: TypedRequest<UserDto>, res: TypedResponse<UserResponse.Update>): Promise<void> {
@@ -31,9 +29,7 @@ class UserController extends Controller {
     const updatedUser = await this.userService.updateUser(id, req.body);
     const serializedUser = updatedUser.serialize('id', 'nickname', 'role');
 
-    const token = user.createToken();
-
-    res.json({ ok: true, user: serializedUser, token });
+    res.json({ ok: true, user: serializedUser });
   }
 }
 

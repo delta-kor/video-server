@@ -18,6 +18,7 @@ const VideoSchema = new Schema<Video>({
   date: { type: Date, required: true },
   category: { type: [String], required: true },
   options: { type: [String], required: true },
+  liked: { type: [String], required: true },
 });
 
 VideoSchema.virtual('duration').get(function (this: Video): number {
