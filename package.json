@@ -35,6 +35,7 @@
     "i18next-http-middleware": "^3.2.1",
     "mongoose": "^6.1.4",
     "node-cache": "^5.1.2",
+    "p-queue": "6.6.2",
     "ws": "^8.6.0"
   }
 }

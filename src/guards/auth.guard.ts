@@ -3,7 +3,7 @@ import UnauthorizedException from '../exceptions/unauthorized.exception';
 import UserService from '../modules/user/user.service';
 import ServiceProvider from '../services/provider.service';
 
-function AuthGuard(create: boolean): (req: TypedRequest, res: TypedResponse, next: NextFunction) => Promise<void> {
+function AuthGuard(create: boolean): Route {
   return async function (req: TypedRequest, res: TypedResponse, next: NextFunction): Promise<void> {
     const userService: UserService = ServiceProvider.get(UserService);
 

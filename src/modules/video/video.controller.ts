@@ -1,4 +1,5 @@
 import Controller from '../../classes/controller.class';
+import Queue from '../../decorators/queue.decorator';
 import NotFoundException from '../../exceptions/not-found.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import AuthGuard from '../../guards/auth.guard';
@@ -104,9 +105,12 @@ class VideoController extends Controller {
     res.json({ ok: true, liked, likes_total: total });
   }
 
+  @Queue()
   private async like(req: TypedRequest, res: TypedResponse<VideoResponse.Like>): Promise<void> {
     const id = req.params.id;
     const user = req.user!;
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const { liked, total } = await this.videoService.like(id, user);
     res.json({ ok: true, liked, total });

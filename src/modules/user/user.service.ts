@@ -1,3 +1,4 @@
+import Queue from '../../decorators/queue.decorator';
 import UnauthorizedException from '../../exceptions/unauthorized.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
@@ -12,6 +13,7 @@ import UserModel from './user.model';
 class UserService extends Service {
   private readonly envService: EnvService = ServiceProvider.get(EnvService);
 
+  @Queue()
   public async createUser(): Promise<User> {
     const lastUserNumber = await this.envService.get<number>('user_index');
     let currentNumber = lastUserNumber! + 1;
