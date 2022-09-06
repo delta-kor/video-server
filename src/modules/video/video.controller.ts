@@ -110,8 +110,6 @@ class VideoController extends Controller {
     const id = req.params.id;
     const user = req.user!;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
     const { liked, total } = await this.videoService.like(id, user);
     res.json({ ok: true, liked, total });
   }
