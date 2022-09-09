@@ -120,6 +120,16 @@ SearchConvertStoreBase.set('설콘', 'EYES ON ME IN SEOUL');
 SearchConvertStoreBase.set('첫콘', 'EYES ON ME IN SEOUL');
 SearchConvertStoreBase.set('오프콘', 'EYES ON ME IN SEOUL');
 SearchConvertStoreBase.set('막콘', 'ONE, THE STORY');
+SearchConvertStoreBase.set('chu', '아이즈원 츄');
+SearchConvertStoreBase.set('fantasy', '환상');
+SearchConvertStoreBase.set('season', '시즌');
+SearchConvertStoreBase.set('히든', 'Hidden');
+SearchConvertStoreBase.set('스쿨', 'School');
+SearchConvertStoreBase.set('시즌 2', '비밀친구');
+SearchConvertStoreBase.set('시즌 3', '환상캠퍼스');
+SearchConvertStoreBase.set('시즌 4', 'ON:TACT');
+SearchConvertStoreBase.set('izone chu', '아이즈원 츄');
+SearchConvertStoreBase.set('iz chu', '아이즈원 츄');
 
 const SearchConvertStore = new Map<string, string>();
 const keys = [...SearchConvertStoreBase.keys()].sort((a, b) => b.length - a.length);
