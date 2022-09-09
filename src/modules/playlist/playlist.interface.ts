@@ -13,6 +13,7 @@ interface Playlist extends Document {
   order: number;
   thumbnail: string;
   image?: string;
+  count: number;
 
   serialize(req: Request, ...keys: (keyof Playlist)[]): Playlist;
 }

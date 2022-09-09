@@ -23,6 +23,10 @@ PlaylistSchema.virtual('thumbnail').get(function (this: Playlist): string {
   return this.image || this.video[0];
 });
 
+PlaylistSchema.virtual('count').get(function (this: Playlist): number {
+  return this.video.length;
+});
+
 PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...keys: (keyof Playlist)[]): Playlist {
   const result: any = {};
   for (const key of keys) {

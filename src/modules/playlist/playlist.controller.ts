@@ -51,7 +51,7 @@ class PlaylistController extends Controller {
     const playlists = this.playlistService.readAll(type);
     const serializedPlaylist = playlists.map(playlist =>
       data === 'default'
-        ? playlist.serialize(req, 'id', 'title', 'thumbnail')
+        ? playlist.serialize(req, 'id', 'title', 'thumbnail', 'count')
         : playlist.serialize(req, 'id', 'title', 'description', 'video')
     );
 
