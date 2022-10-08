@@ -6,12 +6,23 @@
     "wrong_request": "잘못된 요청이에요",
     "user": {
       "enter_nickname": "닉네임을 입력해주세요",
-      "nickname_too_long": "닉네임은 12자 이하로 입력해주세요"
+      "nickname_too_long": "닉네임은 12자 이하로 입력해주세요",
+      "nickname_used": "이미 사용중인 닉네임이에요"
     },
     "chat": {
       "enter_message": "메시지를 입력해주세요",
       "message_too_long": "메시지는 50자 이하로 입력해주세요",
       "emoticon_not_found": "존재하지 않는 이모티콘이에요"
+    },
+    "search": {
+      "enter_query": "검색어를 입력해주세요"
+    },
+    "playlist": {
+      "invalid_type": "잘못된 타입이에요"
+    },
+    "video": {
+      "enter_id": "ID를 입력해주세요",
+      "invalid_type": "잘못된 영상 타입이에요"
     }
   }
 }

@@ -69,7 +69,7 @@ class VideoController extends Controller {
 
   private async list(req: TypedRequest, res: TypedResponse<VideoResponse.List>): Promise<void> {
     const query = req.query.ids as string;
-    if (!query) throw new UnprocessableEntityException('ID를 입력해주세요');
+    if (!query) throw new UnprocessableEntityException('error.video.enter_id');
 
     const ids = query.split(',').map(item => item.trim());
     const list: ShortVideoInfo[] = [];

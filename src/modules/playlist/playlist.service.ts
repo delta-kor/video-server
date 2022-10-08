@@ -92,7 +92,7 @@ class PlaylistService extends Service {
     const playlist = this.read(id);
 
     if (data.type && !Constants.VIDEO_TYPES.includes(data.type))
-      throw new UnprocessableEntityException('잘못된 타입이에요');
+      throw new UnprocessableEntityException('error.playlist.invalid_type');
 
     const updater = new Updater<PlaylistDto>(playlist);
     updater.update(data, 'label', 'type', 'title', 'description', 'video', 'featured', 'order');

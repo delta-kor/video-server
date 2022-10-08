@@ -14,7 +14,7 @@ class SearchController extends Controller {
 
   private async search(req: TypedRequest, res: TypedResponse<SearchResponse.Search>): Promise<void> {
     const query = req.query.query as string;
-    if (!query) throw new UnprocessableEntityException('검색어를 입력해주세요');
+    if (!query) throw new UnprocessableEntityException('error.search.enter_query');
 
     const videos = this.searchService.search(query);
     const serializedVideos = videos.map(video =>

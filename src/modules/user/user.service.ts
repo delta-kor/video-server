@@ -73,7 +73,7 @@ class UserService extends Service {
     if (!user) throw new UnauthorizedException();
 
     if (data.nickname && data.nickname !== user.nickname && (await this.nicknameExists(data.nickname)))
-      throw new UnprocessableEntityException('이미 사용중인 닉네임이에요');
+      throw new UnprocessableEntityException('error.user.nickname_used');
 
     const updater = new Updater<User>(user);
     updater.update(data, 'nickname');

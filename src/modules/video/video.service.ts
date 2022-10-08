@@ -28,7 +28,7 @@ class VideoService extends Service {
 
   public async upload(data: VideoDto): Promise<Video> {
     if (!['performance', 'vod'].includes(data.type)) {
-      throw new UnprocessableEntityException('잘못된 영상 타입이에요');
+      throw new UnprocessableEntityException('error.video.invalid_type');
     }
 
     const video: Video = new VideoModel({
