@@ -49,6 +49,7 @@ class PlaylistService extends Service {
   public async read(id: string, user?: User): Promise<Playlist> {
     if (id === 'liked' && user) {
       const likedVideos = await user.getLikedVideos();
+      if (!likedVideos.length) throw new NotFoundException();
       return PlaylistModel.createLikedPlaylist(likedVideos);
     }
 

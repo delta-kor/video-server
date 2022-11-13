@@ -22,10 +22,10 @@ const PlaylistSchema = new Schema<Playlist>({
 PlaylistSchema.statics.createLikedPlaylist = function (videos: Video[]): Playlist {
   return new PlaylistModel({
     id: 'liked',
-    label: '좋아요',
+    label: 'liked',
     type: 'performance',
-    title: { ko: '좋아요 누른 영상', en: 'Liked videos' },
-    description: { ko: '좋아요 누른 영상', en: 'Liked videos' },
+    title: { ko: '좋아요 표시한 동영상', en: 'Liked videos' },
+    description: { ko: '좋아요 표시한 동영상', en: 'Liked videos' },
     video: videos.map(video => video.id),
     featured: false,
     order: 0,
