@@ -2,6 +2,7 @@ import { NextFunction } from 'express';
 import Controller from '../../classes/controller.class';
 import Constants from '../../constants';
 import NotFoundException from '../../exceptions/not-found.exception';
+import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
@@ -18,9 +19,9 @@ class PlaylistController extends Controller {
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(PlaylistDto), this.create.bind(this));
-    this.mounter.get('/:type', this.readAll.bind(this));
+    this.mounter.get('/:type', AuthGuard(false), this.readAll.bind(this));
     this.mounter.get('/:type/featured', this.readFeatured.bind(this));
-    this.mounter.get('/:id', this.read.bind(this));
+    this.mounter.get('/:id', AuthGuard(false), this.read.bind(this));
     this.mounter.put('/:id', ManageGuard, ValidateGuard(PlaylistDto, 'body', true), this.update.bind(this));
     this.mounter.delete('/:id', ManageGuard, this.delete.bind(this));
   }
@@ -31,8 +32,9 @@ class PlaylistController extends Controller {
   }
 
   private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
+    const user = req.user!;
     const id: string = req.params.id;
-    const playlist = this.playlistService.read(id);
+    const playlist = await this.playlistService.read(id, user);
     const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });
@@ -43,12 +45,13 @@ class PlaylistController extends Controller {
     res: TypedResponse<PlaylistResponse.ReadAll>,
     next: NextFunction
   ): Promise<void> {
+    const user = req.user!;
     const data = req.query.data || 'default';
-
     const type = req.params.type;
+
     if (!Constants.VIDEO_TYPES.includes(type)) return next();
 
-    const playlists = this.playlistService.readAll(type);
+    const playlists = await this.playlistService.readAll(type, user);
     const serializedPlaylist = playlists.map(playlist =>
       data === 'default'
         ? playlist.serialize(req, 'id', 'title', 'thumbnail', 'count')

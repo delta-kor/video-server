@@ -5,6 +5,7 @@ import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { pickFromArray } from '../../utils/pick.util';
 import Updater from '../../utils/updater';
+import User from '../user/user.interface';
 import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
@@ -45,19 +46,32 @@ class PlaylistService extends Service {
     return playlist;
   }
 
-  public read(id: string): Playlist {
+  public async read(id: string, user?: User): Promise<Playlist> {
+    if (id === 'liked' && user) {
+      const likedVideos = await user.getLikedVideos();
+      return PlaylistModel.createLikedPlaylist(likedVideos);
+    }
+
     const playlist = this.playlists.get(id);
     if (!playlist) throw new NotFoundException();
 
     return playlist;
   }
 
-  public readAll(type: VideoType): Playlist[] {
+  public async readAll(type: VideoType, user?: User): Promise<Playlist[]> {
     const result: Playlist[] = [];
     for (const item of this.playlists.values()) {
       if (item.type !== type) continue;
       if (item.type === 'performance' && item.featured) continue;
       result.push(item);
+    }
+
+    if (type === 'performance' && user) {
+      const likedVideos = await user.getLikedVideos();
+      if (likedVideos.length > 0) {
+        const likedPlaylist = PlaylistModel.createLikedPlaylist(likedVideos);
+        result.unshift(likedPlaylist);
+      }
     }
 
     return result;
@@ -89,7 +103,7 @@ class PlaylistService extends Service {
   }
 
   public async update(id: string, data: Partial<PlaylistDto>): Promise<Playlist> {
-    const playlist = this.read(id);
+    const playlist = await this.read(id);
 
     if (data.type && !Constants.VIDEO_TYPES.includes(data.type))
       throw new UnprocessableEntityException('error.playlist.invalid_type');
@@ -103,7 +117,7 @@ class PlaylistService extends Service {
   }
 
   public async delete(id: string): Promise<void> {
-    const playlist = this.read(id);
+    const playlist = await this.read(id);
 
     await playlist.deleteOne();
     this.playlists.delete(id);

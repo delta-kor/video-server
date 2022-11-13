@@ -5,7 +5,7 @@ import { getLocaleString } from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
-import Playlist from './playlist.interface';
+import Playlist, { PlaylistModel } from './playlist.interface';
 
 const PlaylistSchema = new Schema<Playlist>({
   id: { type: String, required: true, unique: true, default: () => generateId(8) },
@@ -18,6 +18,19 @@ const PlaylistSchema = new Schema<Playlist>({
   order: { type: Number, required: true },
   image: { type: String, required: false },
 });
+
+PlaylistSchema.statics.createLikedPlaylist = function (videos: Video[]): Playlist {
+  return new PlaylistModel({
+    id: 'liked',
+    label: '좋아요',
+    type: 'performance',
+    title: { ko: '좋아요 누른 영상', en: 'Liked videos' },
+    description: { ko: '좋아요 누른 영상', en: 'Liked videos' },
+    video: videos.map(video => video.id),
+    featured: false,
+    order: 0,
+  });
+};
 
 PlaylistSchema.virtual('thumbnail').get(function (this: Playlist): string {
   return this.image || this.video[0];
@@ -60,6 +73,6 @@ PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...ke
   return result;
 };
 
-const PlaylistModel = model<Playlist>('playlist', PlaylistSchema);
+const PlaylistModel = model<Playlist, PlaylistModel>('playlist', PlaylistSchema);
 
 export default PlaylistModel;
