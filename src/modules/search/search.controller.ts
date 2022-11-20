@@ -18,7 +18,7 @@ class SearchController extends Controller {
 
     const videos = this.searchService.search(query);
     const serializedVideos = videos.map(video =>
-      video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k')
+      video.serialize(req, 'id', 'title', 'description', 'duration', 'properties')
     );
 
     res.json({ ok: true, videos: serializedVideos });

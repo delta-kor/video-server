@@ -6,7 +6,7 @@ import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
 import User from '../user/user.interface';
 import VideoDto from './dto/video.dto';
-import Video, { VideoOptions } from './video.interface';
+import Video, { VideoOption } from './video.interface';
 import VideoModel from './video.model';
 
 class VideoService extends Service {
@@ -22,7 +22,7 @@ class VideoService extends Service {
     return this.videos;
   }
 
-  public getAllFiltered(option: VideoOptions): Video[] {
+  public getAllFiltered(option: VideoOption): Video[] {
     return this.getAll().filter(video => video.hasOption(option));
   }
 
@@ -65,7 +65,7 @@ class VideoService extends Service {
     return result;
   }
 
-  public getByTitle(title: string, option?: VideoOptions): Video[] {
+  public getByTitle(title: string, option?: VideoOption): Video[] {
     const result: Video[] = [];
     for (const video of option ? this.getAllFiltered(option) : this.getAll()) {
       if (video.title === title) result.push(video);
@@ -77,10 +77,10 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.is_4k ? video.cdnId_4k! : video.cdnId;
+    const cdnId = video.properties.includes('4k') ? video.cdnId_4k! : video.cdnId;
     const info = await this.deliverService.getCdnInfo(cdnId, quality);
 
-    if (video.is_4k) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
+    if (video.properties.includes('4k')) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
 
     return info;
   }

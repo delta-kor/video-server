@@ -51,7 +51,7 @@ PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...ke
         const video = videoService.get(videoId);
         if (!video) continue;
 
-        const serializedVideo = video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k');
+        const serializedVideo = video.serialize(req, 'id', 'title', 'description', 'duration', 'properties');
         videos.push(serializedVideo);
       }
 

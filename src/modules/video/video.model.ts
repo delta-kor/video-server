@@ -6,7 +6,7 @@ import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
 import VideoTagStore from './store/tag.store';
-import Video, { VideoOptions } from './video.interface';
+import Video, { VideoOption, VideoProperty } from './video.interface';
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -27,12 +27,11 @@ VideoSchema.virtual('duration').get(function (this: Video): number {
   return builderService.getVideoDuration(this.id);
 });
 
-VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
-  return !!this.cdnId_4k;
-});
-
-VideoSchema.virtual('is_cc').get(function (this: Video): boolean {
-  return !!this.subtitle;
+VideoSchema.virtual('properties').get(function (this: Video): VideoProperty[] {
+  const properties: VideoProperty[] = [];
+  this.cdnId_4k && properties.push('4k');
+  this.subtitle && properties.push('cc');
+  return properties;
 });
 
 VideoSchema.virtual('tags').get(function (this: Video): string[] {
@@ -45,7 +44,7 @@ VideoSchema.virtual('tags').get(function (this: Video): string[] {
   return result;
 });
 
-VideoSchema.methods.hasOption = function (this: Video, option: VideoOptions): boolean {
+VideoSchema.methods.hasOption = function (this: Video, option: VideoOption): boolean {
   return this.options.includes(option);
 };
 

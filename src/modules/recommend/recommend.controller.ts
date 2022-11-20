@@ -27,7 +27,7 @@ class RecommendController extends Controller {
 
     const videos = this.recommendService.getVideoRecommends(id, count);
     const serializedVideos = videos.map(video =>
-      video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k')
+      video.serialize(req, 'id', 'title', 'description', 'duration', 'properties')
     );
 
     res.json({
@@ -48,7 +48,7 @@ class RecommendController extends Controller {
 
     const recommends = this.recommendService.getUserRecommends(playtime, count);
     const serializedVideos = recommends.map(video =>
-      video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k')
+      video.serialize(req, 'id', 'title', 'description', 'duration', 'properties')
     );
 
     res.json({

@@ -1,4 +1,5 @@
 import { Path } from '../category/category.response';
+import { VideoProperty } from './video.interface';
 
 interface ShortVideoInfo {
   id: string;
@@ -26,6 +27,7 @@ namespace VideoResponse {
     duration: number;
     date: number;
     path: Path[];
+    properties: VideoProperty[];
   }
 
   export interface List extends ApiResponse {

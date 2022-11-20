@@ -66,6 +66,7 @@ class VideoController extends Controller {
       duration: video.duration,
       date: video.date.getTime(),
       path,
+      properties: video.properties,
     });
   }
 

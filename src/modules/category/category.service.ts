@@ -111,7 +111,7 @@ class CategoryService extends Service {
         ok: true,
         type: 'file',
         path,
-        data: itemFiles.map(video => video.serialize(req, 'id', 'title', 'duration', 'date', 'is_4k')),
+        data: itemFiles.map(video => video.serialize(req, 'id', 'title', 'duration', 'date', 'properties')),
       };
 
     throw new NotFoundException();

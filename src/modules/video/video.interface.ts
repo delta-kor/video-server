@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import { Document } from 'mongoose';
 
-type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant';
+type VideoOption = 'music' | 'category' | 'recommend' | 'fanchant';
 type VideoType = 'performance' | 'vod';
+type VideoProperty = '4k' | 'cc';
 
 interface Video extends Document {
   id: string;
@@ -17,15 +18,14 @@ interface Video extends Document {
   subtitle?: string;
 
   duration: number; // virtual
-  is_4k: boolean; // virtual
-  is_cc: boolean; // virtual
+  properties: VideoProperty[]; // virtual
   tags: string[]; // virtual
-  options: VideoOptions[];
+  options: VideoOption[];
   liked: string[];
 
-  hasOption(option: VideoOptions): boolean;
+  hasOption(option: VideoOption): boolean;
   serialize(req: Request, ...keys: (keyof Video)[]): Video;
 }
 
-export { VideoOptions, VideoType };
+export { VideoOption, VideoType, VideoProperty };
 export default Video;

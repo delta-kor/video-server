@@ -21,7 +21,7 @@ class CalendarController extends Controller {
     const timestamp = req.params.timestamp;
     const videos = this.calendarService
       .getOne(timestamp)
-      .map(video => video.serialize(req, 'id', 'title', 'description', 'duration', 'is_4k'));
+      .map(video => video.serialize(req, 'id', 'title', 'description', 'duration', 'properties'));
     res.json({ ok: true, videos });
   }
 }
