@@ -17,6 +17,7 @@ const VideoSchema = new Schema<Video>({
   description: { type: String, required: true },
   date: { type: Date, required: true },
   category: { type: [String], required: true },
+  subtitle: { type: String, required: false },
   options: { type: [String], required: true },
   liked: { type: [String], required: true },
 });
@@ -28,6 +29,10 @@ VideoSchema.virtual('duration').get(function (this: Video): number {
 
 VideoSchema.virtual('is_4k').get(function (this: Video): boolean {
   return !!this.cdnId_4k;
+});
+
+VideoSchema.virtual('is_cc').get(function (this: Video): boolean {
+  return !!this.subtitle;
 });
 
 VideoSchema.virtual('tags').get(function (this: Video): string[] {

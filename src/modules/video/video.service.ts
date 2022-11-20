@@ -108,6 +108,13 @@ class VideoService extends Service {
     await video.save();
     return { liked, total: video.liked.length };
   }
+
+  public async getSubtitle(id: string): Promise<string> {
+    const video = await this.get(id);
+    if (!video || !video.subtitle) throw new NotFoundException();
+
+    return video.subtitle;
+  }
 }
 
 export default VideoService;

@@ -14,8 +14,11 @@ interface Video extends Document {
   description: string;
   date: Date;
   category: [string, string, string];
+  subtitle?: string;
+
   duration: number; // virtual
   is_4k: boolean; // virtual
+  is_cc: boolean; // virtual
   tags: string[]; // virtual
   options: VideoOptions[];
   liked: string[];

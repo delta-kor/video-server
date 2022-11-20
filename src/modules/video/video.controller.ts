@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import Controller from '../../classes/controller.class';
 import Queue from '../../decorators/queue.decorator';
 import NotFoundException from '../../exceptions/not-found.exception';
@@ -28,6 +29,7 @@ class VideoController extends Controller {
     this.mounter.get('/:id/beacon', this.beacon.bind(this));
     this.mounter.get('/:id/action', AuthGuard(false), this.action.bind(this));
     this.mounter.post('/:id/like', AuthGuard(false), this.like.bind(this));
+    this.mounter.get('/:id/subtitle', this.subtitle.bind(this));
   }
 
   private async upload(req: TypedRequest<VideoDto>, res: TypedResponse<VideoResponse.Upload>): Promise<void> {
@@ -112,6 +114,14 @@ class VideoController extends Controller {
 
     const { liked, total } = await this.videoService.like(id, user);
     res.json({ ok: true, liked, total });
+  }
+
+  private async subtitle(req: TypedRequest, res: Response): Promise<void> {
+    const id = req.params.id;
+    const subtitle = await this.videoService.getSubtitle(id);
+
+    res.header('Content-Type', 'text/vtt');
+    res.send(subtitle);
   }
 }
 
