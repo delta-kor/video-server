@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
+import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
 import { Album, Music } from './music.interface';
 import { AlbumStore, MusicStore } from './music.store';
@@ -71,6 +72,16 @@ class MusicService extends Service {
     }
 
     throw new NotFoundException();
+  }
+
+  public getMusicByVideo(video: Video): Music | null {
+    for (const musicMap of this.album.values()) {
+      for (const music of musicMap.values()) {
+        if (music.videos.includes(video)) return music;
+      }
+    }
+
+    return null;
   }
 }
 

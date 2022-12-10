@@ -11,6 +11,7 @@ import { getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
+import MusicService from '../music/music.service';
 import VideoDto from './dto/video.dto';
 import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
@@ -20,6 +21,7 @@ class VideoController extends Controller {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly builderService: BuilderService = ServiceProvider.get(BuilderService);
   private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
+  private readonly musicService: MusicService = ServiceProvider.get(MusicService);
 
   protected mount(): void {
     this.mounter.post('/', ManageGuard, ValidateGuard(VideoDto), this.upload.bind(this));
@@ -58,6 +60,8 @@ class VideoController extends Controller {
     const path: Path[] = this.categoryService.createPathFromCategory(video.category);
     path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
+    const music = this.musicService.getMusicByVideo(video);
+
     res.json({
       ok: true,
       id: video.id,
@@ -67,6 +71,7 @@ class VideoController extends Controller {
       date: video.date.getTime(),
       path,
       properties: video.properties,
+      music: music?.id || null,
     });
   }
 
