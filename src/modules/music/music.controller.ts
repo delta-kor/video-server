@@ -30,6 +30,7 @@ class MusicController extends Controller {
         id: music.id,
         title: getVideoTitle(music.title, req.i18n.resolvedLanguage),
         videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'date', 'duration', 'properties')),
+        albumId: music.albumId,
       });
     }
 
@@ -43,6 +44,7 @@ class MusicController extends Controller {
       id: music.id,
       title: getVideoTitle(music.title, req.i18n.resolvedLanguage),
       videos: music.videos.map(video => video.serialize(req, 'id', 'description', 'date', 'duration', 'properties')),
+      albumId: music.albumId,
     };
     res.json({ ok: true, music: serializedMusic });
   }

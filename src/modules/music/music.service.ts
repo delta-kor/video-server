@@ -30,9 +30,10 @@ class MusicService extends Service {
       const title = video.title;
       const hash = MusicService.hashTitle(title);
 
+      const albumId = MusicService.hashTitle(albumTitle);
       const musicMap = this.album.get(albumTitle)!;
 
-      if (!musicMap.has(hash)) musicMap.set(hash, { title, id: hash, videos: [] });
+      if (!musicMap.has(hash)) musicMap.set(hash, { title, id: hash, videos: [], albumId });
       musicMap.get(hash)!.videos.push(video);
     }
   }

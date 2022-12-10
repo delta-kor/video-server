@@ -71,7 +71,7 @@ class VideoController extends Controller {
       date: video.date.getTime(),
       path,
       properties: video.properties,
-      music: music?.id || null,
+      music: music ? [music.albumId, music.id] : null,
     });
   }
 

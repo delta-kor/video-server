@@ -28,7 +28,7 @@ namespace VideoResponse {
     date: number;
     path: Path[];
     properties: VideoProperty[];
-    music: string | null;
+    music: [string, string] | null;
   }
 
   export interface List extends ApiResponse {

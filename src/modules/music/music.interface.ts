@@ -4,6 +4,7 @@ interface Music {
   id: string;
   title: string;
   videos: Video[];
+  albumId: string;
 }
 
 interface Album {
