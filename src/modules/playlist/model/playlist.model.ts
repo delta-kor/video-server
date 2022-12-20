@@ -1,11 +1,11 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
-import ServiceProvider from '../../services/provider.service';
-import { getLocaleString } from '../../utils/i18n.util';
-import generateId from '../../utils/id.util';
-import Video from '../video/video.interface';
-import VideoService from '../video/video.service';
-import Playlist, { PlaylistModel } from './playlist.interface';
+import ServiceProvider from '../../../services/provider.service';
+import { getLocaleString } from '../../../utils/i18n.util';
+import generateId from '../../../utils/id.util';
+import Video from '../../video/video.interface';
+import VideoService from '../../video/video.service';
+import Playlist, { PlaylistModel } from '../interface/playlist.interface';
 
 const PlaylistSchema = new Schema<Playlist>({
   id: { type: String, required: true, unique: true, default: () => generateId(8) },

@@ -1,5 +1,5 @@
 import Video from '../video/video.interface';
-import Playlist from './playlist.interface';
+import Playlist from './interface/playlist.interface';
 
 namespace PlaylistResponse {
   export interface Create extends ApiResponse {

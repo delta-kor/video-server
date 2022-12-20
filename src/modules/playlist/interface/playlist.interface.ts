@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
-import Video, { VideoType } from '../video/video.interface';
+import Video, { VideoType } from '../../video/video.interface';
 
 interface PlaylistModel extends Model<Playlist> {
   createLikedPlaylist(videos: Video[]): Playlist;
@@ -15,8 +15,9 @@ interface Playlist extends Document {
   video: string[];
   featured: boolean;
   order: number;
-  thumbnail: string;
   image?: string;
+
+  thumbnail: string;
   count: number;
 
   serialize(req: Request, ...keys: (keyof Playlist)[]): Playlist;

@@ -9,8 +9,8 @@ import User from '../user/user.interface';
 import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
-import Playlist from './playlist.interface';
-import PlaylistModel from './playlist.model';
+import Playlist from './interface/playlist.interface';
+import PlaylistModel from './model/playlist.model';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
