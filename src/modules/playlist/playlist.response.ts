@@ -23,6 +23,14 @@ namespace PlaylistResponse {
   export interface Update extends ApiResponse {
     playlist: Playlist;
   }
+
+  export interface CreateUserPlaylist extends ApiResponse {
+    id: string;
+  }
+
+  export interface AddVideoToUserPlaylist extends ApiResponse {
+    playlist: Playlist;
+  }
 }
 
 export default PlaylistResponse;

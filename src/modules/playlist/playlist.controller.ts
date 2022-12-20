@@ -9,6 +9,7 @@ import ServiceProvider from '../../services/provider.service';
 import { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
+import { AddVideoToUserPlaylistDto, CreateUserPlaylistDto } from './dto/user-playlist.dto';
 import PlaylistResponse from './playlist.response';
 import PlaylistService from './playlist.service';
 
@@ -24,6 +25,19 @@ class PlaylistController extends Controller {
     this.mounter.get('/:id', AuthGuard(false), this.read.bind(this));
     this.mounter.put('/:id', ManageGuard, ValidateGuard(PlaylistDto, 'body', true), this.update.bind(this));
     this.mounter.delete('/:id', ManageGuard, this.delete.bind(this));
+
+    this.mounter.post(
+      '/user',
+      AuthGuard(false),
+      ValidateGuard(CreateUserPlaylistDto),
+      this.createUserPlaylist.bind(this)
+    );
+    this.mounter.post(
+      '/user/:id',
+      AuthGuard(false),
+      ValidateGuard(AddVideoToUserPlaylistDto),
+      this.addVideoToUserPlaylist.bind(this)
+    );
   }
 
   private async create(req: TypedRequest<PlaylistDto>, res: TypedResponse<PlaylistResponse.Create>): Promise<void> {
@@ -103,6 +117,34 @@ class PlaylistController extends Controller {
     const id: string = req.params.id;
     await this.playlistService.delete(id);
     res.json({ ok: true });
+  }
+
+  private async createUserPlaylist(
+    req: TypedRequest<CreateUserPlaylistDto>,
+    res: TypedResponse<PlaylistResponse.CreateUserPlaylist>
+  ): Promise<void> {
+    const user = req.user!;
+
+    const title = req.body.title;
+    const playlist = await this.playlistService.createUserPlaylist(user, title);
+
+    res.json({ ok: true, id: playlist.id });
+  }
+
+  private async addVideoToUserPlaylist(
+    req: TypedRequest<AddVideoToUserPlaylistDto>,
+    res: TypedResponse<PlaylistResponse.AddVideoToUserPlaylist>
+  ): Promise<void> {
+    const user = req.user!;
+
+    const playlistId = req.params.id;
+    const videoId = req.body.video_id;
+
+    const userPlaylist = await this.playlistService.addVideoToUserPlaylist(user, playlistId, videoId);
+    const playlist = userPlaylist.toPlaylist();
+    const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
+
+    res.json({ ok: true, playlist: serializedPlaylist });
   }
 }
 

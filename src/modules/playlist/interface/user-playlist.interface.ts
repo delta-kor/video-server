@@ -1,9 +1,11 @@
 import { Request } from 'express';
+import { Document } from 'mongoose';
 import Playlist from './playlist.interface';
 
-interface UserPlaylist {
+interface UserPlaylist extends Document {
   id: string;
   user_id: string;
+  type: 'user';
   title: string;
   video: string[];
 
@@ -11,6 +13,7 @@ interface UserPlaylist {
   thumbnail: string;
 
   serialize(req: Request, ...keys: (keyof Playlist)[]): Playlist;
+  toPlaylist(): Playlist;
 }
 
 export default UserPlaylist;

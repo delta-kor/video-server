@@ -1,5 +1,6 @@
 import Constants from '../../constants';
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnauthorizedException from '../../exceptions/unauthorized.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
@@ -10,7 +11,9 @@ import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
 import Playlist from './interface/playlist.interface';
+import UserPlaylist from './interface/user-playlist.interface';
 import PlaylistModel from './model/playlist.model';
+import UserPlaylistModel from './model/user-playlist.model';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -124,6 +127,39 @@ class PlaylistService extends Service {
     this.playlists.delete(id);
 
     await this.load();
+  }
+
+  public async readUserPlaylist(id: string): Promise<UserPlaylist> {
+    const playlist = await UserPlaylistModel.findOne({ id });
+    if (!playlist) throw new NotFoundException();
+
+    return playlist;
+  }
+
+  public async createUserPlaylist(user: User, title: string): Promise<UserPlaylist> {
+    const playlist = new UserPlaylistModel({
+      user_id: user.id,
+      title,
+      video: [],
+    });
+
+    await playlist.save();
+    return playlist;
+  }
+
+  public async addVideoToUserPlaylist(user: User, playlistId: string, videoId: string): Promise<UserPlaylist> {
+    const playlist = await this.readUserPlaylist(playlistId);
+
+    const video = this.videoService.get(videoId);
+    if (!video) throw new NotFoundException();
+
+    if (playlist.user_id !== user.id) throw new UnauthorizedException();
+    if (playlist.video.includes(videoId)) throw new UnprocessableEntityException('error.playlist.video_already_added');
+
+    playlist.video.push(videoId);
+    await playlist.save();
+
+    return playlist;
   }
 }
 

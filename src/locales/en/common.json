@@ -18,7 +18,11 @@
       "enter_query": "Please enter your keywords to search"
     },
     "playlist": {
-      "invalid_type": "Invalid type"
+      "invalid_type": "Invalid type",
+      "enter_title": "Enter title",
+      "title_too_long": "Title must be less than 50 characters",
+      "enter_video_id": "Enter video ID",
+      "video_already_added": "Video already added"
     },
     "video": {
       "enter_id": "Enter ID",

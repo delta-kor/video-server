@@ -6,10 +6,12 @@ import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import Playlist from '../interface/playlist.interface';
 import UserPlaylist from '../interface/user-playlist.interface';
+import PlaylistModel from './playlist.model';
 
 const UserPlaylistSchema = new Schema({
   id: { type: String, required: true, unique: true, default: () => generateId(10) },
   user_id: { type: String, required: true },
+  type: { type: String, required: true, default: 'user' },
   title: { type: String, required: true },
   video: { type: [String], required: true },
 });
@@ -52,6 +54,19 @@ UserPlaylistSchema.methods.serialize = function (
   }
 
   return result;
+};
+
+UserPlaylistSchema.methods.toPlaylist = function (this: UserPlaylist): Playlist {
+  return new PlaylistModel({
+    id: this.id,
+    label: this.id,
+    type: 'user',
+    title: this.title,
+    description: this.title,
+    video: this.video,
+    featured: false,
+    order: -1,
+  });
 };
 
 const UserPlaylistModel = model<UserPlaylist>('user-playlist', UserPlaylistSchema);

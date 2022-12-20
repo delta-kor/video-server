@@ -18,7 +18,11 @@
       "enter_query": "검색어를 입력해주세요"
     },
     "playlist": {
-      "invalid_type": "잘못된 타입이에요"
+      "invalid_type": "잘못된 타입이에요",
+      "enter_title": "제목을 입력해주세요",
+      "title_too_long": "제목은 50자 이하로 입력해주세요",
+      "enter_video_id": "영상 ID를 입력해주세요",
+      "video_already_added": "이미 추가된 영상이에요"
     },
     "video": {
       "enter_id": "ID를 입력해주세요",
