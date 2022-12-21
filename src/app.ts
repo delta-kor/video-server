@@ -44,9 +44,9 @@ class App extends EventEmitter {
 
   private loadPipes(): void {
     this.application.disable('x-powered-by');
-    this.application.use(json());
-    CorsPipe.use(this.application);
     I18nPipe.use(this.application);
+    CorsPipe.use(this.application);
+    this.application.use(json());
   }
 
   private loadControllers(controllers: Controller[]): void {
