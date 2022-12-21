@@ -6,9 +6,31 @@ class CreateUserPlaylistDto {
   public title!: string;
 }
 
-class AddVideoToUserPlaylistDto {
-  @IsString({ message: 'error.playlist.enter_video_id' })
-  public video_id!: string;
+type UpdateUserPlaylistRequest =
+  | AddVideoToUserPlaylistRequest
+  | RemoveVideoFromUserPlaylistRequest
+  | RenameUserPlaylistRequest
+  | ReorderUserPlaylistRequest;
+
+interface AddVideoToUserPlaylistRequest {
+  action: 'add';
+  video_id: string;
 }
 
-export { CreateUserPlaylistDto, AddVideoToUserPlaylistDto };
+interface RemoveVideoFromUserPlaylistRequest {
+  action: 'remove';
+  video_id: string;
+}
+
+interface RenameUserPlaylistRequest {
+  action: 'rename';
+  title: string;
+}
+
+interface ReorderUserPlaylistRequest {
+  action: 'reorder';
+  video_id: string;
+  order: number;
+}
+
+export { CreateUserPlaylistDto, UpdateUserPlaylistRequest };

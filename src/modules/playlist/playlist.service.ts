@@ -10,6 +10,7 @@ import User from '../user/user.interface';
 import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
+import { UpdateUserPlaylistRequest } from './dto/user-playlist.dto';
 import Playlist from './interface/playlist.interface';
 import UserPlaylist from './interface/user-playlist.interface';
 import PlaylistModel from './model/playlist.model';
@@ -147,19 +148,62 @@ class PlaylistService extends Service {
     return playlist;
   }
 
-  public async addVideoToUserPlaylist(user: User, playlistId: string, videoId: string): Promise<UserPlaylist> {
+  public async updateUserPlaylist(
+    user: User,
+    playlistId: string,
+    request: UpdateUserPlaylistRequest
+  ): Promise<UserPlaylist> {
     const playlist = await this.readUserPlaylist(playlistId);
+    if (playlist.user_id !== user.id) throw new UnauthorizedException();
 
+    const action = request.action;
+
+    if (action === 'rename') {
+      if (typeof request.title !== 'string' || request.title.length === 0)
+        throw new UnprocessableEntityException('error.playlist.enter_title');
+      if (request.title.length > 50) throw new UnprocessableEntityException('error.playlist.title_too_long');
+
+      playlist.title = request.title;
+      await playlist.save();
+
+      return playlist;
+    }
+
+    const videoId = request.video_id;
     const video = this.videoService.get(videoId);
     if (!video) throw new NotFoundException();
 
-    if (playlist.user_id !== user.id) throw new UnauthorizedException();
-    if (playlist.video.includes(videoId)) throw new UnprocessableEntityException('error.playlist.video_already_added');
+    if (action === 'add') {
+      if (playlist.video.includes(videoId))
+        throw new UnprocessableEntityException('error.playlist.video_already_added');
 
-    playlist.video.push(videoId);
-    await playlist.save();
+      playlist.video.push(videoId);
+      await playlist.save();
 
-    return playlist;
+      return playlist;
+    }
+
+    if (action === 'remove') {
+      if (!playlist.video.includes(videoId)) throw new NotFoundException();
+
+      playlist.video = playlist.video.filter(id => id !== videoId);
+      await playlist.save();
+
+      return playlist;
+    }
+
+    if (action === 'reorder') {
+      if (!playlist.video.includes(videoId)) throw new NotFoundException();
+
+      const index = playlist.video.indexOf(videoId);
+      playlist.video.splice(index, 1);
+      playlist.video.splice(request.order, 0, videoId);
+      await playlist.save();
+
+      return playlist;
+    }
+
+    throw new UnprocessableEntityException('error.wrong_request');
   }
 }
 

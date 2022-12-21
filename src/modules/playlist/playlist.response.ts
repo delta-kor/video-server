@@ -28,7 +28,7 @@ namespace PlaylistResponse {
     id: string;
   }
 
-  export interface AddVideoToUserPlaylist extends ApiResponse {
+  export interface UpdateUserPlaylist extends ApiResponse {
     playlist: Playlist;
   }
 }
