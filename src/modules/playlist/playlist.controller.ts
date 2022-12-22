@@ -6,16 +6,19 @@ import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
+import UserService from '../user/user.service';
 import { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
 import { CreateUserPlaylistDto, UpdateUserPlaylistRequest } from './dto/user-playlist.dto';
+import Playlist from './interface/playlist.interface';
 import PlaylistResponse from './playlist.response';
 import PlaylistService from './playlist.service';
 
 class PlaylistController extends Controller {
   public readonly path: string = '/playlist';
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
+  private readonly userService: UserService = ServiceProvider.get(UserService);
   private readonly playlistService: PlaylistService = ServiceProvider.get(PlaylistService);
 
   protected mount(): void {
@@ -43,7 +46,17 @@ class PlaylistController extends Controller {
   private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
     const user = req.user!;
     const id: string = req.params.id;
-    const playlist = await this.playlistService.read(id, user);
+
+    let playlist: Playlist;
+    if (id.length === 8) {
+      playlist = await this.playlistService.read(id, user);
+    } else {
+      const userPlaylist = await this.playlistService.readUserPlaylist(id);
+      const user = await this.userService.getUserById(userPlaylist.user_id);
+      const nickname = user?.nickname || 'Unknown';
+      playlist = userPlaylist.toPlaylist(nickname);
+    }
+
     const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });
@@ -132,7 +145,7 @@ class PlaylistController extends Controller {
     const user = req.user!;
     const playlistId = req.params.id;
     const userPlaylist = await this.playlistService.updateUserPlaylist(user, playlistId, req.body);
-    const playlist = userPlaylist.toPlaylist();
+    const playlist = userPlaylist.toPlaylist(user.nickname);
     const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });

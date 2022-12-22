@@ -13,7 +13,7 @@ interface UserPlaylist extends Document {
   thumbnail: string;
 
   serialize(req: Request, ...keys: (keyof Playlist)[]): Playlist;
-  toPlaylist(): Playlist;
+  toPlaylist(nickname: string): Playlist;
 }
 
 export default UserPlaylist;

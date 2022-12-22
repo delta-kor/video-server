@@ -56,16 +56,16 @@ UserPlaylistSchema.methods.serialize = function (
   return result;
 };
 
-UserPlaylistSchema.methods.toPlaylist = function (this: UserPlaylist): Playlist {
+UserPlaylistSchema.methods.toPlaylist = function (this: UserPlaylist, nickname: string): Playlist {
   return new PlaylistModel({
     id: this.id,
     label: this.id,
     type: 'user',
     title: { en: this.title, ko: this.title },
-    description: { en: this.title, ko: this.title },
+    description: { en: `${nickname}'s playlist`, ko: `${nickname}의 재생목록` },
     video: this.video,
     featured: false,
-    order: -1,
+    order: 0,
   });
 };
 

@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import UserPlaylist from '../playlist/interface/user-playlist.interface';
 import Video from '../video/video.interface';
 
 enum Role {
@@ -15,6 +16,7 @@ interface User extends Document {
   ban_info: BanInfo;
 
   getLikedVideos(): Promise<Video[]>;
+  getUserPlaylists(): Promise<UserPlaylist[]>;
 
   addIp(ip: string): Promise<void>;
   createToken(): string;

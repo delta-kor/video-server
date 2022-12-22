@@ -1,6 +1,8 @@
 import { Model, model, Schema } from 'mongoose';
 import generateId from '../../utils/id.util';
 import TokenUtil from '../../utils/token.util';
+import UserPlaylist from '../playlist/interface/user-playlist.interface';
+import UserPlaylistModel from '../playlist/model/user-playlist.model';
 import Video from '../video/video.interface';
 import VideoModel from '../video/video.model';
 import User, { Role, UserInfo } from './user.interface';
@@ -19,6 +21,10 @@ const UserSchema = new Schema<User, UserModel>({
 
 UserSchema.methods.getLikedVideos = async function (this: User): Promise<Video[]> {
   return VideoModel.find({ liked: this.id });
+};
+
+UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserPlaylist[]> {
+  return UserPlaylistModel.find({ user: this.id });
 };
 
 UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void> {

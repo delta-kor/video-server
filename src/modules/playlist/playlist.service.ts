@@ -77,6 +77,11 @@ class PlaylistService extends Service {
         const likedPlaylist = PlaylistModel.createLikedPlaylist(likedVideos);
         result.unshift(likedPlaylist);
       }
+
+      const userPlaylists = await user.getUserPlaylists();
+      const playlists = userPlaylists.map(playlist => playlist.toPlaylist(user.nickname));
+
+      result.unshift(...playlists);
     }
 
     return result;
