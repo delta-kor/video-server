@@ -161,10 +161,8 @@ class PlaylistService extends Service {
     const playlist = await this.readUserPlaylist(playlistId);
     if (playlist.user_id !== user.id) throw new UnauthorizedException();
 
-    const action = request.action;
-
-    if (action === 'rename') {
-      if (typeof request.title !== 'string' || request.title.length === 0)
+    if (request.action === 'rename') {
+      if (!request.title || request.title.length === 0)
         throw new UnprocessableEntityException('error.playlist.enter_title');
       if (request.title.length > 50) throw new UnprocessableEntityException('error.playlist.title_too_long');
 
@@ -178,7 +176,7 @@ class PlaylistService extends Service {
     const video = this.videoService.get(videoId);
     if (!video) throw new NotFoundException();
 
-    if (action === 'add') {
+    if (request.action === 'add') {
       if (playlist.video.includes(videoId))
         throw new UnprocessableEntityException('error.playlist.video_already_added');
 
@@ -188,7 +186,7 @@ class PlaylistService extends Service {
       return playlist;
     }
 
-    if (action === 'remove') {
+    if (request.action === 'remove') {
       if (!playlist.video.includes(videoId)) throw new NotFoundException();
 
       playlist.video = playlist.video.filter(id => id !== videoId);
@@ -197,7 +195,7 @@ class PlaylistService extends Service {
       return playlist;
     }
 
-    if (action === 'reorder') {
+    if (request.action === 'reorder') {
       if (!playlist.video.includes(videoId)) throw new NotFoundException();
 
       const index = playlist.video.indexOf(videoId);
