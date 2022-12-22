@@ -210,6 +210,13 @@ class PlaylistService extends Service {
 
     throw new UnprocessableEntityException('error.wrong_request');
   }
+
+  public async deleteUserPlaylist(user: User, playlistId: string): Promise<void> {
+    const playlist = await this.readUserPlaylist(playlistId);
+    if (playlist.user_id !== user.id) throw new UnauthorizedException();
+
+    await playlist.deleteOne();
+  }
 }
 
 export default PlaylistService;

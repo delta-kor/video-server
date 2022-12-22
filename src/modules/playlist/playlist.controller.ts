@@ -36,6 +36,7 @@ class PlaylistController extends Controller {
       this.createUserPlaylist.bind(this)
     );
     this.mounter.post('/user/:id', AuthGuard(false), this.updateUserPlaylist.bind(this));
+    this.mounter.delete('/user/:id', AuthGuard(false), this.deleteUserPlaylist.bind(this));
   }
 
   private async create(req: TypedRequest<PlaylistDto>, res: TypedResponse<PlaylistResponse.Create>): Promise<void> {
@@ -149,6 +150,14 @@ class PlaylistController extends Controller {
     const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
 
     res.json({ ok: true, playlist: serializedPlaylist });
+  }
+
+  private async deleteUserPlaylist(req: TypedRequest, res: TypedResponse): Promise<void> {
+    const user = req.user!;
+    const playlistId = req.params.id;
+    await this.playlistService.deleteUserPlaylist(user, playlistId);
+
+    res.json({ ok: true });
   }
 }
 
