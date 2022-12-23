@@ -87,6 +87,10 @@ class PlaylistService extends Service {
     return result;
   }
 
+  public async readUserPlaylists(user: User): Promise<UserPlaylist[]> {
+    return user.getUserPlaylists();
+  }
+
   public readFeatured(type: VideoType): { video: Video; playlist: Playlist } {
     for (const item of this.playlists.values()) {
       if (item.type === type && item.featured) {

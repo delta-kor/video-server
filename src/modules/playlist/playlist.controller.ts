@@ -64,13 +64,23 @@ class PlaylistController extends Controller {
   }
 
   private async readAll(
-    req: TypedRequest<any, { data: 'default' | 'full' }, { type: VideoType }>,
+    req: TypedRequest<any, { data: 'default' | 'full' }, { type: VideoType & 'user' }>,
     res: TypedResponse<PlaylistResponse.ReadAll>,
     next: NextFunction
   ): Promise<void> {
     const user = req.user!;
     const data = req.query.data || 'default';
     const type = req.params.type;
+
+    if (type === 'user') {
+      const playlists = await this.playlistService.readUserPlaylists(user);
+      const serializedPlaylists = playlists.map(playlist =>
+        playlist.serialize(req, 'id', 'title', 'thumbnail', 'count')
+      );
+
+      res.json({ ok: true, playlists: serializedPlaylists });
+      return;
+    }
 
     if (!Constants.VIDEO_TYPES.includes(type)) return next();
 
