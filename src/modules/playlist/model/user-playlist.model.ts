@@ -60,7 +60,6 @@ UserPlaylistSchema.methods.toPlaylist = function (this: UserPlaylist, nickname: 
   return new PlaylistModel({
     id: this.id,
     label: this.id,
-    type: 'user',
     title: { en: this.title, ko: this.title },
     description: { en: `${nickname}'s playlist`, ko: `${nickname}의 재생목록` },
     video: this.video,

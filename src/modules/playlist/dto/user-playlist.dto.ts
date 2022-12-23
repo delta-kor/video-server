@@ -1,7 +1,8 @@
-import { IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 class CreateUserPlaylistDto {
   @IsString({ message: 'error.playlist.enter_title' })
+  @IsNotEmpty({ message: 'error.playlist.enter_title' })
   @MaxLength(50, { message: 'error.playlist.title_too_long' })
   public title!: string;
 }

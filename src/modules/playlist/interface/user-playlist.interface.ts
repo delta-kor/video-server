@@ -5,7 +5,6 @@ import Playlist from './playlist.interface';
 interface UserPlaylist extends Document {
   id: string;
   user_id: string;
-  type: 'user';
   title: string;
   video: string[];
 

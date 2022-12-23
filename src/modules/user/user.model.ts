@@ -24,7 +24,7 @@ UserSchema.methods.getLikedVideos = async function (this: User): Promise<Video[]
 };
 
 UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserPlaylist[]> {
-  return UserPlaylistModel.find({ user: this.id });
+  return UserPlaylistModel.find({ user_id: this.id });
 };
 
 UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void> {
