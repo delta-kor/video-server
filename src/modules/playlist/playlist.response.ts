@@ -8,6 +8,7 @@ namespace PlaylistResponse {
 
   export interface Read extends ApiResponse {
     playlist: Playlist;
+    access: boolean;
   }
 
   export interface ReadAll extends ApiResponse {
