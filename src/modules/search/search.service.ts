@@ -39,7 +39,6 @@ class SearchService extends Service {
 
   public search(query: string): Video[] {
     const convertedQuery = SearchService.convert(query.toLowerCase().replace(/ /g, ''));
-    console.log(convertedQuery);
     const data = this.index.search(convertedQuery, { limit: 20 });
     return data.map(item => item.item);
   }
