@@ -51,15 +51,15 @@ class PlaylistController extends Controller {
     let playlist: Playlist;
     let access: boolean = false;
 
-    if (id.length === 8) {
-      playlist = await this.playlistService.read(id, user);
-    } else {
+    if (id.length === 10) {
       const userPlaylist = await this.playlistService.readUserPlaylist(id);
       const playlistUser = await this.userService.getUserById(userPlaylist.user_id);
       const nickname = playlistUser?.nickname || 'Unknown';
 
       playlist = userPlaylist.toPlaylist(nickname);
       access = userPlaylist.user_id === user.id;
+    } else {
+      playlist = await this.playlistService.read(id, user);
     }
 
     const serializedPlaylist = playlist.serialize(req, 'id', 'title', 'description', 'video', 'thumbnail');
