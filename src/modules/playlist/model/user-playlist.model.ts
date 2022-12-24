@@ -11,7 +11,6 @@ import PlaylistModel from './playlist.model';
 const UserPlaylistSchema = new Schema({
   id: { type: String, required: true, unique: true, default: () => generateId(10) },
   user_id: { type: String, required: true },
-  type: { type: String, required: true, default: 'user' },
   title: { type: String, required: true },
   video: { type: [String], required: true },
 });
