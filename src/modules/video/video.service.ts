@@ -1,10 +1,12 @@
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import { StreamingInfo } from '../deliver/deliver.interface';
 import DeliverService from '../deliver/deliver.service';
-import UploadDto from './dto/upload.dto';
-import Video, { VideoOptions } from './video.interface';
+import User from '../user/user.interface';
+import VideoDto from './dto/video.dto';
+import Video, { VideoOption } from './video.interface';
 import VideoModel from './video.model';
 
 class VideoService extends Service {
@@ -16,22 +18,28 @@ class VideoService extends Service {
     this.videos.push(...videos);
   }
 
-  public getAll(): Video[] {
+  private getAll(): Video[] {
     return this.videos;
   }
 
-  public getAllFiltered(option: VideoOptions): Video[] {
+  public getAllFiltered(option: VideoOption): Video[] {
     return this.getAll().filter(video => video.hasOption(option));
   }
 
-  public async upload(data: UploadDto): Promise<Video> {
+  public async upload(data: VideoDto): Promise<Video> {
+    if (!['performance', 'vod'].includes(data.type)) {
+      throw new UnprocessableEntityException('error.video.invalid_type');
+    }
+
     const video: Video = new VideoModel({
       cdnId: data.cdnId,
+      type: data.type,
       title: data.title,
       description: data.description,
       date: new Date(data.date),
       category: data.category,
       options: data.options,
+      liked: [],
     });
     await video.save();
 
@@ -57,7 +65,7 @@ class VideoService extends Service {
     return result;
   }
 
-  public getByTitle(title: string, option?: VideoOptions): Video[] {
+  public getByTitle(title: string, option?: VideoOption): Video[] {
     const result: Video[] = [];
     for (const video of option ? this.getAllFiltered(option) : this.getAll()) {
       if (video.title === title) result.push(video);
@@ -69,12 +77,47 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.is_4k && quality > 1080 ? video.cdnId_4k : video.cdnId;
+    const cdnId = video.properties.includes('4k') ? video.cdnId_4k! : video.cdnId;
     const info = await this.deliverService.getCdnInfo(cdnId, quality);
 
-    if (video.is_4k) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
+    if (video.properties.includes('4k')) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
 
     return info;
+  }
+
+  public async getAction(id: string, user: User): Promise<{ liked: boolean; total: number }> {
+    const video = await this.get(id);
+    if (!video) throw new NotFoundException();
+
+    return { liked: video.liked.includes(user.id), total: video.liked.length };
+  }
+
+  public async like(id: string, user: User): Promise<{ liked: boolean; total: number }> {
+    const video = await this.get(id);
+    if (!video) throw new NotFoundException();
+
+    let liked: boolean;
+    if (video.liked.includes(user.id)) {
+      video.liked = video.liked.filter(liked => liked !== user.id);
+      liked = false;
+    } else {
+      video.liked.push(user.id);
+      liked = true;
+    }
+
+    await video.save();
+    return { liked, total: video.liked.length };
+  }
+
+  public async getSubtitle(id: string): Promise<string> {
+    const video = await this.get(id);
+    if (!video || !video.subtitle) throw new NotFoundException();
+
+    return video.subtitle;
+  }
+
+  public async ship(): Promise<Video[]> {
+    return VideoModel.find({});
   }
 }
 

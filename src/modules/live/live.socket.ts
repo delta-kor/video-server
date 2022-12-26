@@ -3,12 +3,12 @@ import Constants from '../../constants';
 import SocketException from '../../exceptions/socket.exception';
 import ServiceProvider from '../../services/provider.service';
 import parseTicket from '../../utils/ticket.util';
+import User from '../user/user.interface';
+import UserService from '../user/user.service';
 import { ChatInfo } from './interface/chat.interface';
-import User from './interface/user.interface';
 import { ClientPacket, ServerPacket } from './live.packet';
 import ChatService from './service/chat.service';
 import CinemaService from './service/cinema.service';
-import UserService from './service/user.service';
 
 enum SocketState {
   LOITERING,
@@ -77,7 +77,7 @@ class LiveSocket extends Socket {
     const ticket = packet.ticket;
     const token = packet.token;
 
-    const user = await this.userService.getUserByToken(token);
+    const user = await this.userService.getUserByToken(token, true);
 
     this.ip = parseTicket(ticket);
     this.state = SocketState.ACTIVE;

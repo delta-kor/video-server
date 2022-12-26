@@ -7,6 +7,7 @@ import Controller from './classes/controller.class';
 import Gateway from './classes/gateway.class';
 import ExceptionFilter from './filters/exception.filter';
 import CorsPipe from './pipes/cors.pipe';
+import I18nPipe from './pipes/i18n.pipe';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -43,8 +44,9 @@ class App extends EventEmitter {
 
   private loadPipes(): void {
     this.application.disable('x-powered-by');
-    this.application.use(json());
+    I18nPipe.use(this.application);
     CorsPipe.use(this.application);
+    this.application.use(json());
   }
 
   private loadControllers(controllers: Controller[]): void {

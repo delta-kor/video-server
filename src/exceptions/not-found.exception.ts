@@ -1,8 +1,7 @@
-import Constants from '../constants';
 import HttpException from './http.exception';
 
 class NotFoundException extends HttpException {
-  constructor(message: string = Constants.PAGE_NOT_FOUND) {
+  constructor(message: string = 'error.not_found') {
     super(404, message);
   }
 }

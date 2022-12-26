@@ -1,4 +1,5 @@
 import { Path } from '../category/category.response';
+import { VideoProperty } from './video.interface';
 
 interface ShortVideoInfo {
   id: string;
@@ -20,15 +21,28 @@ namespace VideoResponse {
   }
 
   export interface Info extends ApiResponse {
+    id: string;
     title: string;
     description: string;
     duration: number;
     date: number;
     path: Path[];
+    properties: VideoProperty[];
+    music: [string, string] | null;
   }
 
   export interface List extends ApiResponse {
     data: ShortVideoInfo[];
+  }
+
+  export interface Action extends ApiResponse {
+    liked: boolean;
+    likes_total: number;
+  }
+
+  export interface Like extends ApiResponse {
+    liked: boolean;
+    total: number;
   }
 }
 

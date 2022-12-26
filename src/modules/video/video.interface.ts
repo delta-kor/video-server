@@ -1,23 +1,31 @@
+import { Request } from 'express';
 import { Document } from 'mongoose';
 
-type VideoOptions = 'music' | 'category' | 'recommend' | 'fanchant' | 'vod';
+type VideoOption = 'music' | 'category' | 'recommend' | 'fanchant';
+type VideoType = 'performance' | 'vod';
+type VideoProperty = '4k' | 'cc';
 
 interface Video extends Document {
   id: string;
   cdnId: string;
-  cdnId_4k: string;
+  cdnId_4k?: string;
+
+  type: VideoType;
   title: string;
   description: string;
   date: Date;
   category: [string, string, string];
+  subtitle?: string;
 
-  duration: number;
-  is_4k: boolean;
+  duration: number; // virtual
+  properties: VideoProperty[]; // virtual
+  tags: string[]; // virtual
+  options: VideoOption[];
+  liked: string[];
 
-  options: VideoOptions[];
-
-  hasOption(option: VideoOptions): boolean;
+  hasOption(option: VideoOption): boolean;
+  serialize(req: Request, ...keys: (keyof Video)[]): Video;
 }
 
-export { VideoOptions };
+export { VideoOption, VideoType, VideoProperty };
 export default Video;

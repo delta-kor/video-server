@@ -1,9 +1,16 @@
 import Video from '../video/video.interface';
 
 interface Music {
+  id: string;
   title: string;
-  hash: string;
   videos: Video[];
+  albumId: string;
 }
 
-export default Music;
+interface Album {
+  id: string;
+  title: string;
+  count: number;
+}
+
+export { Music, Album };

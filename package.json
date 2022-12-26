@@ -30,8 +30,12 @@
     "class-validator": "^0.13.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
+    "fuse.js": "^6.6.2",
+    "i18next": "^21.9.1",
+    "i18next-http-middleware": "^3.2.1",
     "mongoose": "^6.1.4",
     "node-cache": "^5.1.2",
+    "p-queue": "6.6.2",
     "ws": "^8.6.0"
   }
 }

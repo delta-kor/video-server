@@ -1,26 +1,18 @@
-interface MusicItem {
-  id: string;
-  title: string;
-  count: number;
-}
-
-interface VideoItem {
-  id: string;
-  description: string;
-  date: number;
-  duration: number;
-  is_4k: boolean;
-}
+import { Album, Music } from './music.interface';
 
 namespace MusicResponse {
-  export interface ViewAll extends ApiResponse {
-    musics: MusicItem[];
+  export interface GetAllAlbums extends ApiResponse {
+    albums: Album[];
   }
 
-  export interface ViewOne extends ApiResponse {
-    videos: VideoItem[];
+  export interface GetOneAlbum extends ApiResponse {
+    album: Album;
+    musics: Music[];
+  }
+
+  export interface GetOneMusic extends ApiResponse {
+    music: Music;
   }
 }
 
-export { MusicItem, VideoItem };
 export default MusicResponse;

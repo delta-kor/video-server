@@ -1,9 +1,8 @@
-import Constants from '../constants';
 import HttpException from './http.exception';
 
 class UnauthorizedException extends HttpException {
-  constructor() {
-    super(401, Constants.UNAUTHORIZED);
+  constructor(message: string = 'error.unauthorized') {
+    super(401, message);
   }
 }
 
