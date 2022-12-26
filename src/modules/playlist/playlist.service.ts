@@ -168,7 +168,7 @@ class PlaylistService extends Service {
     if (playlist.user_id !== user.id) throw new UnauthorizedException();
 
     if (request.action === 'rename') {
-      if (!request.title || request.title.length === 0)
+      if ((typeof request.title as any) !== 'string' || request.title.length === 0)
         throw new UnprocessableEntityException('error.playlist.enter_title');
       if (request.title.length > 50) throw new UnprocessableEntityException('error.playlist.title_too_long');
 
@@ -203,6 +203,7 @@ class PlaylistService extends Service {
 
     if (request.action === 'reorder') {
       if (!playlist.video.includes(videoId)) throw new NotFoundException();
+      if ((typeof request.order as any) !== 'number') throw new UnprocessableEntityException('error.wrong_request');
 
       const index = playlist.video.indexOf(videoId);
       playlist.video.splice(index, 1);

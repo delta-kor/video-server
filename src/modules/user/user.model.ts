@@ -11,13 +11,16 @@ interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
 }
 
-const UserSchema = new Schema<User, UserModel>({
-  id: { type: String, required: true, unique: true, default: () => generateId(8) },
-  nickname: { type: String, required: true, unique: true },
-  role: { type: Number, required: true },
-  ip: { type: [String], required: true },
-  ban_info: { type: Schema.Types.Mixed, required: true, default: () => ({ banned: false }) },
-});
+const UserSchema = new Schema<User, UserModel>(
+  {
+    id: { type: String, required: true, unique: true, default: () => generateId(8) },
+    nickname: { type: String, required: true, unique: true },
+    role: { type: Number, required: true },
+    ip: { type: [String], required: true },
+    ban_info: { type: Schema.Types.Mixed, required: true, default: () => ({ banned: false }) },
+  },
+  { timestamps: true }
+);
 
 UserSchema.methods.getLikedVideos = async function (this: User): Promise<Video[]> {
   return VideoModel.find({ liked: this.id });
