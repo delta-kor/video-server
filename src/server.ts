@@ -27,6 +27,8 @@ import EmotionService from './modules/recommend/service/emotion.service';
 import RecommendService from './modules/recommend/service/recommend.service';
 import SearchController from './modules/search/search.controller';
 import SearchService from './modules/search/search.service';
+import ShipmentController from './modules/shipment/shipment.controller';
+import ShipmentService from './modules/shipment/shipment.service';
 import ThumbnailController from './modules/thumbnail/thumbnail.controller';
 import UserController from './modules/user/user.controller';
 import UserService from './modules/user/user.service';
@@ -48,17 +50,18 @@ const services: typeof Service[] = [
   MusicService,
   CalendarService,
   EmotionService,
-  PlaylistService,
-  BuilderService,
   RecommendService,
   SearchService,
-  RadioService,
   SocketService,
   CinemaService,
   UserService,
+  PlaylistService,
+  BuilderService,
+  RadioService,
   ChatService,
   LiveService,
   AdService,
+  ShipmentService,
 ];
 
 const gateway = LiveGateway;
@@ -84,6 +87,7 @@ app
       new RadioController(),
       new UserController(),
       new AdController(),
+      new ShipmentController(),
     ];
     return app.load(controllers, gateway);
   })

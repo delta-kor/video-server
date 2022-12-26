@@ -7,6 +7,7 @@ import ServiceProvider from '../../services/provider.service';
 import { pickFromArray } from '../../utils/pick.util';
 import Updater from '../../utils/updater';
 import User from '../user/user.interface';
+import UserService from '../user/user.service';
 import Video, { VideoType } from '../video/video.interface';
 import VideoService from '../video/video.service';
 import PlaylistDto from './dto/playlist.dto';
@@ -18,6 +19,7 @@ import UserPlaylistModel from './model/user-playlist.model';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
+  private readonly userService: UserService = ServiceProvider.get(UserService);
   private readonly playlists: Map<string, Playlist> = new Map();
 
   public async load(): Promise<void> {
@@ -218,6 +220,20 @@ class PlaylistService extends Service {
     if (playlist.user_id !== user.id) throw new UnauthorizedException();
 
     await playlist.deleteOne();
+  }
+
+  public async ship(): Promise<Playlist[]> {
+    const playlists: Playlist[] = await PlaylistModel.find({});
+    const userPlaylists: UserPlaylist[] = await UserPlaylistModel.find({});
+    for (const userPlaylist of userPlaylists) {
+      const user = await this.userService.getUserById(userPlaylist.user_id);
+      if (!user) continue;
+
+      const playlist = userPlaylist.toPlaylist(user.nickname);
+      playlists.push(playlist);
+    }
+
+    return playlists;
   }
 }
 

@@ -115,6 +115,10 @@ class VideoService extends Service {
 
     return video.subtitle;
   }
+
+  public async ship(): Promise<Video[]> {
+    return VideoModel.find({});
+  }
 }
 
 export default VideoService;
