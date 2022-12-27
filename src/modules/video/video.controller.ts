@@ -12,6 +12,7 @@ import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
 import MusicService from '../music/music.service';
+import BeaconDto from './dto/beacon.dto';
 import VideoDto from './dto/video.dto';
 import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
@@ -28,7 +29,7 @@ class VideoController extends Controller {
     this.mounter.get('/list', this.list.bind(this));
     this.mounter.get('/:id', this.stream.bind(this));
     this.mounter.get('/:id/info', this.info.bind(this));
-    this.mounter.get('/:id/beacon', this.beacon.bind(this));
+    this.mounter.post('/:id/beacon', AuthGuard(false), ValidateGuard(BeaconDto), this.beacon.bind(this));
     this.mounter.get('/:id/action', AuthGuard(false), this.action.bind(this));
     this.mounter.post('/:id/like', AuthGuard(false), this.like.bind(this));
     this.mounter.get('/:id/subtitle', this.subtitle.bind(this));
@@ -97,11 +98,23 @@ class VideoController extends Controller {
     res.json({ ok: true, data: list });
   }
 
-  private async beacon(req: TypedRequest, res: TypedResponse): Promise<void> {
+  private async beacon(req: TypedRequest<BeaconDto>, res: TypedResponse): Promise<void> {
+    const user = req.user!;
     const id = req.params.id;
-    const time = req.query.time;
-    const total = req.query.total;
-    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] ID=${id} T=${time} TT=${total}`);
+    const time = req.body.time;
+    const total = req.body.total;
+
+    // convert total to hh:mm:ss
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor((total - hours * 3600) / 60);
+    const seconds = total - hours * 3600 - minutes * 60;
+
+    const totalFormatted = `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    // prettier-ignore
+    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] USER=${user.nickname} ID=${id} T=${time} TT=${totalFormatted}`);
     res.send();
   }
 
