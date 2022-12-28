@@ -1,6 +1,11 @@
 node_modules
 dist
 build
+
 .env
 exports.tsv
+
+*.log
+
 run/fill.ts
+run/check.ts
