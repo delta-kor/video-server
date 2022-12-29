@@ -14,9 +14,11 @@ interface User extends Document {
   role: Role;
   ip: string[];
   ban_info: BanInfo;
+  last_active: Date;
 
   getLikedVideos(): Promise<Video[]>;
   getUserPlaylists(): Promise<UserPlaylist[]>;
+  updateActive(): Promise<void>;
 
   addIp(ip: string): Promise<void>;
   createToken(): string;
