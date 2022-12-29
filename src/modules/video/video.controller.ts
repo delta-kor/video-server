@@ -104,6 +104,8 @@ class VideoController extends Controller {
     const time = req.body.time;
     const total = req.body.total;
 
+    user.updateActive();
+
     // convert total to hh:mm:ss
     const hours = Math.floor(total / 3600);
     const minutes = Math.floor((total - hours * 3600) / 60);

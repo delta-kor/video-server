@@ -32,8 +32,12 @@ UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserP
 };
 
 UserSchema.methods.updateActive = async function (this: User): Promise<void> {
-  this.last_active = new Date();
-  await this.save();
+  try {
+    this.last_active = new Date();
+    await this.save();
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void> {
