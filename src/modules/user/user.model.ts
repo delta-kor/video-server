@@ -33,8 +33,10 @@ UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserP
 
 UserSchema.methods.updateActive = async function (this: User): Promise<void> {
   try {
-    this.last_active = new Date();
-    await this.save();
+    if (this.last_active.getTime() < Date.now() - 5 * 60 * 1000) {
+      this.last_active = new Date();
+      await this.save();
+    }
   } catch (e) {
     console.error(e);
   }
