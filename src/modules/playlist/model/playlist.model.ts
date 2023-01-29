@@ -60,7 +60,7 @@ PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...ke
       continue;
     }
 
-    if (key === 'title' || key === 'description') {
+    if (key === 'title' || key === 'description' || key === 'cluster') {
       result[key] = getLocaleString(this[key], req.i18n.resolvedLanguage);
       continue;
     }
