@@ -16,6 +16,7 @@ interface Playlist extends Document {
   featured: boolean;
   order: number;
   image?: string;
+  cluster?: Locales;
 
   thumbnail: string;
   count: number;
