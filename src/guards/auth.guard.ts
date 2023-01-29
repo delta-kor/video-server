@@ -25,6 +25,9 @@ function AuthGuard(create: boolean): Route {
 
     req.user = await userService.getUserByToken(credentials, create);
     res.header('Iz-Auth-Token', req.user.createToken());
+
+    req.user.updateActive();
+
     return next();
   };
 }

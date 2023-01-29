@@ -11,7 +11,7 @@ class PlaylistDto {
   @IsObject({ message: '제목을 입력해주세요' })
   public title!: Locales;
 
-  @IsString({ message: '설명을 입력해주세요' })
+  @IsObject({ message: '설명을 입력해주세요' })
   public description!: string;
 
   @IsArray({ message: '영상을 선택해주세요' })

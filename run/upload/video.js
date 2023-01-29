@@ -9,7 +9,7 @@ function upload(base, key, data) {
     const category = chips.slice(2, 5);
     const date = new Date(chips[5]);
     const cdnId = chips[6];
-    const payload = { cdnId, title, description, category, date: date.getTime(), options: ['category', 'vod'], key };
+    const payload = { cdnId, title, description, category, date: date.getTime(), options: ['category'], type: 'vod', key };
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       .then(res => res.json())
       .then(data => console.log(data));

@@ -130,6 +130,8 @@ SearchConvertStoreBase.set('시즌 3', '환상캠퍼스');
 SearchConvertStoreBase.set('시즌 4', 'ON:TACT');
 SearchConvertStoreBase.set('izone chu', '아이즈원 츄');
 SearchConvertStoreBase.set('iz chu', '아이즈원 츄');
+SearchConvertStoreBase.set('eating', '잇힝');
+SearchConvertStoreBase.set('trip', '트립');
 
 const SearchConvertStore = new Map<string, string>();
 const keys = [...SearchConvertStoreBase.keys()].sort((a, b) => b.length - a.length);

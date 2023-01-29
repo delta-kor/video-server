@@ -17,6 +17,7 @@ const PlaylistSchema = new Schema<Playlist>({
   featured: { type: Boolean, required: true },
   order: { type: Number, required: true },
   image: { type: String, required: false },
+  cluster: { type: Object, required: false },
 });
 
 PlaylistSchema.statics.createLikedPlaylist = function (videos: Video[]): Playlist {

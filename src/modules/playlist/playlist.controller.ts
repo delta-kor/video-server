@@ -92,7 +92,7 @@ class PlaylistController extends Controller {
     const serializedPlaylist = playlists.map(playlist =>
       data === 'default'
         ? playlist.serialize(req, 'id', 'title', 'thumbnail', 'count')
-        : playlist.serialize(req, 'id', 'title', 'description', 'video')
+        : playlist.serialize(req, 'id', 'title', 'description', 'video', 'cluster')
     );
 
     res.json({ ok: true, playlists: serializedPlaylist });

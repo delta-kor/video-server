@@ -18,6 +18,7 @@ const UserSchema = new Schema<User, UserModel>(
     role: { type: Number, required: true },
     ip: { type: [String], required: true },
     ban_info: { type: Schema.Types.Mixed, required: true, default: () => ({ banned: false }) },
+    last_active: { type: Date, default: () => new Date() },
   },
   { timestamps: true }
 );
@@ -28,6 +29,17 @@ UserSchema.methods.getLikedVideos = async function (this: User): Promise<Video[]
 
 UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserPlaylist[]> {
   return UserPlaylistModel.find({ user_id: this.id });
+};
+
+UserSchema.methods.updateActive = async function (this: User): Promise<void> {
+  try {
+    if (this.last_active.getTime() < Date.now() - 5 * 60 * 1000) {
+      this.last_active = new Date();
+      await this.save();
+    }
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 UserSchema.methods.addIp = async function (this: User, ip: string): Promise<void> {
