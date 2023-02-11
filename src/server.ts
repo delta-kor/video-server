@@ -16,6 +16,8 @@ import ChatService from './modules/live/service/chat.service';
 import CinemaService from './modules/live/service/cinema.service';
 import LiveService from './modules/live/service/live.service';
 import SocketService from './modules/live/service/socket.service';
+import LogController from './modules/log/log.controller';
+import LogService from './modules/log/log.service';
 import MusicController from './modules/music/music.controller';
 import MusicService from './modules/music/music.service';
 import PlaylistController from './modules/playlist/playlist.controller';
@@ -44,6 +46,7 @@ const port = parseInt(process.env.PORT!) || 3000;
 const app = new App(port);
 const services: typeof Service[] = [
   EnvService,
+  LogService,
   DeliverService,
   VideoService,
   CategoryService,
@@ -76,6 +79,7 @@ app
   .then(() => {
     const controllers: Controller[] = [
       new EnvController(),
+      new LogController(),
       new VideoController(),
       new ThumbnailController(),
       new CategoryController(),

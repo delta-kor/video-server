@@ -11,6 +11,7 @@ import { getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
+import LogService from '../log/log.service';
 import MusicService from '../music/music.service';
 import BeaconDto from './dto/beacon.dto';
 import VideoDto from './dto/video.dto';
@@ -19,6 +20,7 @@ import VideoService from './video.service';
 
 class VideoController extends Controller {
   public readonly path: string = '/video';
+  private readonly logService: LogService = ServiceProvider.get(LogService);
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly builderService: BuilderService = ServiceProvider.get(BuilderService);
   private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
@@ -100,13 +102,18 @@ class VideoController extends Controller {
 
   private async beacon(req: TypedRequest<BeaconDto>, res: TypedResponse): Promise<void> {
     const user = req.user!;
+
     const id = req.params.id;
     const time = req.body.time;
     const total = req.body.total;
 
+    const video = this.videoService.get(id);
+    if (!video) throw new NotFoundException();
+
+    this.logService.videoBeacon(user, video, time, total);
+
     user.updateActive();
 
-    // convert total to hh:mm:ss
     const hours = Math.floor(total / 3600);
     const minutes = Math.floor((total - hours * 3600) / 60);
     const seconds = total - hours * 3600 - minutes * 60;
