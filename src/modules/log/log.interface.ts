@@ -13,6 +13,7 @@ interface VideoBeacon {
   quality: number;
   fullscreen: boolean;
   pip: number;
+  pwa: boolean;
 }
 
 export default VideoBeacon;

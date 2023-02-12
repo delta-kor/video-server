@@ -112,11 +112,12 @@ class VideoController extends Controller {
     const quality = req.body.quality;
     const fullscreen = req.body.fullscreen;
     const pip = req.body.pip;
+    const pwa = req.body.pwa;
 
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    this.logService.videoBeacon(user, video, time, total, language, agent, sessionTime, quality, fullscreen, pip);
+    this.logService.videoBeacon(user, video, time, total, language, agent, sessionTime, quality, fullscreen, pip, pwa);
 
     user.updateActive();
 

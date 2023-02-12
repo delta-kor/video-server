@@ -16,7 +16,8 @@ class LogService extends Service {
     sessionTime: number,
     quality: number,
     fullscreen: boolean,
-    pip: number
+    pip: number,
+    pwa: boolean
   ): void {
     const time = new Date();
     this.videoBeaconMap.set(user.id, {
@@ -31,6 +32,7 @@ class LogService extends Service {
       quality,
       fullscreen,
       pip,
+      pwa,
     });
   }
 

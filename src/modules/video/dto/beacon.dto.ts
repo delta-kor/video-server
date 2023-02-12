@@ -18,6 +18,8 @@ class BeaconDto {
   fullscreen!: boolean;
 
   pip!: number;
+
+  pwa!: boolean;
 }
 
 export default BeaconDto;

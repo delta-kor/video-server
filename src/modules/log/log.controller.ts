@@ -15,17 +15,9 @@ class LogController extends Controller {
   private async getVideoBeacon(req: TypedRequest, res: TypedResponse<LogResponse.GetVideoBeacon>): Promise<void> {
     const beacons = this.logService.getVideoBeacon();
     const serializedBeacons: VideoBeacon[] = beacons.map(beacon => ({
+      ...beacon,
       user: beacon.user.serialize('id', 'nickname'),
-      time: beacon.time,
       video: beacon.video.serialize(req, 'id', 'title', 'description', 'duration'),
-      playedTime: beacon.playedTime,
-      totalPlayedTime: beacon.totalPlayedTime,
-      language: beacon.language,
-      agent: beacon.agent,
-      sessionTime: beacon.sessionTime,
-      quality: beacon.quality,
-      fullscreen: beacon.fullscreen,
-      pip: beacon.pip,
     }));
     res.json({ ok: true, beacons: serializedBeacons });
   }
