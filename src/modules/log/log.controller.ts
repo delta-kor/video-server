@@ -20,6 +20,8 @@ class LogController extends Controller {
       video: beacon.video.serialize(req, 'id', 'title', 'description', 'duration'),
       playedTime: beacon.playedTime,
       totalPlayedTime: beacon.totalPlayedTime,
+      language: beacon.language,
+      agent: beacon.agent,
     }));
     res.json({ ok: true, beacons: serializedBeacons });
   }

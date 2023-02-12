@@ -7,6 +7,8 @@ interface VideoBeacon {
   video: Video;
   playedTime: number;
   totalPlayedTime: number;
+  language: string;
+  agent: string;
 }
 
 export default VideoBeacon;

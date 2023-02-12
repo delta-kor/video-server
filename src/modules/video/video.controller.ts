@@ -106,11 +106,13 @@ class VideoController extends Controller {
     const id = req.params.id;
     const time = req.body.time;
     const total = req.body.total;
+    const language = req.body.language;
+    const agent = req.body.agent;
 
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    this.logService.videoBeacon(user, video, time, total);
+    this.logService.videoBeacon(user, video, time, total, language, agent);
 
     user.updateActive();
 

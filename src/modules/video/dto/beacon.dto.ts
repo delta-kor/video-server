@@ -6,6 +6,10 @@ class BeaconDto {
 
   @IsNumber()
   total!: number;
+
+  language!: string;
+
+  agent!: string;
 }
 
 export default BeaconDto;
