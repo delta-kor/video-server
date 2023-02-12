@@ -9,6 +9,10 @@ interface VideoBeacon {
   totalPlayedTime: number;
   language: string;
   agent: string;
+  sessionTime: number;
+  quality: number;
+  fullscreen: boolean;
+  pip: number;
 }
 
 export default VideoBeacon;

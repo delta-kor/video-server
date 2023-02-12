@@ -22,6 +22,10 @@ class LogController extends Controller {
       totalPlayedTime: beacon.totalPlayedTime,
       language: beacon.language,
       agent: beacon.agent,
+      sessionTime: beacon.sessionTime,
+      quality: beacon.quality,
+      fullscreen: beacon.fullscreen,
+      pip: beacon.pip,
     }));
     res.json({ ok: true, beacons: serializedBeacons });
   }

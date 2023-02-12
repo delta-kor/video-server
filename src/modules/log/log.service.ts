@@ -12,10 +12,26 @@ class LogService extends Service {
     playedTime: number,
     totalPlayedTime: number,
     language: string,
-    agent: string
+    agent: string,
+    sessionTime: number,
+    quality: number,
+    fullscreen: boolean,
+    pip: number
   ): void {
     const time = new Date();
-    this.videoBeaconMap.set(user.id, { user, time, video, playedTime, totalPlayedTime, language, agent });
+    this.videoBeaconMap.set(user.id, {
+      user,
+      time,
+      video,
+      playedTime,
+      totalPlayedTime,
+      language,
+      agent,
+      sessionTime,
+      quality,
+      fullscreen,
+      pip,
+    });
   }
 
   public getVideoBeacon(): VideoBeacon[] {

@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 class BeaconDto {
   @IsNumber()
@@ -7,11 +7,17 @@ class BeaconDto {
   @IsNumber()
   total!: number;
 
-  @IsString()
   language!: string;
 
-  @IsString()
   agent!: string;
+
+  session_time!: number;
+
+  quality!: number;
+
+  fullscreen!: boolean;
+
+  pip!: number;
 }
 
 export default BeaconDto;
