@@ -1,13 +1,23 @@
-interface CdnApiResponse {
-  files: VideoData[];
+interface LegacyCdnApiResponse {
+  files: LegacyVideoData[];
 }
 
-interface VideoData {
+interface LegacyVideoData {
   quality: 'sd' | 'hd' | 'hls';
   type: string;
   height: number;
   link: string;
   size: number;
+}
+
+interface NewCdnApiResponse {
+  code: number;
+  result: NewVideoData;
+}
+
+interface NewVideoData {
+  type: 'pd';
+  streamingUrls: { streamingUrl: string; profile: string }[];
 }
 
 interface StreamingInfo {
@@ -16,4 +26,4 @@ interface StreamingInfo {
   qualities: number[];
 }
 
-export { CdnApiResponse, VideoData, StreamingInfo };
+export { LegacyCdnApiResponse, LegacyVideoData, NewCdnApiResponse, NewVideoData, StreamingInfo };

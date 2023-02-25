@@ -9,3 +9,5 @@ exports.tsv
 
 run/fill.ts
 run/check.ts
+
+log
