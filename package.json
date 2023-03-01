@@ -11,6 +11,7 @@
     "build:video": "ts-node run/build.ts",
     "build:radio": "ts-node run/build-radio.ts",
     "build:thumbnail": "ts-node run/thumbnail.ts",
+    "import": "ts-node run/import-json.ts",
     "export": "ts-node run/export.ts",
     "deploy": "node .",
     "start": "yarn build && yarn deploy"

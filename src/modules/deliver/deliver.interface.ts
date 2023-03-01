@@ -17,7 +17,7 @@ interface NewCdnApiResponse {
 
 interface NewVideoData {
   type: 'pd';
-  streamingUrls: { streamingUrl: string; profile: string }[];
+  streamingUrls: { streamingUrl: string; profile?: string }[];
 }
 
 interface StreamingInfo {

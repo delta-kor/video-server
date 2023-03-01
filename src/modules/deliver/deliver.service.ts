@@ -90,12 +90,21 @@ class DeliverService extends Service {
       if (data.code !== 0) throw new Error('Cdn file error');
     }
 
-    const qualities = data.result.streamingUrls
-      .map(url => parseInt(url.profile.replace('p', '')))
-      .sort((a, b) => b - a);
+    const selected = data.result.streamingUrls[0];
+    const qualities = [parseInt(selected.profile || '1080')];
+    const selectedQuality = qualities[0];
 
-    const selectedQuality = qualities.find(q => q >= quality) || qualities[0];
-    const selectedUrl = data.result.streamingUrls.find(url => url.profile === `${selectedQuality}p`)!.streamingUrl;
+    let selectedUrl = decodeURI(selected.streamingUrl);
+    const resourceKey = selectedUrl.split('resourceKey=')[1].split('&')[0];
+
+    let decodedResourceKey = Buffer.from(resourceKey, 'base64').toString('utf8');
+    decodedResourceKey = decodedResourceKey.split('|').slice(0, -1).join('|');
+
+    const playId = Math.floor(Math.random() * 9000000) + 1000000;
+    decodedResourceKey += '|' + playId;
+
+    const encodedResourceKey = Buffer.from(decodedResourceKey).toString('base64');
+    selectedUrl = selectedUrl.replace(resourceKey, encodedResourceKey);
 
     !this.apiCache.has(url) && this.apiCache.set(url, data, ttl);
 

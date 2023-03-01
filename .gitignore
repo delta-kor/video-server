@@ -14,3 +14,4 @@ run/check.ts
 log
 
 import-json.ts
+export-json.ts
