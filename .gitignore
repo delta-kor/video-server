@@ -6,12 +6,12 @@ build
 exports.tsv
 exports.json
 
+log
 *.log
 
-run/fill.ts
+run/database-fill.ts
 run/check.ts
+run/import-json.ts
+run/export-json.ts
 
-log
 
-import-json.ts
-export-json.ts
