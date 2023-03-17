@@ -14,7 +14,7 @@
     "import": "ts-node run/import-json.ts",
     "export": "ts-node run/export-tsv.ts",
     "deploy": "node .",
-    "start": "yarn build && yarn deploy"
+    "start": "pm2 start dist/index.js --name izflix"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
