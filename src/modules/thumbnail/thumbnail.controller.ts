@@ -1,3 +1,4 @@
+import path from 'path';
 import Controller from '../../classes/controller.class';
 import ServiceProvider from '../../services/provider.service';
 import BuilderService from '../builder/builder.service';
@@ -12,9 +13,10 @@ class ThumbnailController extends Controller {
 
   private async get(req: TypedRequest, res: TypedResponse): Promise<void> {
     const id = req.params.id;
-    const thumbnail = this.builderService.getThumbnailData(id);
-    res.header('Cache-Control', 'public, max-age=604800');
-    res.sendFile(thumbnail);
+    const uri = this.builderService.getThumbnailData(id);
+    const filePath = uri.split(path.sep).slice(-2).join(path.sep).replace(/\\/g, '/');
+
+    res.redirect(`${process.env.IMAGE_CDN_URL}/${filePath}`);
   }
 }
 

@@ -74,7 +74,7 @@ UserSchema.methods.serialize = function (this: User, ...keys: (keyof User)[]): U
 };
 
 UserSchema.statics.nicknameExists = async function (this: UserModel, nickname: string): Promise<boolean> {
-  return this.exists({ nickname });
+  return !!this.exists({ nickname });
 };
 
 const UserModel = model<User, UserModel>('user', UserSchema);
