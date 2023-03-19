@@ -16,7 +16,12 @@ class SentryPipe {
         new Sentry.Integrations.Http({ tracing: true }),
         new Tracing.Integrations.Express({ app: application }),
       ],
-      tracesSampleRate: 1.0,
+      beforeSendTransaction: event => {
+        const ignores = ['POST /video/:id/beacon', 'GET /thumbnail/:id', 'GET /log/beacon'];
+        if (event.transaction && ignores.includes(event.transaction)) return null;
+        return event;
+      },
+      tracesSampleRate: 0.9,
     });
 
     application.use(Sentry.Handlers.requestHandler());
