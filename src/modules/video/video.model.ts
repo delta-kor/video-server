@@ -7,6 +7,7 @@ import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
 import VideoTagStore from './store/tag.store';
 import Video, { VideoOption, VideoProperty } from './video.interface';
+import UserModel from '../user/user.model';
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -19,7 +20,6 @@ const VideoSchema = new Schema<Video>({
   category: { type: [String], required: true },
   subtitle: { type: String, required: false },
   options: { type: [String], required: true },
-  liked: { type: [String], required: true },
 });
 
 VideoSchema.virtual('duration').get(function (this: Video): number {
@@ -46,6 +46,11 @@ VideoSchema.virtual('tags').get(function (this: Video): string[] {
 
 VideoSchema.methods.hasOption = function (this: Video, option: VideoOption): boolean {
   return this.options.includes(option);
+};
+
+VideoSchema.methods.getLiked = async function (this: Video): Promise<string[]> {
+  const users = await UserModel.find({ liked: this.id });
+  return users.map(user => user.id);
 };
 
 VideoSchema.methods.serialize = function (this: Video, req: Request, ...keys: (keyof Video)[]): Video {

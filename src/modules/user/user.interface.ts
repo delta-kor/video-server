@@ -15,6 +15,7 @@ interface User extends Document {
   ip: string[];
   ban_info: BanInfo;
   last_active: Date;
+  liked: string[];
 
   getLikedVideos(): Promise<Video[]>;
   getUserPlaylists(): Promise<UserPlaylist[]>;

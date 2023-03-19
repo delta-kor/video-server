@@ -89,24 +89,28 @@ class VideoService extends Service {
     const video = await this.get(id);
     if (!video) throw new NotFoundException();
 
-    return { liked: video.liked.includes(user.id), total: video.liked.length };
+    const likedUsers = await video.getLiked();
+
+    return { liked: likedUsers.includes(user.id), total: likedUsers.length };
   }
 
   public async like(id: string, user: User): Promise<{ liked: boolean; total: number }> {
     const video = await this.get(id);
     if (!video) throw new NotFoundException();
 
+    const likedUsers = await video.getLiked();
+
     let liked: boolean;
-    if (video.liked.includes(user.id)) {
-      video.liked = video.liked.filter(liked => liked !== user.id);
+    if (likedUsers.includes(user.id)) {
+      user.liked = user.liked.filter(liked => liked !== video.id);
       liked = false;
     } else {
-      video.liked.push(user.id);
+      user.liked.push(video.id);
       liked = true;
     }
 
-    await video.save();
-    return { liked, total: video.liked.length };
+    await user.save();
+    return { liked, total: likedUsers.length };
   }
 
   public async getSubtitle(id: string): Promise<string> {

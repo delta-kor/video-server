@@ -3,9 +3,10 @@ import generateId from '../../utils/id.util';
 import TokenUtil from '../../utils/token.util';
 import UserPlaylist from '../playlist/interface/user-playlist.interface';
 import UserPlaylistModel from '../playlist/model/user-playlist.model';
-import Video from '../video/video.interface';
-import VideoModel from '../video/video.model';
 import User, { Role, UserInfo } from './user.interface';
+import Video from '../video/video.interface';
+import ServiceProvider from '../../services/provider.service';
+import VideoService from '../video/video.service';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
@@ -19,12 +20,20 @@ const UserSchema = new Schema<User, UserModel>(
     ip: { type: [String], required: true },
     ban_info: { type: Schema.Types.Mixed, required: true, default: () => ({ banned: false }) },
     last_active: { type: Date, default: () => new Date() },
+    liked: { type: [String], required: true, default: [] },
   },
   { timestamps: true }
 );
 
 UserSchema.methods.getLikedVideos = async function (this: User): Promise<Video[]> {
-  return VideoModel.find({ liked: this.id });
+  const videoService: VideoService = ServiceProvider.get(VideoService);
+  const result: Video[] = [];
+  for (const id of this.liked) {
+    const video = videoService.get(id);
+    if (video) result.push(video);
+  }
+
+  return result;
 };
 
 UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserPlaylist[]> {

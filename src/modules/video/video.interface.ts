@@ -21,9 +21,9 @@ interface Video extends Document {
   properties: VideoProperty[]; // virtual
   tags: string[]; // virtual
   options: VideoOption[];
-  liked: string[];
 
   hasOption(option: VideoOption): boolean;
+  getLiked(): Promise<string[]>;
   serialize(req: Request, ...keys: (keyof Video)[]): Video;
 }
 
