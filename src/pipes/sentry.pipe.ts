@@ -21,7 +21,7 @@ class SentryPipe {
         if (event.transaction && ignores.includes(event.transaction)) return null;
         return event;
       },
-      tracesSampleRate: 0.9,
+      tracesSampleRate: 0.5,
     });
 
     application.use(Sentry.Handlers.requestHandler());
