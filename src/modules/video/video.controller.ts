@@ -136,7 +136,7 @@ class VideoController extends Controller {
       .padStart(2, '0')}`;
 
     // prettier-ignore
-    console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] USER=${user.nickname} ID=${id} T=${time} TT=${totalFormatted}`);
+    // console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] USER=${user.nickname} ID=${id} T=${time} TT=${totalFormatted}`);
     res.send();
   }
 

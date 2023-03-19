@@ -8,7 +8,7 @@ interface ApiErrorResponse extends ApiResponse {
 
 class ExceptionFilter {
   public static use(application: Application): void {
-    application.use(() => {
+    application.use((_req, _res) => {
       throw new NotFoundException();
     });
 

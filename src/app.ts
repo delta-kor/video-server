@@ -8,6 +8,9 @@ import Gateway from './classes/gateway.class';
 import ExceptionFilter from './filters/exception.filter';
 import CorsPipe from './pipes/cors.pipe';
 import I18nPipe from './pipes/i18n.pipe';
+import LogPipe from './pipes/log.pipe';
+import SentryPipe from './pipes/sentry.pipe';
+import SentryFilter from './filters/sentry.filter';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -44,6 +47,8 @@ class App extends EventEmitter {
 
   private loadPipes(): void {
     this.application.disable('x-powered-by');
+    SentryPipe.use(this.application);
+    LogPipe.use(this.application);
     I18nPipe.use(this.application);
     CorsPipe.use(this.application);
     this.application.use(json());
@@ -54,6 +59,7 @@ class App extends EventEmitter {
   }
 
   private loadFilters(): void {
+    SentryFilter.use(this.application);
     ExceptionFilter.use(this.application);
   }
 
