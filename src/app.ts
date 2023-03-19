@@ -11,6 +11,7 @@ import I18nPipe from './pipes/i18n.pipe';
 import LogPipe from './pipes/log.pipe';
 import SentryPipe from './pipes/sentry.pipe';
 import SentryFilter from './filters/sentry.filter';
+import AuthPipe from './pipes/auth.pipe';
 
 declare interface App {
   on(event: 'load', listener: () => void): this;
@@ -51,6 +52,7 @@ class App extends EventEmitter {
     LogPipe.use(this.application);
     I18nPipe.use(this.application);
     CorsPipe.use(this.application);
+    AuthPipe.use(this.application);
     this.application.use(json());
   }
 

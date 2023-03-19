@@ -5,6 +5,8 @@ import { RewriteFrames } from '@sentry/integrations';
 
 class SentryPipe {
   public static use(application: Application): void {
+    if (process.env.NODE_ENV !== 'production') return;
+
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
       integrations: [
@@ -14,7 +16,6 @@ class SentryPipe {
         new Sentry.Integrations.Http({ tracing: true }),
         new Tracing.Integrations.Express({ app: application }),
       ],
-
       tracesSampleRate: 1.0,
     });
 
