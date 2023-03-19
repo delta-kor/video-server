@@ -7,7 +7,7 @@ import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
-import { getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
+import { getLocaleString, getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
@@ -64,6 +64,11 @@ class VideoController extends Controller {
     path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     const music = this.musicService.getMusicByVideo(video);
+    const timeline: any = video.timeline;
+
+    if (timeline)
+      for (const chapter of timeline.chapters)
+        chapter.title = getLocaleString(chapter.title, req.i18n.resolvedLanguage);
 
     res.json({
       ok: true,
