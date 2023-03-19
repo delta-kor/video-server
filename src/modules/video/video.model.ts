@@ -6,8 +6,33 @@ import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
 import VideoTagStore from './store/tag.store';
-import Video, { VideoOption, VideoProperty } from './video.interface';
+import Video, { VideoOption, VideoProperty, Timeline, Teleport, Chapter } from './video.interface';
 import UserModel from '../user/user.model';
+import LocaleSchema from '../../schemas/locale.schema';
+
+const TeleportSchema = new Schema<Teleport>(
+  {
+    from: { type: Number, required: true },
+    to: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
+const ChapterSchema = new Schema<Chapter>(
+  {
+    title: { type: LocaleSchema, required: true },
+    time: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
+const TimelineSchema = new Schema<Timeline>(
+  {
+    teleports: { type: [TeleportSchema], required: true },
+    chapters: { type: [ChapterSchema], required: true },
+  },
+  { _id: false }
+);
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },
@@ -19,7 +44,7 @@ const VideoSchema = new Schema<Video>({
   date: { type: Date, required: true },
   category: { type: [String], required: true },
   subtitle: { type: String, required: false },
-  timeline: { type: Object, required: false },
+  timeline: { type: TimelineSchema, required: false },
   options: { type: [String], required: true },
 });
 
