@@ -75,6 +75,7 @@ class VideoController extends Controller {
       path,
       properties: video.properties,
       music: music ? [music.albumId, music.id] : null,
+      timeline: video.timeline,
     });
   }
 
@@ -125,9 +126,9 @@ class VideoController extends Controller {
     const minutes = Math.floor((total - hours * 3600) / 60);
     const seconds = total - hours * 3600 - minutes * 60;
 
-    const totalFormatted = `${hours.toString().padStart(2, '0')}:${minutes
+    const totalFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
       .toString()
-      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      .padStart(2, '0')}`;
 
     // prettier-ignore
     console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] USER=${user.nickname} ID=${id} T=${time} TT=${totalFormatted}`);

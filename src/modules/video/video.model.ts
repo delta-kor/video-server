@@ -19,6 +19,7 @@ const VideoSchema = new Schema<Video>({
   date: { type: Date, required: true },
   category: { type: [String], required: true },
   subtitle: { type: String, required: false },
+  timeline: { type: Object, required: false },
   options: { type: [String], required: true },
 });
 
