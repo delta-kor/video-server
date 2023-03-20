@@ -4,7 +4,7 @@ import ServiceProvider from '../services/provider.service';
 
 class AuthPipe {
   public static use(application: Application): void {
-    application.use(async (req: TypedRequest, res: TypedResponse, next: NextFunction) => {
+    application.use(async function auth(req: TypedRequest, res: TypedResponse, next: NextFunction) {
       const userService: UserService = ServiceProvider.get(UserService);
 
       const header = req.headers.authorization as string;
