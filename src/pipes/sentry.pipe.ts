@@ -15,13 +15,14 @@ class SentryPipe {
         }),
         new Sentry.Integrations.Http({ tracing: true }),
         new Tracing.Integrations.Express({ app: application }),
+        new Tracing.Integrations.Mongo({ useMongoose: true }),
       ],
       beforeSendTransaction: event => {
         const ignores = ['POST /video/:id/beacon', 'GET /thumbnail/:id', 'GET /log/beacon'];
         if (event.transaction && ignores.includes(event.transaction)) return null;
         return event;
       },
-      tracesSampleRate: 0.5,
+      tracesSampleRate: 0.3,
     });
 
     application.use(Sentry.Handlers.requestHandler());
