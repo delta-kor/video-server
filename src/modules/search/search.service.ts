@@ -4,6 +4,7 @@ import ServiceProvider from '../../services/provider.service';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
 import SearchConvertStore from './store/convert.store';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class SearchService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -37,6 +38,7 @@ class SearchService extends Service {
     for (const video of videos) this.index.add(video);
   }
 
+  @SentryLog('recommend service', 'search')
   public search(query: string): Video[] {
     const convertedQuery = SearchService.convert(query.toLowerCase().replace(/ /g, ''));
     const data = this.index.search(convertedQuery, { limit: 20 });

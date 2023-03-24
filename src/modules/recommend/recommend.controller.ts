@@ -5,6 +5,7 @@ import ServiceProvider from '../../services/provider.service';
 import PlaytimeDto from './dto/playtime.dto';
 import RecommendResponse from './recommend.response';
 import RecommendService from './service/recommend.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class RecommendController extends Controller {
   public readonly path: string = '/recommend';
@@ -16,6 +17,7 @@ class RecommendController extends Controller {
     this.mounter.post('/emotion', ValidateGuard(PlaytimeDto), this.getEmotion.bind(this));
   }
 
+  @SentryLog('recommend controller', 'get video recommends')
   private async getVideoRecommends(
     req: TypedRequest,
     res: TypedResponse<RecommendResponse.GetVideoRecommends>
@@ -36,6 +38,7 @@ class RecommendController extends Controller {
     });
   }
 
+  @SentryLog('recommend controller', 'get user recommends')
   private async getUserRecommends(
     req: TypedRequest<PlaytimeDto>,
     res: TypedResponse<RecommendResponse.GetUserRecommends>

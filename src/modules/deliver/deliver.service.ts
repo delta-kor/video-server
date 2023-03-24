@@ -4,6 +4,7 @@ import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import EnvService from '../env/env.service';
 import { LegacyCdnApiResponse, LegacyVideoData, NewCdnApiResponse, StreamingInfo } from './deliver.interface';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 const ttl = 60 * 60;
 
@@ -13,11 +14,13 @@ class DeliverService extends Service {
   private readonly urlCache: NodeCache = new NodeCache();
   private readonly envService: EnvService = ServiceProvider.get(EnvService);
 
+  @SentryLog('deliver service', 'get cdn info')
   public async getCdnInfo(cdnId: string, quality: number): Promise<StreamingInfo> {
     if (cdnId.length === 9) return this.getLegacyCdnInfo(cdnId, quality);
     else return this.getNewCdnInfo(cdnId, quality);
   }
 
+  @SentryLog('deliver service', 'get legacy cdn info')
   public async getLegacyCdnInfo(cdnId: string, quality: number): Promise<StreamingInfo> {
     const freshToken = await this.envService.get<string>('token');
     if (this.usedToken !== freshToken) this.clearCache();
@@ -71,6 +74,7 @@ class DeliverService extends Service {
     return { url: result, quality: selectedQuality, qualities };
   }
 
+  @SentryLog('deliver service', 'get new cdn info')
   public async getNewCdnInfo(cdnId: string, quality: number): Promise<StreamingInfo> {
     const freshToken = await this.envService.get<string>('n_token');
     if (this.usedToken !== freshToken) this.clearCache();
@@ -113,6 +117,7 @@ class DeliverService extends Service {
     return { url: selectedUrl, quality: selectedQuality, qualities };
   }
 
+  @SentryLog('deliver service', 'clear cache')
   private clearCache(): void {
     this.apiCache.flushAll();
     this.urlCache.flushAll();

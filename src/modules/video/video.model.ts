@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../services/provider.service';
-import { getVideoCategory, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
@@ -9,6 +8,7 @@ import VideoTagStore from './store/tag.store';
 import Video, { VideoOption, VideoProperty, Timeline, Teleport, Chapter } from './video.interface';
 import UserModel from '../user/user.model';
 import LocaleSchema from '../../schemas/locale.schema';
+import I18nUtil from '../../utils/i18n.util';
 
 const TeleportSchema = new Schema<Teleport>(
   {
@@ -85,9 +85,9 @@ VideoSchema.methods.serialize = function (this: Video, req: Request, ...keys: (k
   for (const key of keys) {
     let value: any = this[key];
 
-    if (key === 'title') value = getVideoTitle(value, req.i18n.resolvedLanguage);
-    if (key === 'description') value = getVideoDescription(value, req.i18n.resolvedLanguage);
-    if (key === 'category') value = getVideoCategory(value, req.i18n.resolvedLanguage);
+    if (key === 'title') value = I18nUtil.getVideoTitle(value, req.i18n.resolvedLanguage);
+    if (key === 'description') value = I18nUtil.getVideoDescription(value, req.i18n.resolvedLanguage);
+    if (key === 'category') value = I18nUtil.getVideoCategory(value, req.i18n.resolvedLanguage);
 
     if (value instanceof Date) value = value.getTime();
 

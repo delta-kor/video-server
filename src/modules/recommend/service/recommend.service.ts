@@ -8,12 +8,14 @@ import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import { EmotionData, PlaytimeData } from '../store/emotion.store';
 import EmotionService from './emotion.service';
+import { SentryLog } from '../../../decorators/sentry.decorator';
 
 class RecommendService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly categoryService: CategoryService = ServiceProvider.get(CategoryService);
   private readonly emotionService: EmotionService = ServiceProvider.get(EmotionService);
 
+  @SentryLog('recommend service', 'get video recommends')
   public getVideoRecommends(id: string, count: number): Video[] {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
@@ -90,6 +92,7 @@ class RecommendService extends Service {
     return result;
   }
 
+  @SentryLog('recommend service', 'get user recommends')
   public getUserRecommends(data: PlaytimeData, count: number): Video[] {
     const result: Video[] = [];
     const emotionData = this.emotionService.getEmotionData(data);

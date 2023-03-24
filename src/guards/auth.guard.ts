@@ -2,9 +2,11 @@ import { NextFunction } from 'express';
 import UnauthorizedException from '../exceptions/unauthorized.exception';
 import UserService from '../modules/user/user.service';
 import ServiceProvider from '../services/provider.service';
+import LogSpan from '../utils/sentry.util';
 
 function AuthGuard(create: boolean): Route {
   return async function (req: TypedRequest, res: TypedResponse, next: NextFunction): Promise<void> {
+    const span = new LogSpan('auth guard');
     const userService: UserService = ServiceProvider.get(UserService);
 
     const header = req.headers.authorization as string;
@@ -12,6 +14,8 @@ function AuthGuard(create: boolean): Route {
       if (!create) throw new UnauthorizedException();
       req.user = await userService.createUser();
       res.header('Iz-Auth-Token', req.user.createToken());
+
+      span.ok();
       return next();
     }
 
@@ -20,6 +24,8 @@ function AuthGuard(create: boolean): Route {
       if (!create) throw new UnauthorizedException();
       req.user = await userService.createUser();
       res.header('Iz-Auth-Token', req.user.createToken());
+
+      span.ok();
       return next();
     }
 
@@ -28,6 +34,7 @@ function AuthGuard(create: boolean): Route {
 
     req.user.updateActive();
 
+    span.ok();
     return next();
   };
 }

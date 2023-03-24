@@ -14,6 +14,7 @@ import { CreateUserPlaylistDto, UpdateUserPlaylistRequest } from './dto/user-pla
 import Playlist from './interface/playlist.interface';
 import PlaylistResponse from './playlist.response';
 import PlaylistService from './playlist.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class PlaylistController extends Controller {
   public readonly path: string = '/playlist';
@@ -39,11 +40,13 @@ class PlaylistController extends Controller {
     this.mounter.delete('/user/:id', AuthGuard(false), this.deleteUserPlaylist.bind(this));
   }
 
+  @SentryLog('playlist controller', 'create playlist')
   private async create(req: TypedRequest<PlaylistDto>, res: TypedResponse<PlaylistResponse.Create>): Promise<void> {
     const playlist = await this.playlistService.create(req.body);
     res.json({ ok: true, id: playlist.id });
   }
 
+  @SentryLog('playlist controller', 'read playlist')
   private async read(req: TypedRequest, res: TypedResponse<PlaylistResponse.Read>): Promise<void> {
     const user = req.user!;
     const id: string = req.params.id;
@@ -67,6 +70,7 @@ class PlaylistController extends Controller {
     res.json({ ok: true, playlist: serializedPlaylist, access });
   }
 
+  @SentryLog('playlist controller', 'read all playlists')
   private async readAll(
     req: TypedRequest<any, { data: 'default' | 'full' }, { type: VideoType & 'user' }>,
     res: TypedResponse<PlaylistResponse.ReadAll>,
@@ -98,6 +102,7 @@ class PlaylistController extends Controller {
     res.json({ ok: true, playlists: serializedPlaylist });
   }
 
+  @SentryLog('playlist controller', 'read featured playlists')
   private async readFeatured(req: TypedRequest, res: TypedResponse<PlaylistResponse.ReadFeatured>): Promise<void> {
     const type = req.params.type as VideoType;
     if (!Constants.VIDEO_TYPES.includes(type)) throw new NotFoundException();
@@ -115,6 +120,7 @@ class PlaylistController extends Controller {
     res.json({ ok: true, playlist_id: playlistId, video: serializedVideo, url });
   }
 
+  @SentryLog('playlist controller', 'update playlist')
   private async update(
     req: TypedRequest<Partial<PlaylistDto>>,
     res: TypedResponse<PlaylistResponse.Update>
@@ -136,12 +142,14 @@ class PlaylistController extends Controller {
     res.json({ ok: true, playlist: serializedPlaylist });
   }
 
+  @SentryLog('playlist controller', 'delete playlist')
   private async delete(req: TypedRequest, res: TypedResponse): Promise<void> {
     const id: string = req.params.id;
     await this.playlistService.delete(id);
     res.json({ ok: true });
   }
 
+  @SentryLog('playlist controller', 'create user playlist')
   private async createUserPlaylist(
     req: TypedRequest<CreateUserPlaylistDto>,
     res: TypedResponse<PlaylistResponse.CreateUserPlaylist>
@@ -153,6 +161,7 @@ class PlaylistController extends Controller {
     res.json({ ok: true, id: playlist.id });
   }
 
+  @SentryLog('playlist controller', 'update user playlist')
   private async updateUserPlaylist(
     req: TypedRequest<UpdateUserPlaylistRequest>,
     res: TypedResponse<PlaylistResponse.UpdateUserPlaylist>
@@ -166,6 +175,7 @@ class PlaylistController extends Controller {
     res.json({ ok: true, playlist: serializedPlaylist });
   }
 
+  @SentryLog('playlist controller', 'delete user playlist')
   private async deleteUserPlaylist(req: TypedRequest, res: TypedResponse): Promise<void> {
     const user = req.user!;
     const playlistId = req.params.id;

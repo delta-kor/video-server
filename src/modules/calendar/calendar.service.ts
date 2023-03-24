@@ -4,6 +4,7 @@ import ServiceProvider from '../../services/provider.service';
 import ArrayMap from '../../utils/arraymap.util';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class CalendarService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -27,6 +28,7 @@ class CalendarService extends Service {
     }
   }
 
+  @SentryLog('calender service', 'get all')
   public getAll(): [string, number][] {
     const result: [string, number][] = [];
 
@@ -38,6 +40,7 @@ class CalendarService extends Service {
     return result;
   }
 
+  @SentryLog('calender service', 'get all')
   public getOne(timestamp: string): Video[] {
     const videos = this.timestamps.get(timestamp);
     if (!videos) throw new NotFoundException();

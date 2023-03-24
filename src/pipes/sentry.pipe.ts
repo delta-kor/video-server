@@ -1,12 +1,24 @@
-import { Application } from 'express';
+import { Application, NextFunction } from 'express';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import { RewriteFrames } from '@sentry/integrations';
 import { ProfilingIntegration } from '@sentry/profiling-node';
+import LogSpan from '../utils/sentry.util';
 
 class SentryPipe {
   public static use(application: Application): void {
     if (process.env.NODE_ENV !== 'production') return;
+
+    application.use(function (req: TypedRequest, res: TypedResponse, next: NextFunction) {
+      const originalJson = res.json;
+      res.json = function (...args: any) {
+        const span = new LogSpan('express', 'response json');
+        const result = originalJson.apply(this, args);
+        span.ok();
+        return result;
+      };
+      next();
+    });
 
     Sentry.init({
       dsn: process.env.SENTRY_DSN,

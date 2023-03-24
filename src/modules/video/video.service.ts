@@ -8,6 +8,7 @@ import User from '../user/user.interface';
 import VideoDto from './dto/video.dto';
 import Video, { VideoOption } from './video.interface';
 import VideoModel from './video.model';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class VideoService extends Service {
   private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
@@ -18,10 +19,12 @@ class VideoService extends Service {
     this.videos.push(...videos);
   }
 
+  @SentryLog('video service', 'get all videos')
   private getAll(): Video[] {
     return this.videos;
   }
 
+  @SentryLog('video service', 'get all filtered videos')
   public getAllFiltered(option: VideoOption): Video[] {
     return this.getAll().filter(video => video.hasOption(option));
   }
@@ -48,6 +51,7 @@ class VideoService extends Service {
     return video;
   }
 
+  @SentryLog('video service', 'get video')
   public get(id: string): Video | null {
     for (const video of this.getAll()) {
       if (video.id === id) return video;
@@ -55,6 +59,7 @@ class VideoService extends Service {
     return null;
   }
 
+  @SentryLog('video service', 'get video by category')
   public getByCategory(category: string[]): Video[] {
     const result: Video[] = [];
     for (const video of this.getAllFiltered('category')) {
@@ -65,6 +70,7 @@ class VideoService extends Service {
     return result;
   }
 
+  @SentryLog('video service', 'get video by title')
   public getByTitle(title: string, option?: VideoOption): Video[] {
     const result: Video[] = [];
     for (const video of option ? this.getAllFiltered(option) : this.getAll()) {
@@ -73,6 +79,7 @@ class VideoService extends Service {
     return result;
   }
 
+  @SentryLog('video service', 'get streaming info')
   public async getStreamingInfo(id: string, quality: number): Promise<StreamingInfo> {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
@@ -85,6 +92,7 @@ class VideoService extends Service {
     return info;
   }
 
+  @SentryLog('video service', 'get video action')
   public async getAction(id: string, user: User): Promise<{ liked: boolean; total: number }> {
     const video = await this.get(id);
     if (!video) throw new NotFoundException();
@@ -94,6 +102,7 @@ class VideoService extends Service {
     return { liked: likedUsers.includes(user.id), total: likedUsers.length };
   }
 
+  @SentryLog('video service', 'like video')
   public async like(id: string, user: User): Promise<{ liked: boolean; total: number }> {
     const video = await this.get(id);
     if (!video) throw new NotFoundException();
@@ -113,6 +122,7 @@ class VideoService extends Service {
     return { liked, total: likedUsers.length };
   }
 
+  @SentryLog('video service', 'video subtitle')
   public async getSubtitle(id: string): Promise<string> {
     const video = await this.get(id);
     if (!video || !video.subtitle) throw new NotFoundException();

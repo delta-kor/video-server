@@ -1,57 +1,65 @@
 import categoryEnglish from '../locales/en/category.json';
 import descriptionEnglish from '../locales/en/description.json';
 import musicEnglish from '../locales/en/music.json';
+import { SentryLog } from '../decorators/sentry.decorator';
 
-function getVideoTitle(title: string, language: string): string {
-  if (language === 'ko') return title;
+class I18nUtil {
+  @SentryLog('i18n util', 'get video title')
+  public static getVideoTitle(title: string, language: string): string {
+    if (language === 'ko') return title;
 
-  let dataset: any;
-  if (language === 'en') dataset = musicEnglish;
-  else dataset = musicEnglish;
+    let dataset: any;
+    if (language === 'en') dataset = musicEnglish;
+    else dataset = musicEnglish;
 
-  return dataset[title] || title;
-}
+    return dataset[title] || title;
+  }
 
-function getVideoDescription(description: string, language: string): string {
-  if (language === 'ko') return description;
+  @SentryLog('i18n util', 'get video description')
+  public static getVideoDescription(description: string, language: string): string {
+    if (language === 'ko') return description;
 
-  if (description.match(/.+ \d+회/g)) {
-    const group = description.match(/(.+) (\d+)회/);
-    if (group) {
-      const type = group[1];
-      const episode = group[2];
-      return `${getVideoDescription(type, language)} EP${episode}`;
+    if (description.match(/.+ \d+회/g)) {
+      const group = description.match(/(.+) (\d+)회/);
+      if (group) {
+        const type = group[1];
+        const episode = group[2];
+        return `${I18nUtil.getVideoDescription(type, language)} EP${episode}`;
+      }
     }
+
+    let dataset: any;
+    if (language === 'en') dataset = descriptionEnglish;
+    else dataset = descriptionEnglish;
+
+    return dataset[description] || description;
   }
 
-  let dataset: any;
-  if (language === 'en') dataset = descriptionEnglish;
-  else dataset = descriptionEnglish;
+  @SentryLog('i18n util', 'get video category item')
+  public static getVideoCategoryItem(category: string, language: string): string {
+    if (language === 'ko') return category;
 
-  return dataset[description] || description;
-}
+    if (category.match(/\d+회/g)) {
+      return `EP${category.replace('회', '')}`;
+    }
 
-function getVideoCategoryItem(category: string, language: string): string {
-  if (language === 'ko') return category;
+    let dataset: any;
+    if (language === 'en') dataset = categoryEnglish;
+    else dataset = categoryEnglish;
 
-  if (category.match(/\d+회/g)) {
-    return `EP${category.replace('회', '')}`;
+    return dataset[category] || category;
   }
 
-  let dataset: any;
-  if (language === 'en') dataset = categoryEnglish;
-  else dataset = categoryEnglish;
+  @SentryLog('i18n util', 'get video category')
+  public static getVideoCategory(category: string[], language: string): string[] {
+    return category.map(item => I18nUtil.getVideoCategoryItem(item, language));
+  }
 
-  return dataset[category] || category;
+  @SentryLog('i18n util', 'get locale string')
+  public static getLocaleString(data: Locales, language: string): string {
+    const locale = data[language];
+    return locale || data.en || data.ko;
+  }
 }
 
-function getVideoCategory(category: string[], language: string): string[] {
-  return category.map(item => getVideoCategoryItem(item, language));
-}
-
-function getLocaleString(data: Locales, language: string): string {
-  const locale = data[language];
-  return locale || data.en || data.ko;
-}
-
-export { getVideoTitle, getVideoDescription, getVideoCategoryItem, getVideoCategory, getLocaleString };
+export default I18nUtil;

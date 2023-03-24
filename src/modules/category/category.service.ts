@@ -5,10 +5,11 @@ import NotFoundException from '../../exceptions/not-found.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import ArrayMap from '../../utils/arraymap.util';
-import { getVideoCategoryItem } from '../../utils/i18n.util';
 import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
 import CategoryResponse, { Folder, Path } from './category.response';
+import { SentryLog } from '../../decorators/sentry.decorator';
+import I18nUtil from '../../utils/i18n.util';
 
 class CategoryService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -33,6 +34,7 @@ class CategoryService extends Service {
     return result;
   }
 
+  @SentryLog('category service', 'create path')
   public createPath(paths: string[]): Path[] {
     return paths.map(id => {
       const parentFolder = this.folders.get(id)!;
@@ -41,11 +43,13 @@ class CategoryService extends Service {
     });
   }
 
+  @SentryLog('category service', 'create path from category')
   public createPathFromCategory(category: string[]): Path[] {
     const paths = CategoryService.hashMultiplePath(category);
     return this.createPath(paths);
   }
 
+  @SentryLog('category service', 'add folder')
   private addFolder(path: string[], video: Video): void {
     const folderHash = CategoryService.hashPath(path);
 
@@ -84,13 +88,14 @@ class CategoryService extends Service {
     }
   }
 
+  @SentryLog('category service', 'view category')
   public view(req: Request, pathId: string = 'root'): CategoryResponse.View {
     const itemFolders = this.folderItems.get(pathId);
     const itemFiles = this.fileItems.get(pathId);
 
     const folder = this.folders.get(pathId);
     const path: Path[] = !folder ? [] : this.createPath(folder.path);
-    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
+    path.forEach(item => (item.title = I18nUtil.getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     if (itemFolders)
       return {
@@ -99,7 +104,7 @@ class CategoryService extends Service {
         path,
         data: itemFolders.map(item => ({
           id: item.id,
-          title: getVideoCategoryItem(item.title, req.i18n.resolvedLanguage),
+          title: I18nUtil.getVideoCategoryItem(item.title, req.i18n.resolvedLanguage),
           count: item.count,
           children: this.folderItems.get(item.id)?.length ?? item.count,
           date: item.date,
@@ -117,6 +122,7 @@ class CategoryService extends Service {
     throw new NotFoundException();
   }
 
+  @SentryLog('category service', 'get vod intros')
   public getVodIntros(): Video[] {
     return this.vodIntros;
   }

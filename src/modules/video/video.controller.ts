@@ -7,7 +7,6 @@ import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
-import { getLocaleString, getVideoCategoryItem, getVideoDescription, getVideoTitle } from '../../utils/i18n.util';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
@@ -17,6 +16,8 @@ import BeaconDto from './dto/beacon.dto';
 import VideoDto from './dto/video.dto';
 import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
+import I18nUtil from '../../utils/i18n.util';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class VideoController extends Controller {
   public readonly path: string = '/video';
@@ -42,6 +43,7 @@ class VideoController extends Controller {
     res.json({ ok: true, id: video.id });
   }
 
+  @SentryLog('video controller', 'stream video')
   private async stream(
     req: TypedRequest<any, { options: string; quality: string }>,
     res: TypedResponse<VideoResponse.Stream>
@@ -55,26 +57,27 @@ class VideoController extends Controller {
     res.json({ ok: true, url: info.url, quality: info.quality, qualities: info.qualities, duration });
   }
 
+  @SentryLog('video controller', 'video info')
   private async info(req: TypedRequest, res: TypedResponse<VideoResponse.Info>): Promise<void> {
     const id = req.params.id;
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
     const path: Path[] = this.categoryService.createPathFromCategory(video.category);
-    path.forEach(item => (item.title = getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
+    path.forEach(item => (item.title = I18nUtil.getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     const music = this.musicService.getMusicByVideo(video);
     const timeline: any = video.timeline;
 
     if (timeline)
       for (const chapter of timeline.chapters)
-        chapter.title = getLocaleString(chapter.title, req.i18n.resolvedLanguage);
+        chapter.title = I18nUtil.getLocaleString(chapter.title, req.i18n.resolvedLanguage);
 
     res.json({
       ok: true,
       id: video.id,
-      title: getVideoTitle(video.title, req.i18n.resolvedLanguage),
-      description: getVideoDescription(video.description, req.i18n.resolvedLanguage),
+      title: I18nUtil.getVideoTitle(video.title, req.i18n.resolvedLanguage),
+      description: I18nUtil.getVideoDescription(video.description, req.i18n.resolvedLanguage),
       duration: video.duration,
       date: video.date.getTime(),
       path,
@@ -84,6 +87,7 @@ class VideoController extends Controller {
     });
   }
 
+  @SentryLog('video controller', 'video list')
   private async list(req: TypedRequest, res: TypedResponse<VideoResponse.List>): Promise<void> {
     const query = req.query.ids as string;
     if (!query) throw new UnprocessableEntityException('error.video.enter_id');
@@ -97,8 +101,8 @@ class VideoController extends Controller {
 
       list.push({
         id,
-        title: getVideoTitle(video.title, req.i18n.resolvedLanguage),
-        description: getVideoDescription(video.description, req.i18n.resolvedLanguage),
+        title: I18nUtil.getVideoTitle(video.title, req.i18n.resolvedLanguage),
+        description: I18nUtil.getVideoDescription(video.description, req.i18n.resolvedLanguage),
         duration: video.duration,
       });
     }
@@ -106,6 +110,7 @@ class VideoController extends Controller {
     res.json({ ok: true, data: list });
   }
 
+  @SentryLog('video controller', 'video beacon')
   private async beacon(req: TypedRequest<BeaconDto>, res: TypedResponse): Promise<void> {
     const user = req.user!;
 
@@ -140,6 +145,7 @@ class VideoController extends Controller {
     res.send();
   }
 
+  @SentryLog('video controller', 'video action')
   private async action(req: TypedRequest, res: TypedResponse<VideoResponse.Action>): Promise<void> {
     const id = req.params.id;
     const user = req.user!;
@@ -149,6 +155,7 @@ class VideoController extends Controller {
   }
 
   @Queue()
+  @SentryLog('video controller', 'like video')
   private async like(req: TypedRequest, res: TypedResponse<VideoResponse.Like>): Promise<void> {
     const id = req.params.id;
     const user = req.user!;
@@ -157,6 +164,7 @@ class VideoController extends Controller {
     res.json({ ok: true, liked, total });
   }
 
+  @SentryLog('video controller', 'video subtitle')
   private async subtitle(req: TypedRequest, res: Response): Promise<void> {
     const id = req.params.id;
     const subtitle = await this.videoService.getSubtitle(id);

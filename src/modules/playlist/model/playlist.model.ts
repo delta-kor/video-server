@@ -1,11 +1,11 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
 import ServiceProvider from '../../../services/provider.service';
-import { getLocaleString } from '../../../utils/i18n.util';
 import generateId from '../../../utils/id.util';
 import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import Playlist, { PlaylistModel } from '../interface/playlist.interface';
+import I18nUtil from '../../../utils/i18n.util';
 
 const PlaylistSchema = new Schema<Playlist>({
   id: { type: String, required: true, unique: true, default: () => generateId(8) },
@@ -63,7 +63,7 @@ PlaylistSchema.methods.serialize = function (this: Playlist, req: Request, ...ke
     if (key === 'title' || key === 'description' || key === 'cluster') {
       const target = this[key];
       if (target) {
-        result[key] = getLocaleString(target, req.i18n.resolvedLanguage);
+        result[key] = I18nUtil.getLocaleString(target, req.i18n.resolvedLanguage);
         continue;
       }
     }

@@ -16,6 +16,7 @@ import Playlist from './interface/playlist.interface';
 import UserPlaylist from './interface/user-playlist.interface';
 import PlaylistModel from './model/playlist.model';
 import UserPlaylistModel from './model/user-playlist.model';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -28,6 +29,7 @@ class PlaylistService extends Service {
     for (const playlist of playlists) this.playlists.set(playlist.id, playlist);
   }
 
+  @SentryLog('playlist service', 'create playlist')
   public async create(data: PlaylistDto): Promise<Playlist> {
     if (!Constants.VIDEO_TYPES.includes(data.type)) throw new UnprocessableEntityException('잘못된 타입이에요');
 
@@ -52,6 +54,7 @@ class PlaylistService extends Service {
     return playlist;
   }
 
+  @SentryLog('playlist service', 'read playlist')
   public async read(id: string, user?: User): Promise<Playlist> {
     if (id === 'liked' && user) {
       const likedVideos = await user.getLikedVideos();
@@ -89,10 +92,12 @@ class PlaylistService extends Service {
     return result;
   }
 
+  @SentryLog('playlist service', 'read user playlists')
   public async readUserPlaylists(user: User): Promise<UserPlaylist[]> {
     return user.getUserPlaylists();
   }
 
+  @SentryLog('playlist service', 'read featured playlist')
   public readFeatured(type: VideoType): { video: Video; playlist: Playlist } {
     for (const item of this.playlists.values()) {
       if (item.type === type && item.featured) {
@@ -118,6 +123,7 @@ class PlaylistService extends Service {
     throw new ReferenceError('No featured playlist in database');
   }
 
+  @SentryLog('playlist service', 'update playlist')
   public async update(id: string, data: Partial<PlaylistDto>): Promise<Playlist> {
     const playlist = await this.read(id);
 
@@ -132,6 +138,7 @@ class PlaylistService extends Service {
     return playlist;
   }
 
+  @SentryLog('playlist service', 'delete playlist')
   public async delete(id: string): Promise<void> {
     const playlist = await this.read(id);
 
@@ -141,6 +148,7 @@ class PlaylistService extends Service {
     await this.load();
   }
 
+  @SentryLog('playlist service', 'read user playlist')
   public async readUserPlaylist(id: string): Promise<UserPlaylist> {
     const playlist = await UserPlaylistModel.findOne({ id });
     if (!playlist) throw new NotFoundException();
@@ -148,6 +156,7 @@ class PlaylistService extends Service {
     return playlist;
   }
 
+  @SentryLog('playlist service', 'create user playlist')
   public async createUserPlaylist(user: User, title: string): Promise<UserPlaylist> {
     const playlist = new UserPlaylistModel({
       user_id: user.id,
@@ -159,6 +168,7 @@ class PlaylistService extends Service {
     return playlist;
   }
 
+  @SentryLog('playlist service', 'update user playlist')
   public async updateUserPlaylist(
     user: User,
     playlistId: string,
@@ -216,6 +226,7 @@ class PlaylistService extends Service {
     throw new UnprocessableEntityException('error.wrong_request');
   }
 
+  @SentryLog('playlist service', 'delete user playlist')
   public async deleteUserPlaylist(user: User, playlistId: string): Promise<void> {
     const playlist = await this.readUserPlaylist(playlistId);
     if (playlist.user_id !== user.id) throw new UnauthorizedException();

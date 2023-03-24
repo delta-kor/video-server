@@ -3,6 +3,7 @@ import UnprocessableEntityException from '../../exceptions/unprocessable-entity.
 import ServiceProvider from '../../services/provider.service';
 import SearchResponse from './search.response';
 import SearchService from './search.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class SearchController extends Controller {
   public readonly path: string = '/search';
@@ -12,6 +13,7 @@ class SearchController extends Controller {
     this.mounter.get('/', this.search.bind(this));
   }
 
+  @SentryLog('recommend controller', 'search')
   private async search(req: TypedRequest, res: TypedResponse<SearchResponse.Search>): Promise<void> {
     const query = req.query.query as string;
     if (!query) throw new UnprocessableEntityException('error.search.enter_query');

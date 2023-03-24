@@ -5,6 +5,7 @@ import ServiceProvider from '../../services/provider.service';
 import UserDto from './dto/user.dto';
 import UserResponse from './user.response';
 import UserService from './user.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class UserController extends Controller {
   public readonly path: string = '/user';
@@ -15,6 +16,7 @@ class UserController extends Controller {
     this.mounter.put('/', ValidateGuard(UserDto, 'body', true), AuthGuard(false), this.update.bind(this));
   }
 
+  @SentryLog('user controller', 'get user')
   private async get(req: TypedRequest, res: TypedResponse<UserResponse.Get>): Promise<void> {
     const user = req.user!;
     const serializedUser = user.serialize('id', 'nickname', 'role');
@@ -22,6 +24,7 @@ class UserController extends Controller {
     res.json({ ok: true, user: serializedUser });
   }
 
+  @SentryLog('user controller', 'update user')
   private async update(req: TypedRequest<UserDto>, res: TypedResponse<UserResponse.Update>): Promise<void> {
     const user = req.user!;
     const id = user.id;

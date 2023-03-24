@@ -2,6 +2,7 @@ import path from 'path';
 import Controller from '../../classes/controller.class';
 import ServiceProvider from '../../services/provider.service';
 import BuilderService from '../builder/builder.service';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class ThumbnailController extends Controller {
   public readonly path: string = '/thumbnail';
@@ -11,6 +12,7 @@ class ThumbnailController extends Controller {
     this.mounter.get('/:id', this.get.bind(this));
   }
 
+  @SentryLog('thumbnail controller', 'get thumbnail')
   private async get(req: TypedRequest, res: TypedResponse): Promise<void> {
     const id = req.params.id;
     const uri = this.builderService.getThumbnailData(id);

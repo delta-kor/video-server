@@ -6,11 +6,13 @@ import Video from '../video/video.interface';
 import VideoService from '../video/video.service';
 import { Album, Music } from './music.interface';
 import { AlbumStore, MusicStore } from './music.store';
+import { SentryLog } from '../../decorators/sentry.decorator';
 
 class MusicService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
   private readonly album: Map<string, Map<string, Music>> = new Map();
 
+  @SentryLog('music service', 'hash title')
   private static hashTitle(title: string): string {
     const hasher = crypto.createHash('md5');
     hasher.update(title);
@@ -38,6 +40,7 @@ class MusicService extends Service {
     }
   }
 
+  @SentryLog('music service', 'get all albums')
   public getAllAlbums(): Album[] {
     const albums: Album[] = [];
     for (const [albumTitle, musicMap] of this.album.entries())
@@ -46,6 +49,7 @@ class MusicService extends Service {
     return albums;
   }
 
+  @SentryLog('music service', 'get one album')
   public getOneAlbum(id: string): { album: Album; musics: Music[] } {
     let musicMap: Map<string, Music>;
     let title: string;
@@ -67,6 +71,7 @@ class MusicService extends Service {
     return { album: { id, title, count: musicMap.size }, musics: sortedMusics };
   }
 
+  @SentryLog('music service', 'get one music')
   public getOneMusic(id: string): Music {
     for (const musicMap of this.album.values()) {
       if (musicMap.has(id)) return musicMap.get(id)!;
@@ -75,6 +80,7 @@ class MusicService extends Service {
     throw new NotFoundException();
   }
 
+  @SentryLog('music service', 'get music by video')
   public getMusicByVideo(video: Video): Music | null {
     for (const musicMap of this.album.values()) {
       for (const music of musicMap.values()) {
