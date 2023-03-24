@@ -32,6 +32,7 @@
   "dependencies": {
     "@sentry/integrations": "^7.43.0",
     "@sentry/node": "^7.43.0",
+    "@sentry/profiling-node": "^0.3.0",
     "@sentry/tracing": "^7.43.0",
     "axios": "^0.24.0",
     "chalk": "4.1.2",
