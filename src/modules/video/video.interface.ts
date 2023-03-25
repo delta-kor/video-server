@@ -5,19 +5,21 @@ type VideoOption = 'music' | 'category' | 'recommend' | 'fanchant';
 type VideoType = 'performance' | 'vod';
 type VideoProperty = '4k' | 'cc';
 
-interface Teleport {
+interface Teleport extends Document {
   from: number;
   to: number;
 }
 
-interface Chapter {
+interface Chapter extends Document {
   title: Locales;
   time: number;
+  serialize(req: Request): Chapter;
 }
 
-interface Timeline {
+interface Timeline extends Document {
   teleports: Teleport[];
   chapters: Chapter[];
+  serialize(req: Request): Timeline;
 }
 
 interface Video extends Document {

@@ -26,6 +26,13 @@ const ChapterSchema = new Schema<Chapter>(
   { _id: false }
 );
 
+ChapterSchema.methods.serialize = function (this: Chapter, req: Request): Chapter {
+  return {
+    title: I18nUtil.getLocaleString(this.title, req.i18n.resolvedLanguage),
+    time: this.time,
+  } as any;
+};
+
 const TimelineSchema = new Schema<Timeline>(
   {
     teleports: { type: [TeleportSchema], required: true },
@@ -33,6 +40,13 @@ const TimelineSchema = new Schema<Timeline>(
   },
   { _id: false }
 );
+
+TimelineSchema.methods.serialize = function (this: Timeline, req: Request): Timeline {
+  return {
+    teleports: this.teleports,
+    chapters: this.chapters.map(chapter => chapter.serialize(req)),
+  } as any;
+};
 
 const VideoSchema = new Schema<Video>({
   id: { type: String, required: true, unique: true, default: () => generateId(6) },

@@ -83,7 +83,7 @@ class VideoController extends Controller {
       path,
       properties: video.properties,
       music: music ? [music.albumId, music.id] : null,
-      timeline: video.timeline,
+      timeline: video.timeline?.serialize(req),
     });
   }
 
@@ -132,13 +132,13 @@ class VideoController extends Controller {
 
     user.updateActive();
 
-    const hours = Math.floor(total / 3600);
-    const minutes = Math.floor((total - hours * 3600) / 60);
-    const seconds = total - hours * 3600 - minutes * 60;
+    // const hours = Math.floor(total / 3600);
+    // const minutes = Math.floor((total - hours * 3600) / 60);
+    // const seconds = total - hours * 3600 - minutes * 60;
 
-    const totalFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`;
+    // const totalFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+    //   .toString()
+    //   .padStart(2, '0')}`;
 
     // prettier-ignore
     // console.log(`[${new Date().toLocaleTimeString('en')}] [VIDEO BEACON] USER=${user.nickname} ID=${id} T=${time} TT=${totalFormatted}`);
