@@ -38,13 +38,14 @@ import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
 import Service from './services/base.service';
 import ServiceProvider from './services/provider.service';
+import CampdController from './modules/campd/campd.controller';
 
 dotenv.config();
 
 const port = parseInt(process.env.PORT!) || 3000;
 
 const app = new App(port);
-const services: typeof Service[] = [
+const services: (typeof Service)[] = [
   EnvService,
   LogService,
   DeliverService,
@@ -91,6 +92,7 @@ app
       new RadioController(),
       new UserController(),
       new AdController(),
+      new CampdController(),
       new ShipmentController(),
     ];
     return app.load(controllers, gateway);
