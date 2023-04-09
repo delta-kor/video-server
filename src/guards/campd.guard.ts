@@ -10,7 +10,7 @@ function CampdGuard(): Route {
     if (!user) throw new UnauthorizedException();
 
     const campdService: CampdService = ServiceProvider.get(CampdService);
-    const campdUser = campdService.getCampdUserById(user.id);
+    const campdUser = await campdService.getCampdUserById(user.id);
 
     if (!campdUser) {
       const newCampdUser = new CampdUserModel({ id: user.id, scoreboard: {} });
