@@ -25,6 +25,8 @@ class DeliverService extends Service {
     const freshToken = await this.envService.get<string>('token');
     if (this.usedToken !== freshToken) this.clearCache();
 
+    console.log(freshToken);
+
     const url = `${process.env.CDN_URL}/videos/${cdnId}?fields=files.size,files.link,files.type,files.quality,files.height`;
 
     let data: LegacyCdnApiResponse;
