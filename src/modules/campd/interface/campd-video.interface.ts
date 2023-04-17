@@ -35,7 +35,9 @@ interface CampdVideo extends Document {
   title: string;
   description: string;
   cdn_id: string;
+  duration: number;
   scoresheet: Scoresheet;
 }
 
+export { ScoreType, CameraType, ScoreData, Timesheet };
 export default CampdVideo;

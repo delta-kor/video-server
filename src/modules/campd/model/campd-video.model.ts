@@ -9,6 +9,7 @@ const CampdVideoSchema = new Schema<CampdVideo>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   cdn_id: { type: String, required: true },
+  duration: { type: Number, required: true },
   scoresheet: { type: Object, required: true },
 });
 
