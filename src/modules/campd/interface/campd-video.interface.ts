@@ -26,6 +26,8 @@ interface Scoresheet {
   score_solo_out_default: number;
 
   ratio: number;
+  long_ratio: number;
+  short_ratio: number;
 
   timesheet: Timesheet;
 }

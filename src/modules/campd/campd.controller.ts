@@ -6,6 +6,7 @@ import CampdGuard from '../../guards/campd.guard';
 import CampdResponse from './campd.response';
 import NotFoundException from '../../exceptions/not-found.exception';
 import CampdSubmitDto from './dto/submit.dto';
+import ValidateGuard from '../../guards/validate.guard';
 
 class CampdController extends Controller {
   public readonly path: string = '/campd';
@@ -18,7 +19,7 @@ class CampdController extends Controller {
       '/games/:id/submit',
       AuthGuard(false),
       CampdGuard(),
-      // ValidateGuard(CampdSubmitDto),
+      ValidateGuard(CampdSubmitDto),
       this.submit.bind(this)
     );
   }
