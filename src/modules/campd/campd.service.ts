@@ -10,6 +10,9 @@ import ServiceProvider from '../../services/provider.service';
 import NotFoundException from '../../exceptions/not-found.exception';
 import getCurrentTimeItem from '../../utils/timemap.util';
 
+const CampdLongThreshold = 7000;
+const CampdShortThreshold = 1000;
+
 class CampdService extends Service {
   private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
 
@@ -78,14 +81,36 @@ class CampdService extends Service {
       miss_penalty: 0,
     };
 
+    let lastCamera: number | null = null;
+    let currentCameraDuration: number = 0;
+
+    let shortDuration: number = 0;
+
     const duration = video.duration;
-    for (let i = 0; i < duration; i += 10) {
+    const step = 10;
+    for (let i = 0; i < duration; i += step) {
       const currentCamera = getCurrentTimeItem(timesheet, i);
       const currentInput = getCurrentTimeItem(input, i);
       if (typeof currentInput !== 'number') continue;
 
       const currentCameraType = currentCamera.type;
       const cameras = currentCamera.cameras;
+
+      let penalty: null | 'long' | 'short' = null;
+
+      if (lastCamera === currentInput) {
+        currentCameraDuration += step;
+        if (currentCameraDuration > CampdLongThreshold) penalty = 'long';
+      } else {
+        if (currentCameraDuration < CampdShortThreshold && lastCamera !== null) {
+          penalty = 'short';
+          shortDuration += currentCameraDuration;
+        }
+        lastCamera = currentInput;
+        currentCameraDuration = 0;
+      }
+
+      const scoreBefore = result.total_score;
 
       if (currentInput === groupCameraIndex) {
         if (currentCameraType === 'group') {
@@ -121,7 +146,21 @@ class CampdService extends Service {
             break;
         }
       }
+
+      const scoreAfter = result.total_score;
+      const scoreDelta = Math.abs(scoreAfter - scoreBefore);
+      if (penalty === 'long') {
+        const penaltyScore = Math.round((1 - scoresheet.long_ratio) * scoreDelta);
+        result.total_score -= penaltyScore;
+        result.long_penalty += penaltyScore;
+      }
     }
+
+    const shortPenaltyScore = Math.round(
+      result.total_score * (shortDuration / duration) * (1 - scoresheet.short_ratio)
+    );
+    result.short_penalty = shortPenaltyScore;
+    result.total_score -= shortPenaltyScore;
 
     return result;
   }
