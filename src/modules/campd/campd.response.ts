@@ -5,6 +5,10 @@ namespace CampdResponse {
     games: CampdGame[];
   }
 
+  export interface CreateToken extends ApiResponse {
+    token: string;
+  }
+
   export interface Submit extends ApiResponse {
     result: CampdGameResult;
   }

@@ -9,6 +9,8 @@ import DeliverService from '../deliver/deliver.service';
 import ServiceProvider from '../../services/provider.service';
 import NotFoundException from '../../exceptions/not-found.exception';
 import getCurrentTimeItem from '../../utils/timemap.util';
+import crypto from 'crypto';
+import CampdRecordModel from './model/campd-record.model';
 
 const CampdLongThreshold = 7000;
 const CampdShortThreshold = 1000;
@@ -60,7 +62,12 @@ class CampdService extends Service {
     return cdnInfo.url;
   }
 
-  public async submit(campdUser: CampdUser, id: string, input: CampdGameInput): Promise<CampdGameResult> {
+  public async submit(
+    campdUser: CampdUser,
+    id: string,
+    input: CampdGameInput,
+    token: string
+  ): Promise<CampdGameResult> {
     const campdVideo = await this.getCampdVideoById(id);
     if (!campdVideo) throw new NotFoundException();
 
@@ -162,7 +169,36 @@ class CampdService extends Service {
     result.short_penalty = shortPenaltyScore;
     result.total_score -= shortPenaltyScore;
 
+    const record = new CampdRecordModel({ token, user_id: campdUser.id, input, result });
+    await record.save();
+
     return result;
+  }
+
+  public createGameToken(id: string): string {
+    const random = crypto.randomBytes(4).toString('hex');
+    const hash = crypto
+      .createHash('md5')
+      .update(random)
+      .update(id)
+      .update(process.env.SECRET_KEY as string)
+      .digest('hex');
+    return `${random}.${hash.slice(0, 8)}`;
+  }
+
+  public validateGameToken(token: string, id: string): true {
+    const random = token.split('.')[0];
+    const hash = token.split('.')[1];
+
+    const newHash = crypto
+      .createHash('md5')
+      .update(random)
+      .update(id)
+      .update(process.env.SECRET_KEY as string)
+      .digest('hex');
+
+    if (hash === newHash.slice(0, 8)) return true;
+    else throw new UnauthorizedException();
   }
 }
 
