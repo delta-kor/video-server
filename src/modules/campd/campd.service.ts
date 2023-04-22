@@ -86,6 +86,7 @@ class CampdService extends Service {
       long_penalty: 0,
       short_penalty: 0,
       miss_penalty: 0,
+      exp: 0,
     };
 
     let lastCamera: number | null = null;
@@ -168,6 +169,14 @@ class CampdService extends Service {
     );
     result.short_penalty = shortPenaltyScore;
     result.total_score -= shortPenaltyScore;
+
+    const durationScore = (duration / step) * scoresheet.exp;
+    const exp = Math.round((result.total_score / durationScore) * scoresheet.exp_size);
+    const sanitizedExp = Math.max(exp, 0);
+
+    result.exp = sanitizedExp;
+    campdUser.exp += sanitizedExp;
+    await campdUser.save();
 
     const record = new CampdRecordModel({ token, user_id: campdUser.id, input, result });
     await record.save();

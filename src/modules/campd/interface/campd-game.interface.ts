@@ -16,6 +16,7 @@ interface CampdGameResult {
   long_penalty: number;
   short_penalty: number;
   miss_penalty: number;
+  exp: number;
 }
 
 export { CampdGameInput, CampdGameResult };

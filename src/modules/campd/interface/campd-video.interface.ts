@@ -29,6 +29,9 @@ interface Scoresheet {
   long_ratio: number;
   short_ratio: number;
 
+  exp: number;
+  exp_size: number;
+
   timesheet: Timesheet;
 }
 
