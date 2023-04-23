@@ -97,7 +97,7 @@ class CampdService extends Service {
     const step = 10;
     for (let i = 0; i < duration; i += step) {
       const currentCamera = getCurrentTimeItem(timesheet, i);
-      const currentInput = getCurrentTimeItem(input, i);
+      const currentInput: any = getCurrentTimeItem(input, i);
       if (typeof currentInput !== 'number') continue;
 
       const currentCameraType = currentCamera.type;
@@ -209,7 +209,7 @@ class CampdService extends Service {
     else throw new UnauthorizedException();
   }
 
-  public async getGameRank(id: string, me: CampdUser): Promise<CampdRank[]> {
+  public async getGameRank(id: string, me: CampdUser): Promise<[CampdRank[], CampdRank]> {
     const video = await this.getCampdVideoById(id);
     if (!video) throw new NotFoundException();
 
@@ -230,7 +230,36 @@ class CampdService extends Service {
       rank++;
     }
 
-    return result;
+    let myRank: CampdRank = result.find(item => item.id === me.id)!;
+
+    if (!myRank) {
+      const targetUser = await UserModel.findOne({ id: me.id });
+      if (!targetUser) throw new UnauthorizedException();
+
+      if (me.scoreboard[video.id]) {
+        const count = await CampdUserModel.find({
+          [`scoreboard.${video.id}`]: { $exists: true, $gte: me.scoreboard[video.id] },
+        })
+          .sort({ [`scoreboard.${video.id}`]: -1 })
+          .countDocuments();
+
+        myRank = {
+          id: me.id,
+          nickname: targetUser.nickname,
+          score: me.scoreboard[video.id],
+          rank: count,
+        };
+      } else {
+        myRank = {
+          id: me.id,
+          nickname: targetUser.nickname,
+          score: me.scoreboard[video.id],
+          rank: -1,
+        };
+      }
+    }
+
+    return [result, myRank];
   }
 }
 

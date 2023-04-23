@@ -16,6 +16,7 @@ namespace CampdResponse {
 
   export interface GameRank extends ApiResponse {
     rank: CampdRank[];
+    me: CampdRank;
   }
 }
 

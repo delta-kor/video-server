@@ -69,9 +69,9 @@ class CampdController extends Controller {
     if (!id) throw new NotFoundException();
 
     const campdUser = await this.campdService.getCampdUserByRequest(req);
-    const rank = await this.campdService.getGameRank(id, campdUser);
+    const [rank, me] = await this.campdService.getGameRank(id, campdUser);
 
-    res.json({ ok: true, rank });
+    res.json({ ok: true, rank, me });
   }
 }
 
