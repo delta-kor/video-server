@@ -6,7 +6,7 @@ import EnvService from '../env/env.service';
 import { LegacyCdnApiResponse, LegacyVideoData, NewCdnApiResponse, StreamingInfo } from './deliver.interface';
 import { SentryLog } from '../../decorators/sentry.decorator';
 
-const ttl = 60 * 60;
+const ttl = 60 * 60 * 3;
 
 class DeliverService extends Service {
   private usedToken: string | null = null;
@@ -24,8 +24,6 @@ class DeliverService extends Service {
   public async getLegacyCdnInfo(cdnId: string, quality: number): Promise<StreamingInfo> {
     const freshToken = await this.envService.get<string>('token');
     if (this.usedToken !== freshToken) this.clearCache();
-
-    console.log(freshToken);
 
     const url = `${process.env.CDN_URL}/videos/${cdnId}?fields=files.size,files.link,files.type,files.quality,files.height`;
 
