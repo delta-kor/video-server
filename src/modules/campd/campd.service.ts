@@ -1,5 +1,5 @@
 import Service from '../../services/base.service';
-import CampdUser from './interface/campd-user.interface';
+import CampdUser, { CampdRank } from './interface/campd-user.interface';
 import CampdUserModel from './model/campd-user.model';
 import UnauthorizedException from '../../exceptions/unauthorized.exception';
 import CampdVideoModel from './model/campd-video.model';
@@ -11,6 +11,8 @@ import NotFoundException from '../../exceptions/not-found.exception';
 import getCurrentTimeItem from '../../utils/timemap.util';
 import crypto from 'crypto';
 import CampdRecordModel from './model/campd-record.model';
+import User from '../user/user.interface';
+import UserModel from '../user/user.model';
 
 const CampdLongThreshold = 7000;
 const CampdShortThreshold = 1000;
@@ -68,9 +70,6 @@ class CampdService extends Service {
     input: CampdGameInput,
     token: string
   ): Promise<CampdGameResult> {
-    const campdVideo = await this.getCampdVideoById(id);
-    if (!campdVideo) throw new NotFoundException();
-
     const video = await this.getCampdVideoById(id);
     if (!video) throw new NotFoundException();
 
@@ -208,6 +207,30 @@ class CampdService extends Service {
 
     if (hash === newHash.slice(0, 8)) return true;
     else throw new UnauthorizedException();
+  }
+
+  public async getGameRank(id: string, me: CampdUser): Promise<CampdRank[]> {
+    const video = await this.getCampdVideoById(id);
+    if (!video) throw new NotFoundException();
+
+    const campdUsers: CampdUser[] = await CampdUserModel.find({
+      [`scoreboard.${video.id}`]: { $exists: true },
+    })
+      .sort({ [`scoreboard.${video.id}`]: -1 })
+      .limit(100);
+    const users: User[] = await UserModel.find({ id: { $in: campdUsers.map(user => user.id) } });
+
+    let rank: number = 1;
+    const result: CampdRank[] = [];
+    for (const campdUser of campdUsers) {
+      const user = users.find(item => item.id === campdUser.id);
+      if (!user) continue;
+
+      result.push({ id: user.id, nickname: user.nickname, score: campdUser.scoreboard[id], rank });
+      rank++;
+    }
+
+    return result;
   }
 }
 

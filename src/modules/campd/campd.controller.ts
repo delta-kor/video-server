@@ -23,6 +23,7 @@ class CampdController extends Controller {
       this.submit.bind(this)
     );
     this.mounter.get('/games/:id/token', AuthGuard(false), CampdGuard(), this.createGameToken.bind(this));
+    this.mounter.get('/games/:id/rank', AuthGuard(false), CampdGuard(), this.getGameRank.bind(this));
   }
 
   private async getGames(req: TypedRequest, res: TypedResponse<CampdResponse.GetGames>): Promise<void> {
@@ -61,6 +62,16 @@ class CampdController extends Controller {
     const token = this.campdService.createGameToken(id);
 
     res.json({ ok: true, token });
+  }
+
+  private async getGameRank(req: TypedRequest, res: TypedResponse<CampdResponse.GameRank>): Promise<void> {
+    const id = req.params.id;
+    if (!id) throw new NotFoundException();
+
+    const campdUser = await this.campdService.getCampdUserByRequest(req);
+    const rank = await this.campdService.getGameRank(id, campdUser);
+
+    res.json({ ok: true, rank });
   }
 }
 
