@@ -175,6 +175,10 @@ class CampdService extends Service {
 
     result.exp = sanitizedExp;
     campdUser.exp += sanitizedExp;
+
+    if ((campdUser.scoreboard[id] || 0) < result.total_score)
+      campdUser.set({ [`scoreboard.${id}`]: result.total_score });
+
     await campdUser.save();
 
     const record = new CampdRecordModel({ token, user_id: campdUser.id, input, result });
