@@ -1,7 +1,7 @@
 {
   "error": {
     "not_found": "페이지를 찾을 수 없어요",
-    "internal_server_error": "서버 내부 오류에요\n나중에 다시 시도해주세요",
+    "internal_server_error": "서버 내부 오류이에요\n나중에 다시 시도해주세요",
     "unauthorized": "접근이 거부되었어요\n나중에 다시 시도해주세요",
     "wrong_request": "잘못된 요청이에요",
     "user": {
@@ -26,7 +26,8 @@
     },
     "video": {
       "enter_id": "ID를 입력해주세요",
-      "invalid_type": "잘못된 영상 타입이에요"
+      "invalid_type": "잘못된 영상 타입이에요",
+      "unavailable": "시청할 수 없는 영상이에요"
     }
   }
 }

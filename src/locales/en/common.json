@@ -26,7 +26,8 @@
     },
     "video": {
       "enter_id": "Enter ID",
-      "invalid_type": "Invalid video type"
+      "invalid_type": "Invalid video type",
+      "unavailable": "This video is unavailable"
     }
   }
 }

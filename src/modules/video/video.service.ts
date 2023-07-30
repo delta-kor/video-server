@@ -1,4 +1,5 @@
 import NotFoundException from '../../exceptions/not-found.exception';
+import UnavailableVideoException from '../../exceptions/unavailable-video.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
@@ -84,12 +85,16 @@ class VideoService extends Service {
     const video = this.get(id);
     if (!video) throw new NotFoundException();
 
-    const cdnId = video.properties.includes('4k') ? video.cdnId_4k! : video.cdnId;
-    const info = await this.deliverService.getCdnInfo(cdnId, quality);
+    try {
+      const cdnId = video.properties.includes('4k') ? video.cdnId_4k! : video.cdnId;
+      const info = await this.deliverService.getCdnInfo(cdnId, quality);
 
-    if (video.properties.includes('4k')) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
+      if (video.properties.includes('4k')) info.qualities = [2160, 1440, 1080, 720, 540, 360, 240];
 
-    return info;
+      return info;
+    } catch (e) {
+      throw new UnavailableVideoException();
+    }
   }
 
   @SentryLog('video service', 'get video action')

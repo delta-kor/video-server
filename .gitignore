@@ -13,6 +13,11 @@ run/database-fill.ts
 run/check.ts
 run/import-json.ts
 run/export-json.ts
+run/export-tsv.ts
 
 pnpm-lock.yaml
 yarn.lock
+
+.vscode
+.idea
+.prettierrc
