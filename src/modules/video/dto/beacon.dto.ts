@@ -17,7 +17,7 @@ class BeaconDto {
 
   fullscreen!: boolean;
 
-  pip!: number;
+  pip!: boolean;
 
   pwa!: boolean;
 }

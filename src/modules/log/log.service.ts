@@ -2,9 +2,12 @@ import Service from '../../services/base.service';
 import User from '../user/user.interface';
 import Video from '../video/video.interface';
 import VideoBeacon from './log.interface';
+import Beacon from '../../modules/beacon/beacon.interface';
+import BeaconModel from '../../modules/beacon/beacon.model';
 
 class LogService extends Service {
   private readonly videoBeaconMap: Map<string, VideoBeacon> = new Map();
+  private readonly beaconList: Set<Beacon> = new Set();
 
   public videoBeacon(
     user: User,
@@ -16,8 +19,9 @@ class LogService extends Service {
     sessionTime: number,
     quality: number,
     fullscreen: boolean,
-    pip: number,
-    pwa: boolean
+    pip: boolean,
+    pwa: boolean,
+    ip: string
   ): void {
     const time = new Date();
     this.videoBeaconMap.set(user.id, {
@@ -34,6 +38,24 @@ class LogService extends Service {
       pip,
       pwa,
     });
+
+    const beacon = new BeaconModel({
+      ip,
+      videoId: video.id,
+      userId: user.id,
+      playedTime,
+    });
+
+    if (process.env.NODE_ENV === 'production') this.beaconList.add(beacon);
+
+    if (this.beaconList.size > 100) {
+      const beaconListCopy = [...this.beaconList];
+      BeaconModel.insertMany(beaconListCopy)
+        .then(() => {
+          for (const beacon of beaconListCopy) this.beaconList.delete(beacon);
+        })
+        .catch(() => {});
+    }
   }
 
   public getVideoBeacon(): VideoBeacon[] {
