@@ -1,5 +1,5 @@
 import Service from '../../services/base.service';
-import User from '../user/user.interface';
+import User, { Role } from '../user/user.interface';
 import Video from '../video/video.interface';
 import VideoBeacon from './log.interface';
 import Beacon from '../../modules/beacon/beacon.interface';
@@ -46,7 +46,7 @@ class LogService extends Service {
       playedTime,
     });
 
-    if (process.env.NODE_ENV === 'production') this.beaconList.add(beacon);
+    if (process.env.NODE_ENV === 'production' && user.role !== Role.MASTER) this.beaconList.add(beacon);
 
     if (this.beaconList.size > 100) {
       const beaconListCopy = [...this.beaconList];
