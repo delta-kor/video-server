@@ -132,6 +132,7 @@ SearchConvertStoreBase.set('izone chu', '아이즈원 츄');
 SearchConvertStoreBase.set('iz chu', '아이즈원 츄');
 SearchConvertStoreBase.set('eating', '잇힝');
 SearchConvertStoreBase.set('trip', '트립');
+SearchConvertStoreBase.set('city', '시티');
 
 const SearchConvertStore = new Map<string, string>();
 const keys = [...SearchConvertStoreBase.keys()].sort((a, b) => b.length - a.length);
