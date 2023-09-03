@@ -1,12 +1,12 @@
 import { Model, model, Schema } from 'mongoose';
+import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import TokenUtil from '../../utils/token.util';
 import UserPlaylist from '../playlist/interface/user-playlist.interface';
 import UserPlaylistModel from '../playlist/model/user-playlist.model';
-import User, { Role, UserInfo } from './user.interface';
 import Video from '../video/video.interface';
-import ServiceProvider from '../../services/provider.service';
 import VideoService from '../video/video.service';
+import User, { Role, UserInfo } from './user.interface';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;
@@ -40,8 +40,13 @@ UserSchema.methods.getUserPlaylists = async function (this: User): Promise<UserP
   return UserPlaylistModel.find({ user_id: this.id });
 };
 
-UserSchema.methods.updateActive = async function (this: User): Promise<void> {
+UserSchema.methods.updateActive = async function (this: User, ip?: string): Promise<void> {
   try {
+    if (ip && !this.ip.includes(ip)) {
+      this.ip.push(ip);
+      await this.save();
+    }
+
     if (this.last_active.getTime() < Date.now() - 5 * 60 * 1000) {
       this.last_active = new Date();
       await this.save();

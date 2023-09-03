@@ -32,7 +32,8 @@ function AuthGuard(create: boolean): Route {
     req.user = await userService.getUserByToken(credentials, create);
     res.header('Iz-Auth-Token', req.user.createToken());
 
-    req.user.updateActive();
+    const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    req.user.updateActive(ip);
 
     span.ok();
     return next();

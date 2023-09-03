@@ -1,12 +1,14 @@
 import { Response } from 'express';
 import Controller from '../../classes/controller.class';
 import Queue from '../../decorators/queue.decorator';
+import { SentryLog } from '../../decorators/sentry.decorator';
 import NotFoundException from '../../exceptions/not-found.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import AuthGuard from '../../guards/auth.guard';
 import ManageGuard from '../../guards/manage.guard';
 import ValidateGuard from '../../guards/validate.guard';
 import ServiceProvider from '../../services/provider.service';
+import I18nUtil from '../../utils/i18n.util';
 import BuilderService from '../builder/builder.service';
 import { Path } from '../category/category.response';
 import CategoryService from '../category/category.service';
@@ -16,8 +18,6 @@ import BeaconDto from './dto/beacon.dto';
 import VideoDto from './dto/video.dto';
 import VideoResponse, { ShortVideoInfo } from './video.response';
 import VideoService from './video.service';
-import I18nUtil from '../../utils/i18n.util';
-import { SentryLog } from '../../decorators/sentry.decorator';
 
 class VideoController extends Controller {
   public readonly path: string = '/video';
@@ -130,7 +130,8 @@ class VideoController extends Controller {
 
     this.logService.videoBeacon(user, video, time, total, language, agent, sessionTime, quality, fullscreen, pip, pwa);
 
-    user.updateActive();
+    const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    user.updateActive(ip);
 
     // const hours = Math.floor(total / 3600);
     // const minutes = Math.floor((total - hours * 3600) / 60);

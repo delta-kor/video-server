@@ -12,7 +12,7 @@ interface VideoBeacon {
   sessionTime: number;
   quality: number;
   fullscreen: boolean;
-  pip: number;
+  pip: boolean;
   pwa: boolean;
 }
 
