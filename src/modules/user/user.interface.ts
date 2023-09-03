@@ -19,7 +19,7 @@ interface User extends Document {
 
   getLikedVideos(): Promise<Video[]>;
   getUserPlaylists(): Promise<UserPlaylist[]>;
-  updateActive(ip: string): Promise<void>;
+  updateActive(ip?: string): Promise<void>;
 
   addIp(ip: string): Promise<void>;
   createToken(): string;
