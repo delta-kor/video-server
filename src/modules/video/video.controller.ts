@@ -128,21 +128,7 @@ class VideoController extends Controller {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    this.logService.videoBeacon(
-      user,
-      video,
-      time,
-      total,
-      language,
-      agent,
-      sessionTime,
-      quality,
-      fullscreen,
-      pip,
-      pwa,
-      ip
-    );
+    this.logService.videoBeacon(user, video, time, total, language, agent, sessionTime, quality, fullscreen, pip, pwa);
 
     user.updateActive();
 

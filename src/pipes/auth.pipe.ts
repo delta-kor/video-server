@@ -17,6 +17,9 @@ class AuthPipe {
         req.user = await userService.getUserByToken(credentials, false);
         res.header('Iz-Auth-Token', req.user.createToken());
         req.user.updateActive();
+
+        const ip: any = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        req.user.addIp(ip);
       } catch (e) {
         next();
       }

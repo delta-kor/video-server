@@ -1,12 +1,12 @@
 import { Model, model, Schema } from 'mongoose';
+import ServiceProvider from '../../services/provider.service';
 import generateId from '../../utils/id.util';
 import TokenUtil from '../../utils/token.util';
 import UserPlaylist from '../playlist/interface/user-playlist.interface';
 import UserPlaylistModel from '../playlist/model/user-playlist.model';
-import User, { Role, UserInfo } from './user.interface';
 import Video from '../video/video.interface';
-import ServiceProvider from '../../services/provider.service';
 import VideoService from '../video/video.service';
+import User, { Role, UserInfo } from './user.interface';
 
 interface UserModel extends Model<User> {
   nicknameExists(nickname: string): Promise<boolean>;

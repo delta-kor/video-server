@@ -20,8 +20,7 @@ class LogService extends Service {
     quality: number,
     fullscreen: boolean,
     pip: boolean,
-    pwa: boolean,
-    ip: string
+    pwa: boolean
   ): void {
     const time = new Date();
     this.videoBeaconMap.set(user.id, {
@@ -40,7 +39,6 @@ class LogService extends Service {
     });
 
     const beacon = new BeaconModel({
-      ip,
       videoId: video.id,
       userId: user.id,
       playedTime,
