@@ -2,6 +2,7 @@ import Video from '../video/video.interface';
 
 interface VliveFilter {
   anchor: string;
+  count: number;
 }
 
 namespace VliveResponse {

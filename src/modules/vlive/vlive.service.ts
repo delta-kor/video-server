@@ -1,4 +1,5 @@
 import { SentryLog } from '../../decorators/sentry.decorator';
+import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
 import Service from '../../services/base.service';
 import ServiceProvider from '../../services/provider.service';
 import Video from '../video/video.interface';
@@ -12,7 +13,8 @@ class VliveService extends Service {
 
   @SentryLog('video service', 'get vlive videos')
   public getVlive(filter: VliveFilter): Video[] {
-    const count = 5;
+    const count = filter.count || 10;
+    if (count > 100) throw new UnprocessableEntityException('error.wrong_request');
     const videos = this.videoService.getAll().filter(video => video.type === 'vlive');
     const videoIds = videos.map(videos => videos.id);
     const anchorIndex = videoIds.indexOf(filter.anchor);
