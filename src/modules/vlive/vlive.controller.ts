@@ -16,7 +16,9 @@ class VliveController extends Controller {
   private async list(req: TypedRequest, res: TypedResponse<VliveResponse.List>): Promise<void> {
     const anchor = req.query.anchor as string;
     const count = parseInt(req.query.count as string) || 0;
-    const videos = this.vliveService.getVlive({ anchor, count });
+    const sort = (req.query.sort as string) || 'oldest';
+
+    const videos = this.vliveService.getVlive({ anchor, count, sort });
     const serializedVideos = videos.map(video => video.serialize(req, 'id', 'title', 'date', 'duration', 'members'));
 
     res.json({ ok: true, videos: serializedVideos });
