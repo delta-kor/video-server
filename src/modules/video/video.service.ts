@@ -1,3 +1,4 @@
+import { SentryLog } from '../../decorators/sentry.decorator';
 import NotFoundException from '../../exceptions/not-found.exception';
 import UnavailableVideoException from '../../exceptions/unavailable-video.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
@@ -9,7 +10,6 @@ import User from '../user/user.interface';
 import VideoDto from './dto/video.dto';
 import Video, { VideoOption } from './video.interface';
 import VideoModel from './video.model';
-import { SentryLog } from '../../decorators/sentry.decorator';
 
 class VideoService extends Service {
   private readonly deliverService: DeliverService = ServiceProvider.get(DeliverService);
@@ -21,7 +21,7 @@ class VideoService extends Service {
   }
 
   @SentryLog('video service', 'get all videos')
-  private getAll(): Video[] {
+  public getAll(): Video[] {
     return this.videos;
   }
 
@@ -31,7 +31,7 @@ class VideoService extends Service {
   }
 
   public async upload(data: VideoDto): Promise<Video> {
-    if (!['performance', 'vod'].includes(data.type)) {
+    if (!['performance', 'vod', 'vlive'].includes(data.type)) {
       throw new UnprocessableEntityException('error.video.invalid_type');
     }
 
@@ -43,7 +43,7 @@ class VideoService extends Service {
       date: new Date(data.date),
       category: data.category,
       options: data.options,
-      liked: [],
+      members: data.members,
     });
     await video.save();
 

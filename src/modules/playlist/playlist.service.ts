@@ -1,4 +1,5 @@
 import Constants from '../../constants';
+import { SentryLog } from '../../decorators/sentry.decorator';
 import NotFoundException from '../../exceptions/not-found.exception';
 import UnauthorizedException from '../../exceptions/unauthorized.exception';
 import UnprocessableEntityException from '../../exceptions/unprocessable-entity.exception';
@@ -16,7 +17,6 @@ import Playlist from './interface/playlist.interface';
 import UserPlaylist from './interface/user-playlist.interface';
 import PlaylistModel from './model/playlist.model';
 import UserPlaylistModel from './model/user-playlist.model';
-import { SentryLog } from '../../decorators/sentry.decorator';
 
 class PlaylistService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);

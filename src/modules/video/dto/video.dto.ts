@@ -22,6 +22,8 @@ class VideoDto {
 
   @IsArray({ message: '영상 옵션을 입력해주세요' })
   public options!: VideoOption[];
+
+  public members?: string[];
 }
 
 export default VideoDto;

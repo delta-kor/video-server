@@ -36,6 +36,8 @@ import UserController from './modules/user/user.controller';
 import UserService from './modules/user/user.service';
 import VideoController from './modules/video/video.controller';
 import VideoService from './modules/video/video.service';
+import VliveController from './modules/vlive/vlive.controller';
+import VliveService from './modules/vlive/vlive.service';
 import Service from './services/base.service';
 import ServiceProvider from './services/provider.service';
 
@@ -44,11 +46,12 @@ dotenv.config();
 const port = parseInt(process.env.PORT!) || 3000;
 
 const app = new App(port);
-const services: typeof Service[] = [
+const services: (typeof Service)[] = [
   EnvService,
   LogService,
   DeliverService,
   VideoService,
+  VliveService,
   CategoryService,
   MusicService,
   CalendarService,
@@ -81,6 +84,7 @@ app
       new EnvController(),
       new LogController(),
       new VideoController(),
+      new VliveController(),
       new ThumbnailController(),
       new CategoryController(),
       new MusicController(),

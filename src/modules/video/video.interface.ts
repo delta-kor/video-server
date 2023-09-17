@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Document } from 'mongoose';
 
 type VideoOption = 'music' | 'category' | 'recommend' | 'fanchant';
-type VideoType = 'performance' | 'vod';
+type VideoType = 'performance' | 'vod' | 'vlive';
 type VideoProperty = '4k' | 'cc';
 
 interface Teleport extends Document {
@@ -39,6 +39,7 @@ interface Video extends Document {
   properties: VideoProperty[]; // virtual
   tags: string[]; // virtual
   options: VideoOption[];
+  members?: string[];
 
   hasOption(option: VideoOption): boolean;
   getLiked(): Promise<string[]>;

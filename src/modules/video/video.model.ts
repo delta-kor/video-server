@@ -1,14 +1,14 @@
 import { Request } from 'express';
 import { model, Schema } from 'mongoose';
+import LocaleSchema from '../../schemas/locale.schema';
 import ServiceProvider from '../../services/provider.service';
+import I18nUtil from '../../utils/i18n.util';
 import generateId from '../../utils/id.util';
 import BuilderService from '../builder/builder.service';
 import { MusicStore } from '../music/music.store';
-import VideoTagStore from './store/tag.store';
-import Video, { VideoOption, VideoProperty, Timeline, Teleport, Chapter } from './video.interface';
 import UserModel from '../user/user.model';
-import LocaleSchema from '../../schemas/locale.schema';
-import I18nUtil from '../../utils/i18n.util';
+import VideoTagStore from './store/tag.store';
+import Video, { Chapter, Teleport, Timeline, VideoOption, VideoProperty } from './video.interface';
 
 const TeleportSchema = new Schema<Teleport>(
   {
@@ -60,6 +60,7 @@ const VideoSchema = new Schema<Video>({
   subtitle: { type: String, required: false },
   timeline: { type: TimelineSchema, required: false },
   options: { type: [String], required: true },
+  members: { type: [String], required: false },
 });
 
 VideoSchema.virtual('duration').get(function (this: Video): number {
