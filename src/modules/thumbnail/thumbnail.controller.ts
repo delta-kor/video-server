@@ -1,8 +1,8 @@
 import path from 'path';
 import Controller from '../../classes/controller.class';
+import { SentryLog } from '../../decorators/sentry.decorator';
 import ServiceProvider from '../../services/provider.service';
 import BuilderService from '../builder/builder.service';
-import { SentryLog } from '../../decorators/sentry.decorator';
 
 class ThumbnailController extends Controller {
   public readonly path: string = '/thumbnail';
@@ -18,7 +18,7 @@ class ThumbnailController extends Controller {
     const uri = this.builderService.getThumbnailData(id);
     const filePath = uri.split(path.sep).slice(-2).join(path.sep).replace(/\\/g, '/');
 
-    res.redirect(`${process.env.IMAGE_CDN_URL}/${filePath}`);
+    res.redirect(`${process.env.IMAGE_CDN_URL}/${filePath}?q=100`);
   }
 }
 

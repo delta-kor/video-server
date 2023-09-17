@@ -15,7 +15,7 @@ class VliveService extends Service {
   public getVlive(filter: VliveFilter): Video[] {
     const count = filter.count || 10;
     if (count > 100) throw new UnprocessableEntityException('error.wrong_request');
-    const videos = this.videoService.getAll().filter(video => video.type === 'vlive');
+    const videos = this.videoService.getVlive();
     const videoIds = videos.map(videos => videos.id);
     const anchorIndex = videoIds.indexOf(filter.anchor);
     const paginatedVideos = videos.slice(anchorIndex + 1, anchorIndex + count + 1);

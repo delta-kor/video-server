@@ -30,6 +30,11 @@ class VideoService extends Service {
     return this.getAll().filter(video => video.hasOption(option));
   }
 
+  @SentryLog('video service', 'get vlive videos')
+  public getVlive(): Video[] {
+    return this.getAll().filter(video => video.type === 'vlive');
+  }
+
   public async upload(data: VideoDto): Promise<Video> {
     if (!['performance', 'vod', 'vlive'].includes(data.type)) {
       throw new UnprocessableEntityException('error.video.invalid_type');

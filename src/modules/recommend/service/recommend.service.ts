@@ -1,4 +1,5 @@
 import Constants from '../../../constants';
+import { SentryLog } from '../../../decorators/sentry.decorator';
 import NotFoundException from '../../../exceptions/not-found.exception';
 import Service from '../../../services/base.service';
 import ServiceProvider from '../../../services/provider.service';
@@ -8,7 +9,6 @@ import Video from '../../video/video.interface';
 import VideoService from '../../video/video.service';
 import { EmotionData, PlaytimeData } from '../store/emotion.store';
 import EmotionService from './emotion.service';
-import { SentryLog } from '../../../decorators/sentry.decorator';
 
 class RecommendService extends Service {
   private readonly videoService: VideoService = ServiceProvider.get(VideoService);
@@ -32,13 +32,26 @@ class RecommendService extends Service {
       if (nextVideo) result.push(nextVideo);
     }
 
+    if (type === 'vlive') {
+      const videos = new Set(this.videoService.getVlive());
+      for (let i = 0; i < count - 1; i++) {
+        const video = pickFromSetAndDelete(videos);
+        if (result.includes(video) || video.id === id) {
+          i--;
+          continue;
+        }
+
+        result.push(video);
+      }
+    }
+
     if (type === 'vod') {
       const intros = new Set(this.categoryService.getVodIntros());
       for (let i = 0; i < count - 1; i++) {
         if (!intros.size) continue;
 
         const video = pickFromSetAndDelete(intros);
-        if (result.includes(video)) {
+        if (result.includes(video) || video.id === id) {
           i--;
           continue;
         }
