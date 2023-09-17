@@ -63,7 +63,7 @@ class VideoController extends Controller {
     const video = this.videoService.get(id);
     if (!video) throw new NotFoundException();
 
-    const path: Path[] = this.categoryService.createPathFromCategory(video.category);
+    const path: Path[] = video.hasOption('category') ? this.categoryService.createPathFromCategory(video.category) : [];
     path.forEach(item => (item.title = I18nUtil.getVideoCategoryItem(item.title, req.i18n.resolvedLanguage)));
 
     const music = this.musicService.getMusicByVideo(video);
