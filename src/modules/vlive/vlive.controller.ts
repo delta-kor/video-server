@@ -17,8 +17,9 @@ class VliveController extends Controller {
     const anchor = req.query.anchor as string;
     const count = parseInt(req.query.count as string) || 0;
     const sort = (req.query.sort as string) || 'oldest';
+    const from = parseInt(req.query.from as string) || 0;
 
-    const videos = this.vliveService.getVlive({ anchor, count, sort });
+    const videos = this.vliveService.getVlive({ anchor, count, sort, from });
     const serializedVideos = videos.map(video => video.serialize(req, 'id', 'title', 'date', 'duration', 'members'));
 
     res.json({ ok: true, videos: serializedVideos });

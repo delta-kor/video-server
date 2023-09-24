@@ -4,6 +4,7 @@ interface VliveFilter {
   anchor: string;
   count: number;
   sort?: string;
+  from?: number;
 }
 
 namespace VliveResponse {
