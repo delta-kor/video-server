@@ -40,6 +40,8 @@ import VliveController from './modules/vlive/vlive.controller';
 import VliveService from './modules/vlive/vlive.service';
 import Service from './services/base.service';
 import ServiceProvider from './services/provider.service';
+import CampdController from './modules/campd/campd.controller';
+import CampdService from './modules/campd/campd.service';
 
 dotenv.config();
 
@@ -67,6 +69,7 @@ const services: (typeof Service)[] = [
   ChatService,
   LiveService,
   AdService,
+  CampdService,
   ShipmentService,
 ];
 
@@ -95,6 +98,7 @@ app
       new RadioController(),
       new UserController(),
       new AdController(),
+      new CampdController(),
       new ShipmentController(),
     ];
     return app.load(controllers, gateway);

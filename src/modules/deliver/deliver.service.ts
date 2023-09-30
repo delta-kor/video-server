@@ -6,7 +6,7 @@ import EnvService from '../env/env.service';
 import { LegacyCdnApiResponse, LegacyVideoData, NewCdnApiResponse, StreamingInfo } from './deliver.interface';
 import { SentryLog } from '../../decorators/sentry.decorator';
 
-const ttl = 60 * 60;
+const ttl = 60 * 60 * 3;
 
 class DeliverService extends Service {
   private usedToken: string | null = null;
