@@ -8,6 +8,7 @@ import CalendarController from './modules/calendar/calendar.controller';
 import CalendarService from './modules/calendar/calendar.service';
 import CategoryController from './modules/category/category.controller';
 import CategoryService from './modules/category/category.service';
+import DeliverController from './modules/deliver/deliver.controller';
 import DeliverService from './modules/deliver/deliver.service';
 import EnvController from './modules/env/env.controller';
 import EnvService from './modules/env/env.service';
@@ -83,6 +84,7 @@ app
     const controllers: Controller[] = [
       new EnvController(),
       new LogController(),
+      new DeliverController(),
       new VideoController(),
       new VliveController(),
       new ThumbnailController(),

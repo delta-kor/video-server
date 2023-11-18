@@ -1,7 +1,7 @@
 import Controller from '../../classes/controller.class';
+import { SentryLog } from '../../decorators/sentry.decorator';
 import ServiceProvider from '../../services/provider.service';
 import CategoryService from './category.service';
-import { SentryLog } from '../../decorators/sentry.decorator';
 
 class CategoryController extends Controller {
   public readonly path: string = '/category';
@@ -13,7 +13,7 @@ class CategoryController extends Controller {
   }
 
   @SentryLog('category controller', 'view category')
-  public async view(req: TypedRequest, res: TypedResponse<any>): Promise<void> {
+  private async view(req: TypedRequest, res: TypedResponse<any>): Promise<void> {
     const pathId: string = req.params.path;
     const data = this.categoryService.view(req, pathId);
     res.json(data);
