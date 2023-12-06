@@ -17,6 +17,11 @@ class VliveService extends Service {
     if (count > 100) throw new UnprocessableEntityException('error.wrong_request');
 
     let videos = this.videoService.getVlive();
+
+    if (filter.members.length) {
+      videos = videos.filter(video => video.members?.every(member => filter.members.includes(member)));
+    }
+
     if (filter.sort === 'newest') videos.sort((a, b) => b.date.getTime() - a.date.getTime());
     else videos.sort((a, b) => a.date.getTime() - b.date.getTime());
 
