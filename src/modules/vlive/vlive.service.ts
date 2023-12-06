@@ -19,7 +19,12 @@ class VliveService extends Service {
     let videos = this.videoService.getVlive();
 
     if (filter.members.length) {
-      videos = videos.filter(video => video.members?.every(member => filter.members.includes(member)));
+      videos = videos.filter(
+        video =>
+          video.members &&
+          video.members.length !== 12 &&
+          filter.members.every(member => video.members!.includes(member))
+      );
     }
 
     if (filter.sort === 'newest') videos.sort((a, b) => b.date.getTime() - a.date.getTime());

@@ -30,6 +30,7 @@ namespace VideoResponse {
     properties: VideoProperty[];
     music: [string, string] | null;
     timeline?: Timeline;
+    members?: string[];
   }
 
   export interface List extends ApiResponse {

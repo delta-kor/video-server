@@ -84,6 +84,7 @@ class VideoController extends Controller {
       properties: video.properties,
       music: music ? [music.albumId, music.id] : null,
       timeline: video.timeline?.serialize(req),
+      members: video.members,
     });
   }
 

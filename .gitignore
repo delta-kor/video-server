@@ -5,6 +5,7 @@ build
 .env
 exports.tsv
 exports.json
+members.json
 
 log
 *.log
