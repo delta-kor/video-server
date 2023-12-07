@@ -36,7 +36,7 @@ class BuilderService extends Service {
       const file = this.videoFile.get(id);
       if (!file) throw new NotFoundException();
 
-      const duration = file.duration;
+      const duration = file.xDuration || file.duration;
       const select = file.select;
 
       const fileName = `${id}.${duration}.${select}.jpg`;

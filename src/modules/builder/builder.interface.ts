@@ -4,6 +4,7 @@ interface FileItem {
   id: string;
   duration: number;
   select: number;
+  xDuration: number;
 }
 
 interface RadioFileItem {
