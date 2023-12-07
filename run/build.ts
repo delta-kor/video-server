@@ -12,7 +12,7 @@ fs.readdir(thumbnailPath).then(files => {
     const id = split[0];
     const duration = parseInt(split[1]);
     const select = parseInt(split[2]);
-    fileMap.set(id, { id, duration, select });
+    fileMap.set(id, { id, duration, select, xDuration: duration });
   }
 
   const result: FileItem[] = Array.from(fileMap.values());
